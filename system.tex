@@ -1,0 +1,37 @@
+\section{System Design}
+
+Next, we present the system design of \name to realize the two design choices presented in Section3.
+
+\subsection{\name architecture}
+
+\name reuses the same underlying multicast system described in Section2.2. This section should give a graph to show the key components (controller, local agents, traffic monitoring service), as well as their interfaces.
+
+\subsection{Centralized control}
+\begin{itemize}
+
+\item Start with the basic workflow of each 3-second cycle: (1) how local agent collects delivery status, (2) send messages to the controller, (3) controller runs the algorithm, (4) control message to each local agent, and (5) how local agent enforce decision.
+
+\item Fault tolerance: what if a server is not available (or straggling), what if one controller instance is not available, what if there is network partition between DCs or between DCs and the controller.
+
+\item Explain two optimizations:
+\begin{itemize}
+\item Merging blocks
+\item Non-blocking update
+\end{itemize}
+
+\end{itemize}
+
+\subsection{Dynamic bandwidth separation}
+
+\begin{itemize}
+
+\item First, how to get real-time aggregated size of latency-sensitive traffic.
+
+\item Second, how to calculate the bandwidth cap for background bulk traffic
+
+\item Finally, how to enforce the bandwidth cap.
+
+\end{itemize}
+
+
+

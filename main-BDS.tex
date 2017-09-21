@@ -1,0 +1,218 @@
+%\documentclass[10pt]{sig-alternate-05-2015}
+%\documentclass[10pt,journal,compsoc]{IEEEtran}
+%\documentclass[10pt, conference, letterpaper]{IEEEtran}
+%\documentclass[10pt,journal,compsoc]{IEEEtran}
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix,epsfig,endnotes}
+%\documentclass[10pt, conference, letterpaper]{IEEEtran}
+%\documentclass{sig-alternate-10pt}
+%\IEEEoverridecommandlockouts
+
+\usepackage{fancyhdr}
+%\usepackage{algpseudocode}
+\usepackage{epstopdf}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{multirow}
+\usepackage{hhline}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\renewcommand{\multirowsetup}{\centering}
+\usepackage{setspace}
+
+
+\usepackage{mathptmx}
+\usepackage{helvet}
+\usepackage{courier}
+\usepackage{type1cm}
+
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{url}
+%\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{caption}
+
+\usepackage{subcaption}
+\usepackage{cases}
+\usepackage{amsfonts}
+\usepackage{colortbl}
+%\usepackage[colorlinks,urlcolor=blue,dvipdfm]{hyperref}
+\usepackage{hyperref}					% Reference
+\hypersetup{colorlinks,%				% Reference color setup	
+	linkcolor=blue,%
+	citecolor=blue,
+    urlcolor=blue,
+	dvipdfm}
+%\usepackage{cite}
+\usepackage{flushend}
+\usepackage{breakurl}
+\usepackage{xspace}
+\usepackage{enumitem} 
+
+\newtheorem{algorithm1}{Algorithm}
+\newtheorem{theorem}{\noindent{\bf Theorem}}
+\newtheorem{proposition}{\noindent{\bf Proposition}}
+\newtheorem{constrain}{Constraint}
+\newtheorem{definition}{Definition}
+\newcommand{\TODO}[1]{\textcolor{red}{TODO: #1}}
+\newcommand{\jc}[1]{{\footnotesize\color{blue}{[JC: #1]}}}
+\newcommand{\fillme}{XXX\xspace}
+\newcommand{\name}{BDS\xspace}
+\newcommand{\company}{{\sf\small Anon}\xspace}
+%\usepackage[cmex10]{amsmath}
+%\DeclareMathOperator{\E}{E}
+\hyphenation{op-tical net-works semi-conduc-tor}
+\tolerance=300
+
+\newcounter{packednmbr}
+
+\newenvironment{packedenumerate}{\begin{list}{\thepackednmbr.}{\usecounter{packednmbr}\setlength{\itemsep}{0.5pt}\addtolength{\labelwidth}{-4pt}\setlength{\leftmargin}{\labelwidth}\setlength{\listparindent}{\parindent}\setlength{\parsep}{1pt}\setlength{\topsep}{0pt}}}{\end{list}}
+
+\newenvironment{packeditemize}{\begin{list}{$\bullet$}{\setlength{\itemsep}{0.5pt}\addtolength{\labelwidth}{-4pt}\setlength{\leftmargin}{\labelwidth}\setlength{\listparindent}{\parindent}\setlength{\parsep}{1pt}\setlength{\topsep}{0pt}}}{\end{list}}
+
+\newenvironment{packedpackeditemize}{\begin{list}{$\bullet$}{\setlength{\itemsep}{0.5pt}\addtolength{\labelwidth}{-4pt}\setlength{\leftmargin}{\labelwidth}\setlength{\listparindent}{\parindent}\setlength{\parsep}{1pt}\setlength{\topsep}{0pt}}}{\end{list}}
+
+\newenvironment{packedtrivlist}{\begin{list}{\setlength{\itemsep}{0.2pt}\addtolength{\labelwidth}{-4pt}\setlength{\leftmargin}{\labelwidth}\setlength{\listparindent}{\parindent}\setlength{\parsep}{1pt}\setlength{\topsep}{0pt}}}{\end{list}}
+
+
+\begin{document}
+{\title{\name: Near-Optimal Multicast Overlay for Inter-Datacenter WANs\\
+\vspace{0.5cm}
+\normalsize{PaperID: 192} \vspace{-1cm}}
+% \\ \normalsize{PaperID: 93}}
+% \author{\thistime, \today}
+%\author{\normalsize{PaperID: 352}}
+
+%\author{\today}
+%\author{Paper \# 322}
+%\date{\today}
+%\author{\date{\thistime, \today}}
+%\author{
+%{ Junchen Jiang$^\dagger$, Vyas Sekar$^\dagger$, Henry Milner$^\star$, Davis Shepherd$^+$, Ion Stoica$^\star$$^+$$^\circ$,
+%         Hui Zhang$^\dagger$$^+$}
+%\\         { $^\dagger$CMU, $^\star$UC Berkeley, $^+$Conviva, $^\circ$Databricks}
+%\\ {\small PaperId: 302}
+%}
+\maketitle
+
+
+\begin{abstract}
+
+Distributing bulk data across datacenters (DCs) in a timely and
+cost-effective manner is critical to large-scale online service
+providers.
+While recent research has significantly improved the WAN performance
+between DCs, we argue that a multicast overlay network that optimally
+schedules and delivers data in a way that fully exploits available
+overlay paths is essential to achieving desirable performance.
+Drawing on the experience of a large online service providers, we
+observe two requirements of an inter-DC multicast overlay network:
+(1) overlay routing and scheduling needs to be driven by an
+up-to-date global view of data delivery status at all servers, and
+(2) it must prevent delay of latency-sensitive
+traffic caused by bulk data transfers.
+
+This paper presents \name, a near-optimal inter-DC multicast overlay
+network that distributing bulk data.
+At the core of \name are two design choices.
+First, decision making in \name is fully centralized; the \name
+controller directly orchestrates servers to split, reorder, and
+deliver data dynamically along overlay paths, in order to
+circumvent inter-/intra-DC bottlenecks.
+Second, \name enforces a dynamic separation of bandwidth allocated
+for bulk data transfers and latency-sensitive traffic.
+While both design choices introduce costs in performance (i.e.,
+\name is unable to update decisions in real time or achieve full
+link utilization), our design philosophy is that these costs are
+outweighed by the benefits of centralized optimization driven
+by a global view.
+Using a pilot deployment of \name in one of the largest search
+engine service providers, we show that \name achieves 3-5$\times$
+speedup over the provider's existing systems and the techniques
+widely used in today's content delivery networks.
+
+
+%Drawing on lessons from the decade-long evolution of similar systems in Baidu,
+%\name take a centralized approach, which uses a controller to maintains the
+%data delivery status in all servers, and update the scheduling and overlay routing
+%decisions in near real time by solving a multicommodity flow problem using a
+%near-optimal yet efficient algorithm.
+%The key insight underlying \name's centralized architecture is the observation that
+%the cost of not being able to adapt to network conditions in real time (such as in
+%a decentralized system) is greatly outweighed by the benefits of centralized
+%control to optimally update overlay routing and scheduling even at a coarse
+%timescale (every few seconds), as well as the resulting system that has less
+%complexity.
+
+\end{abstract}
+\input{intro}
+
+\input{motivation}
+
+\input{overview}
+
+\input{logic}
+
+\input{system}
+%
+\input{impl}
+%
+\input{eval}
+%
+\input{related}
+
+%\input{DTplat_sec1}
+%\input{DTplat_sec7}
+%%\input{DTplat_sec2}
+%\input{DTplat_sec3}
+%\input{DTplat_sec4}
+%\input{DTplat_sec5}
+%\input{DTplat_sec6}
+%\input{DTplat_sec9}
+%\input{DTplat_sec8}
+
+%\ifCLASSOPTIONcompsoc
+%  % The Computer Society usually uses the plural form
+%  \section*{Acknowledgments}
+%\else
+%  % regular IEEE prefers the singular form
+%  \section*{Acknowledgment}
+%\fi
+%
+%
+%The authors would like to thank...
+%\small
+%\clearpage
+%\bibliographystyle{IEEEtran}
+%\bibliography{DTplatbib}
+
+\section{Discussion}
+
+\section{Conclusion}
+
+
+\bibliographystyle{acm}
+\bibliography{DTplatbib}
+%\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{fig/yuchao.eps}}]{Yuchao Zhang} received the Bachelor of Science degree in computer science and technology from Jilin University, China in 2012. Currently she is a Ph.D. student in the Department of Computer Science \& Technology of Tsinghua University, Beijing, China. Her research interests include datacenter networks, cloud computing, and resource allocation.
+%\end{IEEEbiography}
+%
+%\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{fig/xu.eps}}]{Ke Xu}(M'02-SM'09) received his Ph.D. from the Department of Computer Science and Technology of Tsinghua University, Beijing, China, where he serves as a full professor. He has published more than 100 technical papers and holds 20 patents in the research areas of next generation Internet, P2P systems, Internet of Things(IoT), network virtualization and optimization. He is a member of ACM and has guest edited several special issues in IEEE and Springer Journals. Currently, he is holding visiting professor position at University of Essex.
+%\end{IEEEbiography}
+%
+%\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{fig/xiaohui.eps}}]{Xiaohui Nie} received the Bachelor of Science degree in computer science and technology from Jinlin University, China in 2013. Now he is a PhD. student of Computer Science \& Technology of Tsinghua University, Beijing. His research interests include network protocol, Web service monitoring and management.
+%\end{IEEEbiography}
+%
+%\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{fig/Martin2.eps}}]{Martin J. Reed} is a Senior Lecturer in the School of Computer Science and Electronic Engineering at the University of Essex, Colchester, UK. His main research interests are the fields of Computer Networks, Network Control, Multimedia transmission over networks and Network Security.
+%\end{IEEEbiography}
+%
+%\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{fig/hy.eps}}]{Haiyang Wang} is an assistant professor in the Department of Computer Science at the University of Minnesota Duluth, USA. His research interests include cloud computing, peer-to-peer networking, social networking, big data and multimedia communications.
+%\end{IEEEbiography}
+%
+%\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{fig/yao.eps}}]{Guang Yao} received the Ph.D. degree in computer science from Tsinghua University, Beijing, China, in 2012, where was a Post-Doctoral Researcher with the Network Research Center. His research interests include IP traceback and software defined networking. Now he works in Baidu Company.
+%\end{IEEEbiography}
+%
+%\begin{IEEEbiography}{Miao Zhang} received his Ph.D degree in CS from Tsinghua University in 2004. From 2004 to 2006, he worked as Assistant Professor at Tsinghua Network Research Center. His research interests were in congestion control, network architecture, network security, network management, IPv6, multicast. In 2006, he began to work for Sogou.com. Now he works for Baidu Company.
+%\end{IEEEbiography}
+
+\end{document}

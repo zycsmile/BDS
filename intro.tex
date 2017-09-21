@@ -1,0 +1,156 @@
+\section{Introduction}
+
+Global-scale online services, such as Google, Facebook, and Baidu, 
+depend crucially on the ability to distribute data across 
+geo-distributed datacenters (DCs) in a timely and cost-effective 
+manner, which has introduced substantial challenges, as data sizes 
+continue to explode and more DCs are deployed to reach a global 
+footprint. 
+These trends have been a key driving force behind recent efforts 
+to optimize the WAN performance connecting two 
+DCs~\cite{b4,bwe,swan,??,??,??}. 
+
+While the pair-wise inter-DC WANs have been substantially improved, 
+we argue that an {\em inter-DC multicast 
+overlay} network that optimally schedules and route data via 
+overlay paths of DC servers and is essential to ensuring the 
+desirable performance for two reasons.
+First, inter-DC multicast traffic is endemic in online service 
+providers; e.g.,
+Google has seen a \fillme-fold increase in \fillme years
+in the amount of data that needs to be distributed to all 
+DCs~\cite{??}, and this number would only multiply with more 
+DCs deployed.
+Second, the improved WAN performance between any DC pair can be
+fully utilized only with an inter-DC multicast overlay network that 
+splits data in fine granularities and optimally select 
+overlay path to circumvent inter-/intra-DC bottlenecks.
+
+
+
+%While these efforts have shown promising improvement on the performance of pairwise 
+%inter-DC WANs, we argue that an efficient multicast overlay network that optimally 
+%schedules and routes data from each DC to multiple DCs via inter-DC overlay paths 
+%is essential to ensuring desirable performance and fully utilizing the improved 
+%pairwise inter-DC data transfer.
+While multicast overlay networks have been studied extensively 
+in settings of peer-to-peer (P2P) streaming~\cite{??,??} and 
+content delivery networks (CDNs)~\cite{??,??}, it remains unclear 
+whether existing approaches apply to cross-DC multicast overlay 
+networks at the scale of large online service providers like 
+Google and Baidu. 
+%The conventional wisdom has been that to operate at scale and react 
+%in real time, one has to either organize overlay nodes in a 
+%strictly structured (and thus suboptimal) topology 
+%(e.g.,~\cite{akamai}), or use a hybrid (and thus more 
+%complex) control mechanism (e.g.,~\cite{vdn}) with a local 
+%logic adapting in real time and a global logic updating every
+%few minutes.
+Drawing lessons from the operational experience of 
+\company\footnote{Anonymized for double-blind reviewing}, one of 
+the largest online service providers, we see that cross-DC 
+multicast overlay networks are unique in two key aspects.
+First, these DCs have more servers and exponentially more overlay 
+paths, so it is untenable to exploit all overlay paths by 
+traditional approaches, such as decentralized or hybrid path 
+selection (e.g.,~\cite{??,??}), and strictly structured topology 
+(e.g.,~\cite{akamai}).
+Second, these WANs are shared by latency-sensitive traffic and 
+background traffic, and even a small increase in delay of
+latency-sensitive traffic can cause substantial revenue losses, 
+so there is a strong need to prevent interference on 
+latency-sensitive traffic, even at the expense of lower link 
+utilization.
+
+
+%while a more decentralized overlay network protocol 
+%is conceptually simpler, it is untenable for them to fully 
+%utilize the overlay paths, so we see a great room for 
+%improvement, especially at tail performance. This motivates 
+%the fully centralized architecture that maintains a fresh 
+%global view for decision making.
+%Second, adding even a small delay in latency-sensitive data 
+%can cause significant revenue losses. Therefore, it is 
+%acceptable to enforce a clean bandwidth separation between 
+%bulk traffic delivery and latency-sensitive data, even at 
+%the cost of lower link utilization.
+%
+%But designing a multicast overlay for DCs of online service 
+%providers is different in two key aspects.
+%First, these DCs have more servers in DCs, and much more overlay 
+%paths, so it is necessary to maintain an up-to-date global view 
+%of data delivery status on all servers to fully exploit these 
+%paths.
+%Second, the WANs are shared by latency-sensitive user data and 
+%background bulk data, creating a need for minimizing the data 
+%distribution latency while preventing negative 
+%impacts on the latency-sensitive data. 
+
+This paper presents {\em \name}, a near-optimal inter-DC multicast 
+overlay network, which minimizes data distribution delay from one 
+DC to any subset of (or all) DCs by dynamically splitting, 
+reordering, and routing data over multiple overlay paths selected 
+from all server-level paths between the source DC and destination DCs.
+\name focuses on distributing background bulk data (e.g., \fillme), 
+which is by several orders of magnitudes larger than 
+latency-sensitive user data.
+At the core of \name are two design choices.
+\begin{packeditemize} 
+\item {\em Centralized decision-making:} 
+Decision making in \name is fully centralized; the \name controller 
+makes near-optimal overlay routing and scheduling decisions every 
+few seconds (by default, 3 seconds).
+To this end, the controller solves a multicommodity problem using 
+a near-optimal algorithm that is amenable to efficient incremental 
+updates.
+\item {\em Dynamic bandwidth separation:}
+To prevent delay caused by background data on the 
+latency-sensitive user data, \name continuously monitors the 
+aggregated traffic 
+of latency-sensitive data and enforces a dynamic  separation of 
+bandwidth between background data and latency-sensitive data. 
+\end{packeditemize}
+
+
+While \name's design choices introduce performance costs (i.e.,
+\name does not update decisions in real time or achieve full 
+link utilization), our design philosophy is that these costs are 
+outweighed by several benefits.
+% of near-optimal global optimization 
+%as well as the resulting simpler solution from an engineering
+%perspective.
+%This observation inspired the key insight underlying \name that 
+%multicasting bulk data can tolerate a small amount of delay in 
+%exchange for closer-to-optimal decisions overlay routing and 
+%scheduling.
+(1) Since delivering bulk data takes tens of seconds to 
+minutes, \name can tolerate a delay of updating centralized 
+control decisions at coarse timescales of several 
+seconds in exchange for closer-to-optimal decisions made by a 
+centralized controller.
+(2) That the aggregation of latency-sensitive traffic tends to 
+be stable on timescales of several seconds suggests that it is 
+plausible to eliminate undesired interference on 
+latency-sensitive traffic by clean bandwidth separation 
+while maintaining a high link utilization.
+%Moreover, having a global view on the delivery status of all objects in all 
+%servers allows the controller to remarkably improve overlay routing and 
+%scheduling decisions, which would be impossible otherwise.
+(3) Finally, these design choices are amenable to a simple
+implementation from an engineering perspective, 
+since the logic running on the server side is 
+only triggered by data arrivals or control messages, and 
+thus can be stateless.
+
+
+We implemented a prototype of \name and integrated it in 
+\company, one of the largest search engine service
+providers. We deployed \name in ten of \company's DCs, and 
+ran pilot study on \fillme PB data over \fillme days. Our
+real-world experiments show that \name achieves 3-5$\times$ 
+speedup over \company's existing solution. 
+Using real trace-driven evaluation and microbanchmarking, 
+we also show that \name outperforms many techniques used in 
+today's CDNs, and \name can scale out to the traffic volume 
+of \company's inter-DC WAN, and tolerate various failure 
+scenarios.

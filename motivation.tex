@@ -1,0 +1,39 @@
+\section{Overlay Network for Inter-DC Multicast}
+
+\jc{Starting from Section 2, it would be paper outline. 
+Please think each bullet point as a separate paragraph.}
+
+We begin by motivating the need for an inter-DC multicast network, and lessons from operating \company's inter-DC multicast network.
+
+\subsection{The need for inter-DC multicast}
+
+\begin{itemize}
+
+\item The architecture of \company's inter-DC WAN. Scale of data centers, data volume, and traffic types
+
+\item A substantial fraction of objects need to be multicast. Its share is rising
+
+\item There are many overlay paths between two DCs. A substantial fraction of them are not bottlenecked by the inter-DC WAN (this is necessary to justify the use of server-level overlay paths, not just DC-level)
+
+\end{itemize}
+
+\subsection{\company's inter-DC multicast network}
+\begin{itemize}
+
+\item Explain how to multicast data from one DC to many DCs through overlay paths across \company's DCs: e.g., data transfer over HTTP?, How to get the public address of a server in another DC? 
+
+\item Describe the basic idea of \company's protocol (describe it as a receiver-driven decentralized protocol)
+We should also stress that this solution has been running for \fillme years and has been continuously improved over time.
+
+\item Briefly mention other solutions (layered structure, hybrid approach, and why not optimizing pair-wise DC link is not sufficient)
+
+\end{itemize}
+
+\subsection{Lessons from \company's inter-DC multicast network}
+\begin{itemize}
+
+\item Lesson 1: need for a global view. Without global view, there is a significant room for improvement. Ideally, we need to show a CDF with two lines that one for flow completion time under the optimal overlay decisions, and other showing the completion time of the existing protocol. 
+
+\item Lesson 2: need for clean traffic separation. (1) Use a figure to show that bulk data transfer can cause significant delay on latency-sensitive traffic, and (2) put some concrete numbers to show such delay can cause significant revenue loss.
+
+\end{itemize}

@@ -1,0 +1,60 @@
+\section{Evaluation}
+
+To evaluate \name, we integrated our end-to-end prototype in \company, and ran a pilot deployment across \fillme servers in \fillme DCs to serve \fillme PT data over a period of \fillme days. 
+The evaluation results of the pilot deployment, together with trace-driven simulation and microbenchmarks, show that:
+\begin{enumerate}
+\item \name achieves 3-5$\times$ speedup over \company's existing solution, as well as other industry-standard solutions.
+\item \name can update decisions every 3 seconds over a WAN of the same size as Google, is lightweight in terms of CPU, bandwidth consumed, and can gracefully degrate to decentralized protocols.
+\end{enumerate}
+
+\subsection{Benefits of centralized control}
+\begin{itemize}
+\item \name vs. \company's existing solution (pilot deployment)
+\begin{itemize}
+\item Overall improvement: A CDF with two lines to show the aggregated flow completion time
+\item By applications: Pick three applications whose data volumes are large, medium, and small respetively. Draw a bar chart of three pairs of bars, each representing \name's and \company's mean (stddev) flow completion time for an application.
+\item By time: Timeseris of two lines, each representing \name's and \company's mean (stddev) of flow completion time.
+\end{itemize}
+
+\item \name vs. other overlay multicast techniques
+\begin{itemize}
+\item Begin with the methodology of trace-driven simulation.
+\item Briefly explain these techniques: Akamai (3-layer), Bullet (full mesh)
+\item Show a CDF that has three lines, representing \name, Akamai, and Bullet.
+\end{itemize}
+
+\end{itemize}
+
+\subsection{Benefits of dynamic bandwidth separation}
+\begin{itemize}
+\item Draw a graph (what graph can you get on this?) to show with bandwidth separation, \name can reduce the incidents of delay on latency-sensitive traffic caused by bulk data transfers.
+\item Draw a graph (what graph can you get on this?) to show the link utilization does not change much with \name or with \company.
+\end{itemize}
+
+\subsection{Micro-benchmarks}
+\begin{itemize}
+\item Scalability of centralized control:
+\begin{itemize}
+\item Y: Bandwidth consumption, vs. X: \# of objects
+\item Y: Controller CPU usage, vs. X: \# of objects
+\item Y: Update delay vs. X: \# of objects
+\item Bar-chart to decompose update delay into collecting updates, running algorithm, and updating local agents
+\end{itemize}
+
+\item In-depth analysis:
+\begin{itemize}
+\item A graph to show the tradeoff caused by different update cycles (why 3 seconds is a good tradeoff?)
+\item Reduction on algorithm running time due to the approximation algorithm.
+\item Maybe another graph from the current 6.3?
+\end{itemize}
+
+\item Fault tolerance:
+\begin{itemize}
+\item Y: flow completion time, vs. X: time. Create a toy topology to send objects. The experiment begins with no failure. At time t1, one server is not available, and the graph should show Y only has performance degradation for less than 3 seconds; At time t2, the controller is not available, and the local agent should automatically revert to decentralized local control.
+\end{itemize}
+
+\end{itemize}
+
+
+
+
