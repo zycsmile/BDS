@@ -1,7 +1,7 @@
 \section{Evaluation}
 \label{sec:evaluation}
 
-To evaluate \name, we integrated our end-to-end prototype in \company, and ran a pilot deployment across the above network to serve 70 TB data.
+To evaluate \name, we integrated our end-to-end prototype in \company, and ran a pilot deployment across the above network to serve 70 TB data per day per hour  over a period of 7 days.
 The evaluation results of the pilot deployment, together with trace-driven simulation and microbenchmarks, show that:
 \begin{enumerate}
 \item \name achieves 3-5$\times$ speedup over \company's existing solution, as well as other industry-standard solutions.
@@ -10,6 +10,13 @@ The evaluation results of the pilot deployment, together with trace-driven simul
 
 \subsection{Benefits of centralized control}
 \label{subsec:evaluation:centralized}
+
+To evaluate the benefits of centralized control, we conduct two series of experiments: the comparisons with \company's existing solution based on the pilot deployments, and the comparisons with other overlay multicast techniques using trace-driven simulations.
+
+\textbf{\name vs. \company's existing solution.}
+
+
+
 
 \begin{itemize}
 \item \name vs. \company's existing solution (pilot deployment)
