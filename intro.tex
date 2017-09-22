@@ -7,7 +7,7 @@ A common communication pattern is {\em bulk-data multicast},
 which replicates data 
 (typically several to 100s GB\jc{please check}), such as user 
 logs, search engine indexes, and databases\jc{anything else?}, 
-to any set of DCs. 
+to any set of destination DCs. 
 As data sizes continue to explode and more DCs are deployed to 
 reach a global footprint, how to multicast bulk data in a timely 
 and cost-effective manner has been a key driving force behind 
@@ -31,28 +31,28 @@ bulk-data multicast, because they fall
 short of harnessing servers' capability to store-and-forward 
 data, and exploring the abundant disjoint paths via servers 
 in different DCs. 
-For instance, the multicast throughput can be significantly 
-improved, if data is split into fine-grained units and 
-delivered simultaneously via multiple servers selectively picked 
-as intermediate points to circumvent slow paths in DC
+For instance, the multicast throughput could potentially be 
+improved by splitting data into fine-grained units and 
+delivering them simultaneously via multiple servers selectively 
+picked as intermediate points to circumvent slow paths in DC
 networks and WANs.
 
 
 Inspired by the success of early work on multicast overlay 
-networks, we argue that an similar 
-{\em application-level multicast overlay network} 
-is needed to optimally deliver inter-DC multicast data in
-a way that fully utilizes the application-level overlay paths
-that exist in DCs.
+networks, we argue that optimize bulk-data multicast performance,
+an similar {\em application-level multicast overlay network} 
+is needed to optimally deliver data in
+a way that fully utilizes the overlay paths that are in abundance 
+between DCs.
 To replicate a data file from one DC to multiple DCs, 
 the overlay multicast network should split the data into small 
 units, send them simultaneously along selectively picked overlay 
 paths, and dynamically adapt the overlay routing in response to 
-changes in network condition and 
+changes in network conditions and 
 resource availability.
 
 
-While multicast overlays are well studied in several settings,
+While multicast overlays are well studied in several settings
 (e.g.,~\cite{??,??,??,??}), introducing multicast overlay networks 
 to large online  service providers, 
 like Google and Baidu, poses new challenges.
@@ -60,18 +60,19 @@ like Google and Baidu, poses new challenges.
 %\company\footnote{Anonymized for double-blind reviewing}, 
 %a large online service providers, we summarize two challenges,
 %which to our best knowledge do not have direct solution.
-First, the sheer number of servers and overlay paths renders 
+First, the sheer numbers of servers and overlay paths render 
 traditional approaches ineffective: it is untenable 
-to track delivery states of all servers and update 
-decisions in real time, nor is it effective to full exploit 
-overlay paths by using a decentralized protocol 
+to track data delivery status at all servers and update 
+decisions in real time, nor is it effective to fully the exploit 
+overlay paths by using decentralized protocols
 (e.g.,~\cite{??,??}), 
-or assuming structured topologies (e.g.,~\cite{akamai}).
+or enforcing a strictly structured logical topology to reduce 
+the number of available overlay paths (e.g.,~\cite{akamai}).
 Second, because any small increase in the delay of
 latency-sensitive traffic can cause substantial revenue losses, 
 there is a strong need to prevent any delay on
-latency-sensitive traffic, even at the expense of slightly lower 
-link utilization.
+latency-sensitive traffic, even at the expense of a 
+slightly lower link utilization.
 
 %we argue that an {\em inter-DC multicast 
 %overlay} network that optimally schedules and routes data via 
@@ -165,27 +166,27 @@ overlay paths between the source DC and destination DCs.
 At the core of \name are two design choices.
 \begin{packeditemize} 
 \item {\em Centralized decision-making:} 
-Decision making in \name is fully centralized; the \name controller 
-maintains a global view of data delivery status on all servers 
+Decision making in \name is fully centralized; the \name 
+controller maintains a global view of data delivery status on 
+all servers 
 and makes overlay routing and scheduling decisions every 
 few seconds (by default, 3 seconds).
 \name solves a multicommodity problem using 
 a near-optimal algorithm amenable to efficient incremental 
 updates.
 \item {\em Dynamic bandwidth separation:}
-To prevent delay caused by background data on the 
-latency-sensitive user data, \name continuously monitors the 
-aggregated traffic 
-of latency-sensitive data and enforces a dynamic  separation of 
-bandwidth between background data and latency-sensitive data. 
+To prevent delay caused by background data on 
+latency-sensitive user data, \name monitors the 
+aggregated traffic volume 
+of latency-sensitive data, and maintains a dynamic bandwidth 
+separation by enforcing the maximum amount of bulk-data 
+multicast sent from each server. 
 \end{packeditemize}
-
-\name draws on insights from many prior work
 
 While \name's design choices introduce performance costs (i.e.,
 \name does not update decisions in real time or achieve full 
 link utilization), our design philosophy is that these costs are 
-outweighed by several benefits.
+favorably outweighed by several benefits.
 % of near-optimal global optimization 
 %as well as the resulting simpler solution from an engineering
 %perspective.
@@ -196,21 +197,22 @@ outweighed by several benefits.
 (1) Since delivering bulk data takes tens of seconds to 
 minutes, \name can tolerate a delay of updating centralized 
 control decisions at coarse timescales of several 
-seconds in exchange for closer-to-optimal decisions made by a 
-centralized controller.
-(2) That the aggregation of latency-sensitive traffic tends to 
+seconds in exchange for closer-to-optimal decisions made by  
+the centralized controller.
+(2) The observation that the aggregation of 
+latency-sensitive traffic tends to 
 be stable on timescales of several seconds suggests that it is 
 plausible to eliminate undesired interference on 
 latency-sensitive traffic by clean bandwidth separation 
-while maintaining a high link utilization.
+while achieving a high link utilization.
 %Moreover, having a global view on the delivery status of all objects in all 
 %servers allows the controller to remarkably improve overlay routing and 
 %scheduling decisions, which would be impossible otherwise.
 (3) Finally, these design choices are amenable to a simple
-implementation from an engineering perspective, 
-since the logic running on the server side is 
+implementation from an engineering perspective;
+e.g., the program running locally on the server side is 
 only triggered by data arrivals or control messages, and 
-thus can be stateless.
+thus can be largely stateless.
 
 
 We implemented a prototype of \name and integrated it in 
