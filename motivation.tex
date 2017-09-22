@@ -31,19 +31,19 @@ the section with challenges to be addressed in \name
  \rowcolor[gray]{0.9}
 \textbf{App Name} & \textbf{Percentage of Multicast Traffic} \\
 \hline
-Random link\footnotemark[2] & \fillme\\
+Overall\footnotemark[2] & \fillme\\
 \hline
-App1 & 0.910 \\% 4648.92 vs 41372.56 in GB
+Post & 91.0\% \\% 4648.92 vs 41372.56 in GB
 \hline
-App2 & 0.892\\% 16766.7 vs 138418.12
+Search & 89.2\%\\% 16766.7 vs 138418.12
 \hline
-App3 & 0.9815\\% 1297.7 vs 68699.97
+International & 98.15\%\\% 1297.7 vs 68699.97
 \hline
-App4 & 0.9818\\% 2792.4 vs 150234.25
+Library & 98.18\%\\% 2792.4 vs 150234.25
 \hline
-App5 & 0.9809\\% 451.22 vs 23134.21
+Scholar & 98.09\%\\% 451.22 vs 23134.21
 \hline
-App6 & 0.9808\\% 964.62 vs 49327.01
+Knowledge & 98.08\%\\% 964.62 vs 49327.01
 \hline
 \end{tabular}
 %}
@@ -51,21 +51,42 @@ App6 & 0.9808\\% 964.62 vs 49327.01
 \caption{Share of multicast traffic.}
 \label{table:rate}
 \end{table}
-\footnotetext[2]{This link is randomly selected from inter-DC links, whose traffic is monitored by different application types. All the links carry the similar traffic, so the randomly selected link could exhibit good representatives.}
+\footnotetext[2]{We randomly select one link from all inter-DC links whose traffic is monitored by different application types. As all these links carry the similar traffic, so the randomly selected one could exhibit good representatives.}
 
-To check the percentage of multicast traffic, we breakdown all Baidu's total traffic volume into non-multicast traffic and the multicast traffic of each application, and then calculate the share of multicast traffic. Table \ref{table:rate} shows that a considerably large fraction of traffic is multicast traffic, despite the application types. This result highlights the importance of bulk-data transmission optimization.
+To check the percentage of multicast traffic, we breakdown all \company's total traffic volume into non-multicast traffic and the multicast traffic of each application, and then calculate the share of multicast traffic. Table \ref{table:rate} shows that a considerably large fraction of traffic is multicast traffic, despite the application types. This result highlights the importance of bulk-data transmission optimization.
 
+\begin{figure}[t]
+        \centering
+        \begin{subfigure}[b]{0.23\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{images/destinationDC.eps}
+                \caption{The fraction of applications with destination IDC proportion.}
+                \label{fig:bulk:dest}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.23\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{images/DataSize.eps}
+                \caption{The fraction of applications with data file size larger than the threshold.}
+                \label{fig:bulk:size}
+        \end{subfigure}
+        \caption{Bulk data is dominant.}
+        \label{fig:bulk}
+\vspace{-0.4cm}
+\end{figure}
 
+In the premise that bulk data shares a large fraction of overall traffic, we check the number of destination DCs of the data. Fig. \ref{fig:bulk:dest} shows that there are over 60\% applications with bulk data multicast traffic are destined to at least 90\% DCs, and about 20\% applications with bulk data destined to over 50\% (but less than 90\%) DCs. These results show that a large fraction of the bulk data traffic is multicast to almost all DCs.
 
-\begin{itemize}
+To further explore the characteristics of the multicast data files, we summarize the data size of these files and present the statistical results in Fig. \ref{fig:bulk:size}, which shows that nearly 70\% applications have a data file larger than 1TB and over 90\% of these multicast applications have data files larger than 50GB. Thus, focusing on optimizing bulk data multicast transmission is quite valuable to improve WAN conditions.
 
-\item Share of multicast traffic: use a bar chart to show the breakdown of all Baidu's total traffic volume into non-multicast traffic, and the multicast traffic of each application. {\em This should show a large fraction of traffic is multicast, and they are from many different applications.}
-
-\item A CDF of number of destination DCs. {\em This should show that most multicast traffic are destined to almost all DCs.}
-
-\item A CDF of size of multicast data files. {\em This should show that most multicast data are bulk data (not small data), and thus focusing on optimizing bulk data multicast is valuable.}
-
-\end{itemize}
+%\begin{itemize}
+%
+%\item Share of multicast traffic: use a bar chart to show the breakdown of all Baidu's total traffic volume into non-multicast traffic, and the multicast traffic of each application. {\em This should show a large fraction of traffic is multicast, and they are from many different applications.}
+%
+%\item A CDF of number of destination DCs. {\em This should show that most multicast traffic are destined to almost all DCs.}
+%
+%\item A CDF of size of multicast data files. {\em This should show that most multicast data are bulk data (not small data), and thus focusing on optimizing bulk data multicast is valuable.}
+%
+%\end{itemize}
 
 \subsection{A case for inter-DC multicast overlay}
 \label{subsec:motivation:case-for}
