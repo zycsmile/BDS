@@ -66,6 +66,23 @@
 \hyphenation{op-tical net-works semi-conduc-tor}
 \tolerance=300
 
+
+\newcommand{\tightcaption}[1]{\vspace{-0.1cm}\caption{{#1}}\vspace{-0.1cm}}
+%\newcommand{\tightsection}[1]{\vspace{-0.02in}\section{#1}\vspace{-0.03cm}}
+\newcommand{\tightsection}[1]{\section{#1}}
+%\newcommand{\tightsubsection}[1]{\vspace{-0.02in}\subsection{#1}\vspace{-0.03cm}}
+\newcommand{\tightsubsection}[1]{\subsection{#1}}
+%\newcommand{\tightsubsection}[1]{\vspace{-0.02in}\subsection{#1}\vspace{-0.03cm}}
+
+\newcommand{\mypara}[1]{\noindent{\bf {#1}:}~}
+\newcommand{\myparatight}[1]{\noindent{\bf {#1}}~}
+\newcommand{\myparaq}[1]{\noindent{\bf {#1}?}~}
+
+\newcommand{\myparaittight}[1]{\noindent{\emph {#1}:}~}
+\newcommand{\question}[1]{\noindent{\emph{Q:~#1}}\smallskip}
+\newcommand{\myparaqtight}[1]{\noindent{\bf {#1}}~}
+
+
 \newcounter{packednmbr}
 
 \newenvironment{packedenumerate}{\begin{list}{\thepackednmbr.}{\usecounter{packednmbr}\setlength{\itemsep}{0.5pt}\addtolength{\labelwidth}{-4pt}\setlength{\leftmargin}{\labelwidth}\setlength{\listparindent}{\parindent}\setlength{\parsep}{1pt}\setlength{\topsep}{0pt}}}{\end{list}}
