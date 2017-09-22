@@ -1,0 +1,31 @@
+\section{Overview of \name}
+\label{sec:overview}
+
+The insights obtained from \company's operational experience has inspired the design of \name, a near-optimal inter-DC multicast overlay network. This section starts with \name key design choices, highlights the design philosophy behind our choices, and provide an overview of the \name system, which builds on these design choices.
+
+Our first design choice is the fully centralized control. For large online service providers like \company, there are considerably large number of servers and exponentially more overlay paths, so it is hard to find out the optimal one for any decentralized solutions with only local information. \name, however is able to make near-optimal overlay routing and scheduling decisions with a centralized decision-making scheme. Furthermore, the embedded controller is lightweight in terms of CPU, bandwidth consumed, and thus enjoys good scalability over WANs.
+
+The second design choice is dynamic bandwidth separation. To prevent delay caused on the latency-sensitive user data, \name separates background bulk data transfer from latency-sensitive traffic. Specifically, \name maintains the information of all links and monitors the aggregated traffic from all latency-sensitive data, thus can dynamically calculate the residual bandwidth that can be allocated for background bulk data transfer. This clean bandwidth separation can efficiently prevent interference on latency-sensitive traffic.
+
+The above two design choices may introduce performance costs, i.e., fully centralized control makes \name unable to update decisions in real time, because the \name controller works in a centralized manner and has to collect information from geo-distributed DCs, and this will naturally introduce some communication latency to the decision making process. Besides, the clean separation on bandwidth will possibly result in low link utilization due to the ever changing link utilization and the coarse-grained scheduling decisions.
+
+Fortunately, the above costs are outweighed by the benefits. (1) bulk data transfer usually takes tens of seconds to minutes, so it can tolerates a delay at coarse timescale of several seconds in exchange for near-optimal scheduling decisions. (2) the aggregation of latency-sensitive data is stable on timescales of several seconds, therefore, it is plausible for the dynamic bandwidth separation to prevent interference on the latency-sensitive data while still maintaining high link utilizations. (3) the resulting system is amenable to a simpler implementation because the decision-making logic running on the controller side does not need to maintain data status or to deliver complex control messages, thus can be stateless and lightweight.
+
+The key technical challenge here is how to make optimal overlay scheduling and routing decisions at the scale tens of thousands of objects and tens of thousands of servers in near real time. To achieve desirable performance in a multicast overlay network, fully exploiting all the available overlay paths is essential, but it is untenable to go through all the potential servers and exponentially more paths by traditional approaches.
+
+%\begin{itemize}
+%
+%\item Idea \#1: Fully centralized control
+%
+%\item Idea \#2: Dynamic bandwidth separation: separating background bulk data transfer from latency-sensitive traffic
+%
+%\item These ideas introduces performance costs (not real time, potentially low link utilization) are outweighed by benefits (not real time, potentially low link utilization)
+%
+%\item Design philosophy: the costs are outweighed by the benefits. (1) bulk data transfer can tolerate updates at coarse timescales. (2) the aggregation of latency-sensitive data is stable on timescales of several seconds. (3) the resulting system is amenable to simpler implementation.
+%
+%\item Key technical challenge: how to make optimal overlay scheduling and routing decisions at the scale tens of thousands of objects and tens of thousands of servers in near real time.
+%
+%\end{itemize}
+
+
+
