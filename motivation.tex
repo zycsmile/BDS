@@ -1,26 +1,61 @@
 \section{Background}
 \label{sec:motivation}
 
-\jc{Starting from Section 2, it would be paper outline. 
+\jc{Starting from Section 2, it would be paper outline.
 Please think each bullet point as a separate paragraph.}
 
-To motivate the need for an inter-DC multicast overlay, we first 
-study the real-world inter-DC traffic to characterize the key 
+To motivate the need for an inter-DC multicast overlay, we first
+study the real-world inter-DC traffic to characterize the key
 characteristics of bulk-data multicast traffic
-(\Section\ref{subsec:motivation:multicast-traffic}). 
-We then use \company's infrastructure as a case study to 
+(\Section\ref{subsec:motivation:multicast-traffic}).
+We then use \company's infrastructure as a case study to
 investigate the opportunities of exploring overlay paths to improve
 the performance of bulk-data multicast
-(\Section\ref{subsec:motivation:case-for}). 
+(\Section\ref{subsec:motivation:case-for}).
 Finally, we draw lessons from real-world incidents and statistics
 of the \company's existing multicast protocol
 (\Section\ref{subsec:motivation:baseline}), and summarize
-the section with challenges to be addressed in \name 
+the section with challenges to be addressed in \name
 (\Section\ref{subsec:motivation:challenges}).
 
 
 \subsection{The need for bulk-data multicast}
 \label{subsec:motivation:multicast-traffic}
+
+\begin{table}[t]
+\begin{center}
+%\resizebox{\textwidth/2}{!}{
+%\begin{tabular}{p{2cm}<{\centering}|p{2cm}<{\centering}}
+\begin{tabular}{| c | c|}
+\hline
+ \rowcolor[gray]{0.9}
+\textbf{App Name} & \textbf{Percentage of Multicast Traffic} \\
+\hline
+Random link\footnotemark[2] & \fillme\\
+\hline
+App1 & 0.910 \\% 4648.92 vs 41372.56 in GB
+\hline
+App2 & 0.892\\% 16766.7 vs 138418.12
+\hline
+App3 & 0.9815\\% 1297.7 vs 68699.97
+\hline
+App4 & 0.9818\\% 2792.4 vs 150234.25
+\hline
+App5 & 0.9809\\% 451.22 vs 23134.21
+\hline
+App6 & 0.9808\\% 964.62 vs 49327.01
+\hline
+\end{tabular}
+%}
+\end{center}
+\caption{Share of multicast traffic.}
+\label{table:rate}
+\end{table}
+\footnotetext[2]{This link is randomly selected from inter-DC links, whose traffic is monitored by different application types. All the links carry the similar traffic, so the randomly selected link could exhibit good representatives.}
+
+To check the percentage of multicast traffic, we breakdown all Baidu's total traffic volume into non-multicast traffic and the multicast traffic of each application, and then calculate the share of multicast traffic. Table \ref{table:rate} shows that a considerably large fraction of traffic is multicast traffic, despite the application types. This result highlights the importance of bulk-data transmission optimization.
+
+
 
 \begin{itemize}
 
@@ -37,7 +72,7 @@ the section with challenges to be addressed in \name
 
 \begin{itemize}
 
-\item Give an illustrative toy example to compare (1) directly sending data to each destination DC, (2) use chain replication, i.e., build a multicast tree with each DC being a node, (3) an optimal solution. 
+\item Give an illustrative toy example to compare (1) directly sending data to each destination DC, (2) use chain replication, i.e., build a multicast tree with each DC being a node, (3) an optimal solution.
 {\em\bf This example is critical!}
 
 \item Briefly explain the basics of Baidu's inter-DC WAN: topology, \# of servers per DC, some estimates on how many disjoint paths are available between two DCs.
@@ -58,7 +93,7 @@ We should also stress that this solution has been running for \fillme years and 
 \item Briefly mention other solutions (layered structure, hybrid approach, and why not optimizing pair-wise DC link is not sufficient)
 
 \item Lesson \#1: Completion times are often suboptimal.
-Ideally, we need to show a CDF with two lines that one for flow completion time under the optimal overlay decisions, and other showing the completion time of the existing protocol. 
+Ideally, we need to show a CDF with two lines that one for flow completion time under the optimal overlay decisions, and other showing the completion time of the existing protocol.
 
 \item Lesson \#2: Latency-sensitive online traffic can be impacted (even with QoS enabled at gateway routers)
 (1) Use a figure to show that bulk data transfer can cause significant delay on latency-sensitive traffic, and (2) put some concrete numbers to show such delay can cause significant revenue loss.
