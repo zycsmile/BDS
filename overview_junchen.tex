@@ -15,19 +15,38 @@ their cost-benefit tradeoffs
 %\begin{itemize}
 
 %\item {\bf Centralized decision-making:}
-\mypara{Centralized decision-making}
+\paragraph{Centralized decision-making:}
 A centralized controller periodically polls the data delivery
-status at all servers, updates the overlay path selection in a
-centralized manner.
-On one hand, 
+status at all servers, and updates the overlay path selection.
+The benefits of centralized decision-making are
+two-fold. 
+First, having a global view of multicast status on which data 
+each server has received allows us to explore all possible 
+overlay servers to circumvent various performance bottlenecks 
+(as shown in Figure~\ref{??}). 
+Second, the centralized view allows us to 
+balance the number of available
+sources of each data unit, which appears to be critical to 
+achieving optimal overlay multicast performance.
+Yet, these benefits do not come for free: decisions 
+cannot be updated in real time 
+(due to the prohibitively large scale of the problem),
+or with the most up-to-date global view (due to inherent latency
+to collect data from globally distributed servers).
+Nonetheless, our intuition that the benefits vastly outweigh the
+costs is driven by the observation that bulk data transfers 
+happen on much longer timescales than how fast new transfer jobs 
+start, and thus it suffices to update the centralized decisions 
+on coarse timescales of severl seconds.
 
 %\item {\bf Clean bandwidth separation:}
-\mypara{Clean bandwidth separation}
+\paragraph{Clean bandwidth separation:}
 The controller uses a bandwidth monitoring system to dynamically
 determine the residual bandwidth that can be allocated for 
-multicasting bulk data, and enforce a clean separation of 
+multicasting bulk data, and enforces a clean separation of 
 bandwdith between bulk data transfers and latency-sensitive 
 traffic.
+
 
 %\end{itemize}
 
