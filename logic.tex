@@ -1,4 +1,5 @@
 \section{Near-Optimal and Efficient Decision-Making Logic}
+\label{sec:logic}
 
 At a high level, \name optimizes the data distribution performance by splitting data into fine-grained blocks so as to exploiting all available server-level overlay paths, and possible reordering of blocks to speed up the process.
 In a general case, it is indeed intractable to solve the problem in near real-time, but \name can find a near-optimal solution for our problem scale in several seconds by using applying two approximations: (1) separating the problem of data scheduling and overlay routing, and (2) using standard linear-programming relaxation to solve them efficiently.
@@ -6,6 +7,8 @@ In a general case, it is indeed intractable to solve the problem in near real-ti
 %\jc{In general, please avoid use of big formulations (like eq 5-10 on p6). May strike a negative impression in nsdi submissions}
 
 \subsection{Problem formulation}
+\label{subsec:logic:formulation}
+
 \begin{table}[t]
 \begin{center}
 %\resizebox{\textwidth/2}{!}{
@@ -49,6 +52,7 @@ To formulate the data distribution problem over inter-DC WANs and design the dec
 The key insight underlying the above \name's formulation is the separation of data scheduling and overlay routing, and there are two main benefits of this separation. The first one is to reduce the computational complexity on the centralized controller side. The objective of the separated scheduling stage is to select a subset of blocks, and only these selected blocks will be routed and transferred in the following routing stage. So the separated data scheduling could eliminate the unnecessary overlay path explorations for the overwhelming majority of the unselected blocks. The second benefit is to speed up the overall data distribution. This advantage comes from the customized block selection scheme that picks out a specific subset of blocks so as to reduce the overall completion time.
 
 \subsection{Scheduling}
+\label{subsec:logic:scheduling}
 
 We define each complete duplicate transmission of bulk data as one ``task'', and each DC will launch at least two tasks due to replication strategy. All the tasks wait to be scheduled together in the pending queue. As the size of a task is extremely large (tens of TBs to PB), \name splits it into fine-grained blocks (several MB) and makes scheduling and routing in the form of blocks. The objective of this data scheduling procedure is to pick out a subset of blocks that should be transferred first.
 
@@ -59,6 +63,8 @@ So in the scheduling stage, \name will firstly pick out the subset of blocks wit
 For efficient selection, \name keeps a counter $c_i$ in the controller for each block and update it once receiving finish notifications from receivers. The scheduling stage always gives priority to the smallest $c_i$. For efficient processing, \name keeps all the counters $c_i$ in a doubly linked list in an ascending order of their values. For each download, the controller selects the top item in the list (the smallest value) to be downloaded. The controller listens and serves an HTTP port, once receiving a transmission completion signal from receivers, it updates the corresponding block's counter value and adjusts its position in the linked list for further processing.
 
 \subsection{Routing}
+\label{subsec:logic:routing}
+
 After the scheduling stage, \name routes and transfers these selected blocks in this stage. To be specific, the output includes the data source $s^*$, transmission path $p^*$ and allocated bandwidth $f_{B_{i,j},p_\lambda}$ for each block $B_{i,j}$.
 
 To speed up data distribution, \name aims at maximizing the allocated weighted bandwidth for all the selected blocks, so the formulation of the objective can be described as:

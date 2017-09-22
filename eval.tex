@@ -1,6 +1,7 @@
 \section{Evaluation}
+\label{sec:evaluation}
 
-To evaluate \name, we integrated our end-to-end prototype in \company, and ran a pilot deployment across \fillme servers in \fillme DCs to serve \fillme PT data over a period of \fillme days. 
+To evaluate \name, we integrated our end-to-end prototype in \company, and ran a pilot deployment across the above network to serve 70 TB data.
 The evaluation results of the pilot deployment, together with trace-driven simulation and microbenchmarks, show that:
 \begin{enumerate}
 \item \name achieves 3-5$\times$ speedup over \company's existing solution, as well as other industry-standard solutions.
@@ -8,6 +9,8 @@ The evaluation results of the pilot deployment, together with trace-driven simul
 \end{enumerate}
 
 \subsection{Benefits of centralized control}
+\label{subsec:evaluation:centralized}
+
 \begin{itemize}
 \item \name vs. \company's existing solution (pilot deployment)
 \begin{itemize}
@@ -26,12 +29,16 @@ The evaluation results of the pilot deployment, together with trace-driven simul
 \end{itemize}
 
 \subsection{Benefits of dynamic bandwidth separation}
+\label{subsec:evaluation:separation}
+
 \begin{itemize}
 \item Draw a graph (what graph can you get on this?) to show with bandwidth separation, \name can reduce the incidents of delay on latency-sensitive traffic caused by bulk data transfers.
 \item Draw a graph (what graph can you get on this?) to show the link utilization does not change much with \name or with \company.
 \end{itemize}
 
 \subsection{Micro-benchmarks}
+\label{subsec:evaluation:benchmarks}
+
 \begin{itemize}
 \item Scalability of centralized control:
 \begin{itemize}
