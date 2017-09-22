@@ -1,29 +1,32 @@
 \begin{abstract}
 
 A common communication pattern in the inter-DC traffic of large 
-online service providers is to replicate bulk data from one DC to 
+online service providers is replicating bulk data from one DC to 
 multiple DCs. 
-While recent work has shown promising improvement on WAN 
-performance, this is necessarily incomplete, as they fall short 
-of exploring the abundant disjoint via servers in different DCs,
+While recent work has improved bulk-data
+multicast by optimizing WAN performance, it is necessarily 
+incomplete, as it falls short 
+of exploring the abundant disjoint paths via servers in 
+different DCs,
 as well as servers' capability to store-and-forward data.
 %Inspired by the early success of multicast overlay networks, 
-We argue that an application-level multicast overlay network 
-is needed to deliver data via dynamically picked 
+To utilize these unexplored opportuntieis, we 
+argue that an application-level multicast overlay network 
+is needed to optimally deliver data via selectively picked 
 overlay servers to fully exploit overlay paths.
-However, introducing multicast overlays to the context of inter-DC
-communication poses new challenges:
+Despite its promise, introducing multicast overlays to 
+the context of inter-DC communication poses new challenges:
 (1) the sheer number of servers and overlay paths renders
-it untenable to make optimal overlay selections based on 
-data delivery status at all servers in real-time, and
+it untenable to maintain data delivery status at all servers 
+in real-time, and make optimal overlay selections, and  
 (2) it is vital to avoid any delay of latency-sensitive traffic 
-caused by multicasting bulk data, as all traffic share the network 
-resource. 
+caused by multicasting bulk data, since all traffic share the 
+network resource. 
 We present {\em \name}, a near-optimal multicast overlay network 
 for bulk data multicast. 
-\name is centered around two design choices:
-(a) fully centralized decision-making, and 
-(b) a clean, dynamic separation of bandwidth.
+\name is built on two design choices:
+(a) fully centralized decision-making in near real-time, and 
+(b) enforcing a clean, dynamic separation of bandwidth.
 While both design choices introduce costs on performance 
 (\name is unable to update decisions in real time or achieve full
 link utilization), we believe these costs are outweighed by the 
