@@ -36,13 +36,13 @@ In a general case, it is indeed intractable to solve the problem in near real-ti
 \label{table:para}
 \end{table}
 
-To formulate the data distribution problem over inter-DC WANs and design the decision-making logic for the centralized controller, we should first clarify the following aspects (Table \ref{table:para} summarizes some key variables and parameters): 
+To formulate the data distribution problem over inter-DC WANs and design the decision-making logic for the centralized controller, we should first clarify the following aspects (Table \ref{table:para} summarizes some key variables and parameters):
 
-(1) \textbf{Input.} The number of DCs $m$, the set of all blocks $\mathbb{B}$, the optional source and destination pairs $(s,d)$, all potential paths between $s$ and $d$ $Path(s,d)$, link capacity of $p_\lambda$ $c(p_\lambda)$, the upload/download rate of server $n$ $R_{up}(n)/R_{down}(n)$. 
+(1) \textbf{Input.} The number of DCs $m$, the set of all blocks $\mathbb{B}$, the optional source and destination pairs $(s,d)$, all potential paths between $s$ and $d$ $Path(s,d)$, link capacity of $p_\lambda$ $c(p_\lambda)$, the upload/download rate of server $n$ $R_{up}(n)/R_{down}(n)$.
 
-(2) \textbf{Output.} The optimal data source for any block $s^*$, the optimal path for the block $p^*$, and the allocated bandwidth for $B_{i,j}$ on path $p^*$ $f^*_{B_{i,j},p^*}$. 
+(2) \textbf{Output.} The optimal data source for any block $s^*$, the optimal path for the block $p^*$, and the allocated bandwidth for $B_{i,j}$ on path $p^*$ $f^*_{B_{i,j},p^*}$.
 
-(3) \textbf{Constraints.} The link capacity constraint takes effect on any arbitrary path $p_\lambda$: the summed allocated bandwidth on this path should be no more than its capacity $c(p_\lambda)$. The data size constraint takes effect on blocks: the sum of allocated bandwidth should be no less than its size $\mathbb{S}(B_{i,j})$. The bandwidth constraint takes effect on allocations: the allocated bandwidth on path $p_\lambda$ should be the minimum of three parameters: link capacity $c(p_\lambda)$, the upload rate of source node $R_{up}(s)$ and the download rate of destination node $R_{down}(d)$. 
+(3) \textbf{Constraints.} The link capacity constraint takes effect on any arbitrary path $p_\lambda$: the summed allocated bandwidth on this path should be no more than its capacity $c(p_\lambda)$. The data size constraint takes effect on blocks: the sum of allocated bandwidth should be no less than its size $\mathbb{S}(B_{i,j})$. The bandwidth constraint takes effect on allocations: the allocated bandwidth on path $p_\lambda$ should be the minimum of three parameters: link capacity $c(p_\lambda)$, the upload rate of source node $R_{up}(s)$ and the download rate of destination node $R_{down}(d)$.
 
 (4) \textbf{Objective function.} To speed up the bulk data distribution over inter-DC WANs, \name aims at maximizing the allocated weighted bandwidth for all the blocks that have been selected in the scheduling stage, by means of making optimal routing.
 
@@ -52,34 +52,7 @@ The key insight underlying the above \name's formulation is the separation of da
 
 We define each complete duplicate transmission of bulk data as one ``task'', and each DC will launch at least two tasks due to replication strategy. All the tasks wait to be scheduled together in the pending queue. As the size of a task is extremely large (tens of TBs to PB), \name splits it into fine-grained blocks (several MB) and makes scheduling and routing in the form of blocks. The objective of this data scheduling procedure is to pick out a subset of blocks that should be transferred first.
 
-Assume the origin bulk data in the source DC is split into $n$ blocks, and there are $m$ DCs in the WAN and each launches two transmission tasks. Different scheduling strategies will lead to different intermediate transmission states and finally result in different completion time. Take two intermediate states as examples: 1) All of the $n$ blocks has $k$ duplicates; 2) Some of these $n$ blocks have $k1$ $(k1<k)$ duplicates and other blocks have $k2$ $(k2>k)$ duplicates. Let $t_1$ denote the completion time of case 1 and $t_2$ denote that of case 2, we have: $t_2 > t_1$.
-
-\textbf{Proof:}
-
-According to the duplication situations, we classify the $m$ DCs into two sets:
-
-$N_a = \{DC_i|DC_i \text{ has already downloaded block $a$}\}$
-
-$N'_a = \{DC_i|DC_i \text{ hasn't downloaded block $a$}\}$
-
-where $|N_a| + |N'_a| = 2m$. In case 1, all the $n$ blocks has $k$ duplicates, so $|N_i| = k$ and $|N'_i| = 2m-k$. These $2m-k$ transmissions have $k$ optional data sources to download this block. Let $R_{up}$/$R_{down}$ denotes the upload/download rate limit of each server, we can calculate $t_1$ by Equation \ref{caseK}:
-
-\begin{equation}
-\label{caseK}
-t_1 = \frac{\mathbb{S}}{min\{c(l),\frac{R_{up}\times k}{2m-k},R_{down}\}}
-\end{equation}
-where $\mathbb{S}$ denotes the size of the remaining data, and $c(l) > R_{up}/2m$ (server upload bandwidth is the bottleneck). This equation is a monotonically decreasing function of $k$ according to the following calculus.
-
-\begin{equation}
-\label{calculus}
-\begin{split}
-t'(k) &= \frac{d(t(k))}{d(k)} = \frac{d(\frac{\mathbb{S}\times (2m-k)}{R_{up}\times k})}{d(k)} \\
-    &= \frac{d(\frac{2m\times \mathbb{S}}{R_{up}\times k})}{d(k)} = -\frac{2m\mathbb{S}}{R_{up}\times k^2} \\
-    &< 0
-\end{split}
-\end{equation}
-
-Therefore, in case 2, for those blocks with $k1$ ($k1<k$) duplicates, the completion time $t_{k1}$ will be larger than $t_1$, i.e., $t_2 \geq t_{k1} > t_1$.
+Assume the origin bulk data in the source DC is split into $n$ blocks, and there are $m$ DCs in the WAN and each launches two transmission tasks. Different scheduling strategies will lead to different intermediate transmission states and finally result in different completion time. Take two intermediate states as examples: 1) All of the $n$ blocks has $k$ duplicates; 2) Some of these $n$ blocks have $k1$ $(k1<k)$ duplicates and other blocks have $k2$ $(k2>k)$ duplicates. Let $t_1$ denote the completion time of case 1 and $t_2$ denote that of case 2, we have: $t_2 > t_1$. (See Appendix for proof)
 
 So in the scheduling stage, \name will firstly pick out the subset of blocks with the least downloaded duplicates, so as to reduce the overall completion time.
 
@@ -124,19 +97,4 @@ f_{B_{i,j},p_\lambda} \leq & min \{c(p_\lambda),R_{up}(s),R_{down}(d)\}\\
 
 Besides, there is another limitation on path selection: $\displaystyle{\sum_{p_\lambda \in Path(s,d)}} I_{B_{i,j},p_\lambda} = 1$, which means only one path will be chosen for a particular block.
 
-The integer program (IP) is a multi-commodity flow algorithm which is known to be NP-complete \cite{garg1997primal} due to the fact that they are integer flows, and there is no known algorithm to find an optimal solution. To make this problem solvable, we look into it from a different perspective. As the size of a task is dozens of TBs to PBs, while each block is just about several MBs, we can approximate tasks although they are infinitesimally split and can be transferred to a set of possible paths between the source DC and the destination DC. So it is possible to solve this IP problem by a linear programming (LP) relaxation \cite{garg2007faster,reed2012traffic}, and the relaxed problem aims at transferring a fraction of each transmission. However, the number of blocks will thus grow considerably large when splitting tasks infinitesimally, and this will lead to intolerable computing time on the controller side. There are two coping strategies on this problem: on one hand, \name has a merge scheme before each transmission cycle, and this step merges blocks with the same (s,d) pair into one subtask so as to reduce task number; on the other hand, \name adopts the improved fully polynomial-time approximation schemes (FPTAS) by Fleischer \cite{fleischer2000approximating} to work out an $\epsilon$-optimal solution with $\alpha' \geq \alpha_\epsilon \geq \alpha'(1-\epsilon)^{-3}$. This algorithm optimizes the dual problem of the relaxed LP problem by proceeding in phases and iterations.
-
-\subsection{Rounding the Integer Solution}
-\name distributes each task in an optimal manner given by the maximum concurrent flow (MCF) solution \cite{reed2012traffic}. However, the MCF solution is a linear relaxation of the original integer problem and in practice the solution requires that flows are routed as integers of the block size flow. There are a number of strategies using the output of the MCF for the integer path allocation, however, none of them will be strictly optimal as the original problem is NP-complete. A common strategy is to use \emph{randomized-rounding}. Randomized-rounding was first analyzed in detail for some relaxation approaches by Raghavan and Thompson \cite{Raghavan1987} and a similar approach is followed here for the specific case of the MCF relaxation for which they do not provide a solution. A flow through an arbitrary edge, \(e\) is denoted, as \(f_e=\sum_{e \in p_\lambda} F_{B_{i,j},p_\lambda} \; \forall \; p_\lambda\) where $F^*$ is the optimum value in the MCF problem that is equivalent to $f^*$ in the original problem. $f_e$ is the optimal MCF flow through edge $e$ that in the integer solution is approximated from the flow of multiple blocks each of flow rate $b$. To perform the randomized rounding, first, each of the \emph{fractional flows}  $F_{B_{i,j},p_\lambda}$ is truncated to an \emph{integer flow} that is constructed from a number of\emph{ block flows}, each integer flow is denoted as $\left \lfloor F_{B_{i,j},p_\lambda} \right \rfloor = kb \leq F_{B_{i,j},p_\lambda}$ where $k$ is strictly the largest positive integer, or zero, to meet the constraint. Then each integer flow is either kept at $kb$ or \emph{rounded} up with probability $(F_{B_{i,j},p_\lambda} - \left \lfloor{F_{B_{i,j},p_\lambda}} \right \rfloor)/b$ to $(k+1)b$. This rounding probability means that the expected value of the integer flows is $f_e$, the solution of the optimal linear MFC. The problem is then to determine the likelihood that this rounding will cause the capacity constraint on an edge $e$ to be exceeded. To aid the discussion, a \emph{residual flow}  $f^\prime_e=f_e - \sum_{e \in p_\lambda} \left \lfloor{F_{B_{i,j},p_\lambda}} \right \rfloor $ is used to describe the flow that needs to be added to the truncated flows to obtain the optimal solution obtained from MFC.
-
-As each flow rounding is an independent random variable, we can determine the likelihood of exceeding the capacity constraint by applying the following well-known Chernoff bound~\cite{chernoff1952}:
-\begin{equation}
-  \label{chernoff}
-  \Pr(X > (1+\delta)\mu) \leq e^{\frac{2\delta^2\mu^2}{n(b-a)^2}}
-\end{equation}
-where $X=X_1 + \ldots X_n$ is the sum of independent, bounded, random variables $a \leq X_i \leq b$ and $\mu = E{(X)} $. This bound describes the probability that a summation of random variables exceeds the expected value of the sum by a factor of $\delta$. In the problem considered here, the random variables are the rounded flows which have an expected summation $\mu = f^\prime_e$. Consider an edge, $e$, that has its capacity fully used by the linear MFC solution. Using the Chernoff bound from Equation~\eqref{chernoff}, note that $a=0$ and the highest value of the rounded flow added is one block with flow $b$ then we find that the factor that the integer flow is beyond optimal, and the residual flow is bounded by:
-\begin{equation}
-  \label{block}
-  \delta \leq \frac{b}{r} \sqrt{\frac{n}{2}\ln\epsilon}
-\end{equation}
-with probability $1-\epsilon$. It should be noted that as the size of the blocks becomes small compared to the overall flow $f_e$, the probability that the linear flow is exceeded by a factor $\delta$ becomes exponentially small due to the exponential form of the Chernoff bound.
+The integer program (IP) is a multi-commodity flow algorithm which is known to be NP-complete \cite{garg1997primal} due to the fact that they are integer flows, and there is no known algorithm to find an optimal solution. To make this problem solvable, we look into it from a different perspective. As the size of a task is dozens of TBs to PBs, while each block is just about several MBs, we can approximate tasks although they are infinitesimally split and can be transferred to a set of possible paths between the source DC and the destination DC. So it is possible to solve this IP problem by a linear programming (LP) relaxation \cite{garg2007faster,reed2012traffic}, and the relaxed problem aims at transferring a fraction of each transmission. However, the number of blocks will thus grow considerably large when splitting tasks infinitesimally, and this will lead to intolerable computing time on the controller side. There are two coping strategies on this problem: on one hand, \name has a merge scheme before each transmission cycle, and this step merges blocks with the same (s,d) pair into one subtask so as to reduce task number; on the other hand, \name adopts the improved fully polynomial-time approximation schemes (FPTAS) by Fleischer \cite{fleischer2000approximating} to work out an $\epsilon$-optimal solution with $\alpha' \geq \alpha_\epsilon \geq \alpha'(1-\epsilon)^{-3}$. This algorithm optimizes the dual problem of the relaxed LP problem by proceeding in phases and iterations. (See Appendix for the proof of near optimality of \name)

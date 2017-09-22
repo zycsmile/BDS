@@ -1,6 +1,6 @@
 \section{System Design}
 
-In this section, we present the system design of \name to realize the two design choices presented in Section3.
+In this section, we present the system design of \name to realize the two design choices presented in \Section\ref{sec:overview}.
 
 \subsection{\name architecture}
 
@@ -12,7 +12,7 @@ In this section, we present the system design of \name to realize the two design
 \end{figure}
 %\vspace{-15pt}
 
-\name reuses the same underlying multicast system described in Section2.2. Figure \ref{fig:implementation} shows the detailed architecture of \name. It consists of five components: Controller, Agent Monitor, Agent, Storage Platform, Network Monitor. (1) \emph{Controller} is a scheduler which executes the customized scheduling algorithm. (2) \emph{Agent Monitor} delivers messages between the \emph{Controller} and \emph{Agents}. (3) \emph{Agent} is a module deployed in each node. It announces the bulk data download requirement to the agent monitor and triggers the transmission. (4) \emph{Network Monitor} maintains each link's capacity and monitors the aggregated traffic of latency-sensitive data, which are the basic inputs of the scheduling algorithm. (5) \emph{Storage platform} records the system snapshot, including master and slave controller status, etc.
+\name reuses the same underlying multicast system described in \Section\ref{subsec:motivation:case-for}. Figure \ref{fig:implementation} shows the detailed architecture of \name. It consists of five components: Controller, Agent Monitor, Agent, Storage Platform, Network Monitor. (1) \emph{Controller} is a scheduler which executes the customized scheduling algorithm. (2) \emph{Agent Monitor} delivers messages between the \emph{Controller} and \emph{Agents}. (3) \emph{Agent} is a module deployed in each node. It announces the bulk data download requirement to the agent monitor and triggers the transmission. (4) \emph{Network Monitor} maintains each link's capacity and monitors the aggregated traffic of latency-sensitive data, which are the basic inputs of the scheduling algorithm. (5) \emph{Storage platform} records the system snapshot, including master and slave controller status, etc.
 
 \subsection{Centralized control}
 
