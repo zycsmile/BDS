@@ -4,18 +4,15 @@ Global-scale online services, such as Google, Facebook, and
 Baidu, transfer massive amounts of data between geo-distributed 
 datacenters (DCs). 
 A common communication pattern is {\em bulk-data multicast}, 
-which replicates data (typically several to 100s GB), such as user 
-logs, search engine indexes, and databases, to any subset of DCs. 
-However, multicasting bulk data in a timely and cost-effective 
-manner has introduced substantial challenges, as data sizes 
-continue to explode and more DCs are deployed to reach a global 
-footprint; e.g., data Google has seen a \fillme-fold increase in 
-\fillme years in the amount of data that needs to be distributed 
-to all DCs~\cite{??}, and this number would even multiply with 
-an increasing number of DCs. 
-These trends have been a key driving force behind recent 
-efforts to optimize the performance of inter-DC 
-WANs~\cite{b4,bwe,swan,??,??,??}, 
+which replicates data 
+(typically several to 100s GB\jc{please check}), such as user 
+logs, search engine indexes, and databases\jc{anything else?}, 
+to any set of DCs. 
+As data sizes continue to explode and more DCs are deployed to 
+reach a global footprint, how to multicast bulk data in a timely 
+and cost-effective manner has been a key driving force behind 
+recent efforts to improve the performance of inter-DC 
+WANs~\cite{b4,bwe,swan,??,??,??}.
 
 
 %Global-scale online services, such as Google, Facebook, and Baidu, 
@@ -28,18 +25,53 @@ WANs~\cite{b4,bwe,swan,??,??,??},
 %to optimize the WAN performance between two 
 %DCs~\cite{b4,bwe,swan,??,??,??}. 
 
-In this paper, we argue that these solutions are incomplete, since 
-they fall short of harnessing servers' capability to 
-store-and-forward data, and could create hot-spots and bottlenecks 
-in DC networks. 
-Figure~\ref{??} shows 
+In this paper, we argue that the existing approaches that focus 
+on WAN performance are fundamentally insufficient to optimize 
+bulk-data multicast, because they fall 
+short of harnessing servers' capability to store-and-forward 
+data, and exploring the abundant disjoint paths via servers 
+in different DCs. 
+For instance, the multicast throughput can be significantly 
+improved, if data is split into fine-grained units and 
+delivered simultaneously via multiple servers selectively picked 
+as intermediate points to circumvent slow paths in DC
+networks and WANs.
 
-Drawing an analogy to classic multicast overlay networks, we argue 
-that online service providers need an {\em application-level 
-overlay multicast network} that optimally schedules and delivers 
-data in a way that fully utilizes available application-level 
-overlay paths between DCs.
 
+Inspired by the success of early work on multicast overlay 
+networks, we argue that an similar 
+{\em application-level multicast overlay network} 
+is needed to optimally deliver inter-DC multicast data in
+a way that fully utilizes the application-level overlay paths
+that exist in DCs.
+To replicate a data file from one DC to multiple DCs, 
+the overlay multicast network should split the data into small 
+units, send them simultaneously along selectively picked overlay 
+paths, and dynamically adapt the overlay routing in response to 
+changes in network condition and 
+resource availability.
+
+
+While multicast overlays are well studied in several settings,
+(e.g.,~\cite{??,??,??,??}), introducing multicast overlay networks 
+to large online  service providers, 
+like Google and Baidu, poses new challenges.
+%Building on the operational experience of 
+%\company\footnote{Anonymized for double-blind reviewing}, 
+%a large online service providers, we summarize two challenges,
+%which to our best knowledge do not have direct solution.
+First, the sheer number of servers and overlay paths renders 
+traditional approaches ineffective: it is untenable 
+to track delivery states of all servers and update 
+decisions in real time, nor is it effective to full exploit 
+overlay paths by using a decentralized protocol 
+(e.g.,~\cite{??,??}), 
+or assuming structured topologies (e.g.,~\cite{akamai}).
+Second, because any small increase in the delay of
+latency-sensitive traffic can cause substantial revenue losses, 
+there is a strong need to prevent any delay on
+latency-sensitive traffic, even at the expense of slightly lower 
+link utilization.
 
 %we argue that an {\em inter-DC multicast 
 %overlay} network that optimally schedules and routes data via 
@@ -59,40 +91,40 @@ overlay paths between DCs.
 
 
 
-%While these efforts have shown promising improvement on the performance of pairwise 
-%inter-DC WANs, we argue that an efficient multicast overlay network that optimally 
-%schedules and routes data from each DC to multiple DCs via inter-DC overlay paths 
-%is essential to ensuring desirable performance and fully utilizing the improved 
-%pairwise inter-DC data transfer.
-While multicast overlay networks have been studied extensively 
-in settings of peer-to-peer (P2P) streaming~\cite{??,??} and 
-content delivery networks (CDNs)~\cite{??,??}, it remains unclear 
-whether existing approaches apply to the scale of large online 
-service providers like Google and Baidu. 
-%The conventional wisdom has been that to operate at scale and react 
-%in real time, one has to either organize overlay nodes in a 
-%strictly structured (and thus suboptimal) topology 
-%(e.g.,~\cite{akamai}), or use a hybrid (and thus more 
-%complex) control mechanism (e.g.,~\cite{vdn}) with a local 
-%logic adapting in real time and a global logic updating every
-%few minutes.
-Drawing on the operational experience from 
-\company\footnote{Anonymized for double-blind reviewing}, a large 
-online service providers, we see two key requirements
-of an inter-DC multicast overlay network.
-First, because these DCs have more servers and thus 
-exponentially more overlay paths than CDNs or P2Ps, 
-it is untenable to exploit all overlay paths by 
-traditional approaches, such as decentralized or hybrid path 
-selection (e.g.,~\cite{??,??}), or structured topologies 
-(e.g.,~\cite{akamai}).
-Second, these WANs are shared by latency-sensitive traffic 
-and bulk background traffic. 
-Because any small increase in delay of
-latency-sensitive traffic can cause substantial revenue losses, 
-there is a strong need to prevent interference on 
-latency-sensitive traffic, even at the expense of slightly lower 
-link utilization.
+%%While these efforts have shown promising improvement on the performance of pairwise 
+%%inter-DC WANs, we argue that an efficient multicast overlay network that optimally 
+%%schedules and routes data from each DC to multiple DCs via inter-DC overlay paths 
+%%is essential to ensuring desirable performance and fully utilizing the improved 
+%%pairwise inter-DC data transfer.
+%While multicast overlay networks have been studied extensively 
+%in settings of peer-to-peer (P2P) streaming~\cite{??,??} and 
+%content delivery networks (CDNs)~\cite{??,??}, it remains unclear 
+%whether existing approaches apply to the scale of large online 
+%service providers like Google and Baidu. 
+%%The conventional wisdom has been that to operate at scale and react 
+%%in real time, one has to either organize overlay nodes in a 
+%%strictly structured (and thus suboptimal) topology 
+%%(e.g.,~\cite{akamai}), or use a hybrid (and thus more 
+%%complex) control mechanism (e.g.,~\cite{vdn}) with a local 
+%%logic adapting in real time and a global logic updating every
+%%few minutes.
+%Drawing on the operational experience from 
+%\company\footnote{Anonymized for double-blind reviewing}, a large 
+%online service providers, we see two key requirements
+%of an inter-DC multicast overlay network.
+%First, because these DCs have more servers and thus 
+%exponentially more overlay paths than CDNs or P2Ps, 
+%it is untenable to exploit all overlay paths by 
+%traditional approaches, such as decentralized or hybrid path 
+%selection (e.g.,~\cite{??,??}), or structured topologies 
+%(e.g.,~\cite{akamai}).
+%Second, these WANs are shared by latency-sensitive traffic 
+%and bulk background traffic. 
+%Because any small increase in delay of
+%latency-sensitive traffic can cause substantial revenue losses, 
+%there is a strong need to prevent interference on 
+%latency-sensitive traffic, even at the expense of slightly lower 
+%link utilization.
 
 
 %while a more decentralized overlay network protocol 
@@ -118,14 +150,18 @@ link utilization.
 %distribution latency while preventing negative 
 %impacts on the latency-sensitive data. 
 
-This paper presents {\em \name}, a near-optimal inter-DC multicast 
-overlay network, which minimizes data distribution delay from one 
-DC to any subset DCs by dynamically splitting, 
-reordering, and deliver data via overlay paths selected 
-from all server-level paths between the source DC and destination DCs.
-\name focuses on distributing background bulk data (e.g., \fillme), 
-which is by several orders of magnitudes larger than 
-latency-sensitive user data.
+This paper presents {\em \name}, a near-optimal multicast 
+overlay network for inter-DC bulk data multicast.
+\name dynamically splits, reorders, and delivers data via 
+overlay paths between the source DC and destination DCs.
+%This paper presents {\em \name}, a near-optimal inter-DC multicast 
+%overlay network, which minimizes data distribution delay from one 
+%DC to any subset DCs by dynamically splitting, 
+%reordering, and deliver data via overlay paths selected 
+%from all server-level paths between the source DC and destination DCs.
+%\name focuses on distributing background bulk data (e.g., \fillme), 
+%which is by several orders of magnitudes larger than 
+%latency-sensitive user data.
 At the core of \name are two design choices.
 \begin{packeditemize} 
 \item {\em Centralized decision-making:} 
@@ -144,6 +180,7 @@ of latency-sensitive data and enforces a dynamic  separation of
 bandwidth between background data and latency-sensitive data. 
 \end{packeditemize}
 
+\name draws on insights from many prior work
 
 While \name's design choices introduce performance costs (i.e.,
 \name does not update decisions in real time or achieve full 
