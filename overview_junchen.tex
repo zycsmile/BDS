@@ -1,27 +1,24 @@
 \section{Overview of \name}
 \label{sec:overview}
 
-To address the key challenges of a multicast overlay network,
-\name is built on two design choices, both of which
+To meet the needs for lower completion time while avoiding
+interference with latency-sensitive traffic, we present 
+the design and implementation of \name, a near-optimal
+multicast overlay network for inter-DC bulk data multicast.
+\name is built on two design choices, which
 %To optimize the performance of bulk-data replication, \name 
 %addresses the key challenges of a multicast overlay network
 %by two design choices, both of which 
 trade marginal costs for greater performance benefits. 
-Before we describes details of \name's design, we first
-highlight the intuition behind these design choices and
+Before describing the details of \name's design, we first
+highlight the intuition behind the design choices and
 their cost-benefit tradeoffs 
 (summarized in Table~\ref{tab:design-choices}).
 
 
-
-
-
-
-
-
-
 %The insights obtained from \company's operational experience has inspired the design of \name, a near-optimal inter-DC multicast overlay network. This section starts with \name key design choices, highlights the design philosophy behind our choices, and provide an overview of the \name system, which builds on these design choices.
 
+\subsection{Design choices}
 
 \mypara{Centralized decision-making}
 \name uses a centralized controller to periodically poll 
@@ -74,8 +71,9 @@ interference on latency-sensitive traffic.
 \label{tab:design-choices}
 \end{table}
 
-\mypara{Performance costs}
-Yet, the benefits of these design choices do not come for free. 
+\subsection{Design philosophy}
+
+The benefits of these design choices do not come for free. 
 On one hand, \name's centralized architecture creates an unwieldy 
 decision-making process that is hard to update decisions in real time 
 (due to the prohibitively large scale of the problem),
@@ -89,12 +87,11 @@ significantly.
 %The above two design choices may introduce performance costs, i.e., fully centralized control makes \name unable to update decisions in real time, because the \name controller works in a centralized manner and has to collect information from geo-distributed DCs, and this will naturally introduce some communication latency to the decision making process. Besides, the clean separation on bandwidth will possibly result in low link utilization due to the ever changing link utilization and the coarse-grained scheduling decisions.
 
 
-\mypara{Design philosophy}
+\mypara{Why benefits outweigh costs}
 Despite the costs introduced by \name's design choices, 
-we argue that the costs are favorably outweighed by the benefits.
-The our intuition behind this argument is driven by several 
-observations. 
-\begin{enumerate}
+our intuition that the costs are favorably outweighed by the 
+benefits is driven by several observations. 
+\begin{packedenumerate}
 \item Bulk data transfers happen on much longer timescales than 
 how fast new transfer jobs start, and thus it can tolerates a delay
 at coarse timescale of several seconds in exchange for near-optimal 
@@ -108,12 +105,24 @@ high link utilization.
 For instance, the control logic running locally in each server
 is only triggered on arrivals of new data units or control messages, 
 and thus can be stateless and lightweight.
-\end{enumerate}
+\end{packedenumerate}
 
 %Fortunately, the above costs are outweighed by the benefits. (1) bulk data transfer usually takes tens of seconds to minutes, so it can tolerates a delay at coarse timescale of several seconds in exchange for near-optimal scheduling decisions. (2) the aggregation of latency-sensitive data is stable on timescales of several seconds, therefore, it is plausible for the dynamic bandwidth separation to prevent interference on the latency-sensitive data while still maintaining high link utilizations. (3) the resulting system is amenable to a simpler implementation because the decision-making logic running on the controller side does not need to maintain data status or to deliver complex control messages, thus can be stateless and lightweight.
 
-\mypara{Technical challenge}
-The key technical challenge here is how to make optimal overlay scheduling and routing decisions at the scale tens of thousands of objects and tens of thousands of servers in near real time. To achieve desirable performance in a multicast overlay network, fully exploiting all the available overlay paths is essential, but it is untenable to go through all the potential servers and exponentially more paths by traditional approaches.
+\mypara{Fast, optimal centralized control is critical}
+The key challenge to striking a favorable balance in \name between 
+centralized optimal decision-making and being practical at the
+a large scale is a {\em near-optimal and efficient overlay routing
+algorithm} that can be updated in timescales of several seconds. 
+At a first glance, the problem seems intractable: 
+the centralized overlay routing algorithm must pick the next hops
+from 10,000s servers for 10,000s objects, and the real scale of 
+solving the problem grows exponentially as we consider possible 
+overlay paths that go through these servers, and each object is 
+chopped into many fine-grained blocks to leverage multiple overlay
+paths.
+
+%The key technical challenge here is how to make optimal overlay scheduling and routing decisions at the scale tens of thousands of objects and tens of thousands of servers in near real time. To achieve desirable performance in a multicast overlay network, fully exploiting all the available overlay paths is essential, but it is untenable to go through all the potential servers and exponentially more paths by traditional approaches.
 
 %\begin{itemize}
 %
