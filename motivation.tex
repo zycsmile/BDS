@@ -92,40 +92,43 @@ To further explore the characteristics of the multicast data files, we summarize
 \begin{figure}[t]
 \centering
 \includegraphics[width=80mm]{images/example.eps}
-\caption{The benefit from inter-DC multicast overlay.}
+\caption{A toy example showing the benefit from inter-DC multicast overlay.}
 \label{fig:case:example}
-\vspace{-0.4cm}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=55mm]{images/XBvsYB.eps}
-\caption{Bandwidth between different (s,d) pairs.}
-\label{fig:case:size}
 \vspace{-0.4cm}
 \end{figure}
 
 To intuitively show the improvements brought by the inter-DC multicast overlay, we show a toy example here. Fig. \ref{fig:case:example} shows three cases under different transmission strategies. Assume there are 6 DCs in the network: source DC \emph{S}, 2 intermediate DCs \emph{X} and \emph{Y}, 4 destination DCs $d_1,d_2,d_3,d_4$, and the bandwidth of both upload and download links are all 2Gbps. There is a 5G data file in the source DC \emph{S} that should be multicasted to all the 4 destination DCs. The data file is split into 5 blocks ($b_1,b_2,b_3,b_4,b_5$) each with 1G-size. (a) Directly sending data to each destination DC. The four source and destination pairs (s,d) share the link bandwidth fairly, and each is allocated to 0.5Gbps. Thus, the overall completion time in $d_i$ is 10t. (b) Build a multicast tree with chain replications on the intermediate DCs. Take $d_1$ as an example, his parent DC \emph{X} could begins to send $b_1$ with 1Gbps at the beginning of 2nd time slot because \emph{X} has already duplicated $b_1$ after 1t. So that the completion time can be reduced to 6t. (c) An optimal solution on multicast overlay network. \emph{S} sends different blocks to \emph{X} and \emph{Y} in the 1st time slot to make them share those block mutually in the next slot. Thus, in the end of 2nd slot, both \emph{X} and \emph{Y} have 3 blocks. Similarly, $d_1$ and $d_2$ are also able to share complementary blocks while download the other blocks from parent DC simultaneously. The completion time can then be further reduced to 4.5t.
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=80mm]{images/potential.eps}
+\caption{Measurements showing the potential bandwidth between different (s,d) pairs.}
+\label{fig:case:size}
+\vspace{-0.4cm}
+\end{figure}
+
 Consider the abstract topology of \company's real network, we can also find the situations similar to the above example. There are several DC groups divided by geographical locations, and every two groups are connected through one fiber link with high bandwidth. Within each DC group, there are dozens of DCs, and in each DC, there are normally 10,000 servers. Thus, there are numbers of possible disjoint paths between any DC pairs.
 
-To intuitively show the benefit from disjoint paths, we make the follow measurements on the available bandwidth among three DCs. The topology is shown in \fillme.
+To intuitively show the benefit from disjoint paths, we make the follow measurements on the available bandwidth among three DC groups \emph{X, Y, B}. The topology is shown in Fig. \ref{fig:case:size}(a). $x_i,y_i$ and $b_i$ are servers in \emph{X, Y, B}, while any server in \emph{X} needs to go through \emph{Y} to get to any arbitrary server $b$ in \emph{B}. Let $bw(XYB)$, $bw(YB)$ denote the bandwidth between $x_i$ and $b_k$, and between $y_j$ and $b_k$, respectively, we show the fraction of $bw(XYB)$ and $bw(YB)$ in Fig. \ref{fig:case:size}(b). This figure illustrates that only in a few case (about 20\%), the available bandwidth between \emph{Y} and \emph{B} is higher than that between \emph{X} and \emph{B}, while in the majority of cases, $\frac{bw(XYB)}{bw(YB)}>1$, meaning selecting senders is not straightforward, and we do need to consider large decision spaces.
 
-\begin{itemize}
-
-\item Give an illustrative toy example to compare (1) directly sending data to each destination DC, (2) use chain replication, i.e., build a multicast tree with each DC being a node, (3) an optimal solution.
-{\em\bf This example is critical!}
-
-\item Briefly explain the basics of Baidu's inter-DC WAN: topology, \# of servers per DC, some estimates on how many disjoint paths are available between two DCs.
-{\em The point is that each DC has multiple disjoint paths to fetch data, despite a seemingly tree-like topology.}
-
-\item Show a CDF of $\frac{X_i\rightarrow B}{Y_i\rightarrow B}$, where $X_i\rightarrow B$, $Y_j\rightarrow B$ are the bandwidth between some server in $X$ and $B$, and between some server in $Y$ and $B$, respectively. Assume $X$ needs to go through $Y$ to get to $B$.
-{\em The point is that in a substantial fraction of cases, $\frac{X_i\rightarrow B}{Y_i\rightarrow B}>1$, meaning selecting the sender is not straightforward, we do need to consider large decision space.}
-
-\end{itemize}
+%\begin{itemize}
+%
+%\item Give an illustrative toy example to compare (1) directly sending data to each destination DC, (2) use chain replication, i.e., build a multicast tree with each DC being a node, (3) an optimal solution.
+%{\em\bf This example is critical!}
+%
+%\item Briefly explain the basics of Baidu's inter-DC WAN: topology, \# of servers per DC, some estimates on how many disjoint paths are available between two DCs.
+%{\em The point is that each DC has multiple disjoint paths to fetch data, despite a seemingly tree-like topology.}
+%
+%\item Show a CDF of $\frac{X_i\rightarrow B}{Y_i\rightarrow B}$, where $X_i\rightarrow B$, $Y_j\rightarrow B$ are the bandwidth between some server in $X$ and $B$, and between some server in $Y$ and $B$, respectively. Assume $X$ needs to go through $Y$ to get to $B$.
+%{\em The point is that in a substantial fraction of cases, $\frac{X_i\rightarrow B}{Y_i\rightarrow B}>1$, meaning selecting the sender is not straightforward, we do need to consider large decision space.}
+%
+%\end{itemize}
 
 \subsection{Lessons from a baseline solution}
 \label{subsec:motivation:baseline}
+
+
+
 \begin{itemize}
 
 \item Briefly describe how \company does multicast today: how to data is forwarded through an intermediate DC? what's the protocol (a receiver-driven decentralized protocol)?
