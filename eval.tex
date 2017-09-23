@@ -8,6 +8,55 @@ The evaluation results of the pilot deployment, together with trace-driven simul
 \item \name can update decisions every 3 seconds over a WAN of the same size as Google, is lightweight in terms of CPU, bandwidth consumed, and can gracefully degrate to decentralized protocols.
 \end{enumerate}
 
+\begin{figure*}[t]
+        \centering
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{images/BDSvsAnon_overall.eps}
+                \caption{The completion time.}
+                \label{fig:BDSvsAnon:overall}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{images/BDS_VS_ANON.eps}
+                \caption{Comparison by application types.}
+                \label{fig:BDSvsAnon:FCT}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{images/BDSvsAnon_time.eps}
+                \caption{Comparison by timeseris.}
+                \label{fig:BDSvsAnon:time}
+        \end{subfigure}
+        \caption{[\name vs. \company] Results from pilot deployments.}
+        \label{fig:BDSvsAnon}
+\vspace{-0.4cm}
+\end{figure*}
+\begin{figure*}[t]
+        \centering
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=50mm]{images/Test1.eps}
+                \caption{Baseline experiment.}
+                \label{fig:cdn:baseline}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=50mm]{images/Test2.eps}
+                \caption{Large scale experiments.}
+                \label{fig:cdn:scale}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=50mm]{images/Test3.eps}
+                \caption{Small bandwidth experiments.}
+                \label{fig:cdn:bw}
+        \end{subfigure}
+        \caption{[\name versus Bullet] Comparisons under different network scenarios.}
+        \label{fig:versusCDN}
+\vspace{-0.4cm}
+\end{figure*}
+
 \subsection{Benefits of centralized control}
 \label{subsec:evaluation:centralized}
 
@@ -15,25 +64,38 @@ To evaluate the benefits of centralized control, we conduct two series of experi
 
 \textbf{\name vs. \company's existing solution.}
 
+We measure \name's performance versus \company's existing solution that has already run for more than 5 years. In this series of experiments, we choose a 70~TB data file that is distributed stored in the source DC (with 1000 servers) at the very beginning, and each of the other DCs announces a downloading requirement and stores the file in the same way with 1000 servers.
 
+To intuitively present the overall improvements by \name, we draw the CDF of the completion time in Fig.\ref{fig:BDSvsAnon:overall}, from which we can see that the completion time under \company's existing solution is about 200 minutes while that of \name is less than 40 minutes, 5 times shorter completion time.
 
+For detailed illustration, we pick three applications whose data volumes are large, medium and small, and draw a bar chart of three pairs of bars in Fig.\ref{fig:BDSvsAnon:FCT}, each representing \name's and \company's mean (stddev) completion time for one application. These bars show that for small data volume, \name outperforms 1.6$\times$ than \company, but raises up to more than 3$\times$ than \company for large data volume. In other words, the benefit of \name will increase along with the data volumes.
 
-\begin{itemize}
-\item \name vs. \company's existing solution (pilot deployment)
-\begin{itemize}
-\item Overall improvement: A CDF with two lines to show the aggregated flow completion time
-\item By applications: Pick three applications whose data volumes are large, medium, and small respetively. Draw a bar chart of three pairs of bars, each representing \name's and \company's mean (stddev) flow completion time for an application.
-\item By time: Timeseris of two lines, each representing \name's and \company's mean (stddev) of flow completion time.
-\end{itemize}
+To prove that this is not a special case, we repeat the experiments during the 7 days, and draw the average completion time of both \name and \company in Fig.\ref{fig:BDSvsAnon:time}. \name is quite stable during the 7 days while \company illustrates some volatilities. But in general, \name achieves about 4.5$\times$ shorter completion time than \company.
+%\item \name vs. \company's existing solution (pilot deployment)
+%\begin{itemize}
+%\item Overall improvement: A CDF with two lines to show the aggregated flow completion time
+%\item By applications: Pick three applications whose data volumes are large, medium, and small respectively. Draw a bar chart of three pairs of bars, each representing \name's and \company's mean (stddev) flow completion time for an application.
+%\item By time: Timeseris of two lines, each representing \name's and \company's mean (stddev) of flow completion time.
+%\end{itemize}
 
-\item \name vs. other overlay multicast techniques
-\begin{itemize}
-\item Begin with the methodology of trace-driven simulation.
-\item Briefly explain these techniques: Akamai (3-layer), Bullet (full mesh)
-\item Show a CDF that has three lines, representing \name, Akamai, and Bullet.
-\end{itemize}
+\textbf{\name vs. other overlay multicast techniques.}
 
-\end{itemize}
+As we cannot implement other experimental systems in our real online network just as comparisons, we conduct a series of simulations using trace-driven simulations in this section, and compare \name's performance versus Bullet \cite{kostic2003bullet} and a CDN-based solution \cite{Andreev2013Designing} adopted by Akamai.
+
+We use the same topology with 12 DCs (1 DC acts as the source DC), 1000 servers per DC for all simulations, and set the parameters all the same as the real network, including data file size $\mathbb{S}$, set of source and destination pairs $S=(s,d_i),1\leq i \leq 11$, path $p_\lambda$, link capacities $c(l_{u,v})$ and server upload/download rate $R_{up}(n)/R_{down}(n)$.
+
+Bullet \cite{kostic2003bullet} is a distributed algorithm that works on an overlay mesh network, it enables geo-spread nodes to self-organize into a overlay mesh. Specifically, each node uses RanSub \cite{Rodriguez2003Using} to distribute summary tickets information to other nodes, and receives disjoint data from his sending peers. The most obvious difference between \name and Bullet lies in the control scheme, i.e., \name is centralized method, who can maximize total system traffic, while Bullet is a decentralized scheme and each node makes decision according to his obtained information. We conduct three series of experiments and show the results in Fig.\ref{fig:versusCDN}: baseline, large scale and small bandwidth experiments. We find \name achieves 3$\times$ shorter completion time than Bullet in the baseline experiments, and more than 4$\times$ improvement in the large scale experiments and small bandwidth experiments.
+
+Akamai design a 3-layer overlay network for delivering live streams \cite{Andreev2013Designing}, where a source forwards its streams to reflectors, and a reflector sends outgoing streams to the final stage sinks. Things \name and Akamai have in common is that both of them are designed for data distribution on overlay multicast networks. There are two main differences  between Akamai and \name: (1) Akamai adopts a 3-layer topology where an edgeserver receives data from the parent reflectors, while \name could explore more potential searching space without layer limitation. (2) A sink in Akamai receives must receive data in sequential order because it serves for the live streaming application, but \name does care about blocks arriving order. Thus, to achieve optimal scheduling results, \name should also solve the scheduling problem so as to work out the optimal block download order $\overrightarrow{o}(s_i)$. The comparison results of Akamai and \name are shown in \fillme.
+
+%\begin{itemize}
+%\item \name vs. other overlay multicast techniques
+%\begin{itemize}
+%\item Begin with the methodology of trace-driven simulation.
+%\item Briefly explain these techniques: Akamai (3-layer), Bullet (full mesh)
+%\item Show a CDF that has three lines, representing \name, Akamai, and Bullet.
+%\end{itemize}
+%\end{itemize}
 
 \subsection{Benefits of dynamic bandwidth separation}
 \label{subsec:evaluation:separation}
