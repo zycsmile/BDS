@@ -63,18 +63,18 @@ To avoid introducing degradation by the separation to the origin problem, we sho
 \subsection{Scheduling}
 \label{subsec:logic:scheduling}
 
-We define each complete duplicate transmission of bulk data as one ``task'', and each DC will launch at least two tasks due to replication strategy. All the tasks wait to be scheduled together in the pending queue. As the size of a task is extremely large (tens of TBs to PB), \name splits it into fine-grained blocks (several MB) and makes scheduling and routing in the form of blocks. The objective of this data scheduling procedure is to pick out a subset of blocks that should be transferred first.
+The data scheduling procedure tries to reduce the exploration space while still retaining the potential optimal results. \name achieves this by by selecting a subset of blocks that should be transferred first, i.e., the output of this procedure is the block transmission order $\overrightarrow{o}(s_i)$ for all the servers $s_i$, which is also the input of the next routing procedure.
 
-Assume the origin bulk data in the source DC is split into $n$ blocks, and there are $m$ DCs in the WAN and each launches two transmission tasks. Different scheduling strategies will lead to different intermediate transmission states and finally result in different completion time. Take two intermediate states as examples: 1) All of the $n$ blocks has $k$ duplicates; 2) Some of these $n$ blocks have $k1$ $(k1<k)$ duplicates and other blocks have $k2$ $(k2>k)$ duplicates. Let $t_1$ denote the completion time of case 1 and $t_2$ denote that of case 2, we have: $t_2 > t_1$. (See Appendix for proof)
+Assume the origin bulk data in the source DC is split into $n$ blocks, and there are $2m$ DCs in the WAN. Different scheduling strategies will select different block subsets and lead to different intermediate transmission states, finally resulting in different completion time. Take two intermediate states as examples: 1) All of the $n$ blocks has $k$ duplicates; 2) Some of these $n$ blocks have $k1$ $(k1<k)$ duplicates and other blocks have $k2$ $(k2>k)$ duplicates. Let $t_1$ denote the completion time of case 1 and $t_2$ denote that of case 2, we have: $t_2 > t_1$. (See Appendix for proof)
 
-So in the scheduling stage, \name will firstly pick out the subset of blocks with the least downloaded duplicates, so as to reduce the overall completion time.
+So in the data scheduling stage, \name will firstly pick out the subset of blocks with the least downloaded duplicates, so as to reduce the overall completion time.
 
-For efficient selection, \name keeps a counter $c_i$ in the controller for each block and update it once receiving finish notifications from receivers. The scheduling stage always gives priority to the smallest $c_i$. For efficient processing, \name keeps all the counters $c_i$ in a doubly linked list in an ascending order of their values. For each download, the controller selects the top item in the list (the smallest value) to be downloaded. The controller listens and serves an HTTP port, once receiving a transmission completion signal from receivers, it updates the corresponding block's counter value and adjusts its position in the linked list for further processing.
+For efficient selection, \name keeps a counter $c_i$ in the controller for each block and updates it once receiving finish notifications from receivers. The scheduling stage always gives priority to the smallest $c_i$. For efficient processing, \name keeps all the counters $c_i$ in a doubly linked list in an ascending order of their values. For each download, the controller selects the top item in the list (the smallest value) to be downloaded. The controller listens and serves an HTTP port, once receiving a transmission completion signal from receivers, it updates the corresponding block's counter value and adjusts its position in the linked list for further processing.
 
 \subsection{Routing}
 \label{subsec:logic:routing}
 
-After the scheduling stage, \name routes and transfers these selected blocks in this stage. To be specific, the output includes the data source $s^*$, transmission path $p^*$ and allocated bandwidth $f_{B_{i,j},p_\lambda}$ for each block $B_{i,j}$.
+In the overlay routing stage, \name routes and transfers blocks according to $\overrightarrow{o}(s_i)$, the output of data scheduling stage, and then tries to make optimal routing strategy (assign $s_{B_{i,j}}^*$, $p_{B_{i,j}}^*$ and $f^*_{B_{i,j},p_{B_{i,j}}^*}$) for each block $B_{i,j}$.
 
 To speed up data distribution, \name aims at maximizing the allocated weighted bandwidth for all the selected blocks, so the formulation of the objective can be described as:
 
