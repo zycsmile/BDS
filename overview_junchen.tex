@@ -1,20 +1,21 @@
-\section{Overview of \name}
+\section{Design Overview of \name}
 \label{sec:overview}
 
-To meet the needs for lower completion time while avoiding
-interference with latency-sensitive traffic, we present 
-the design and implementation of \name, a near-optimal
-multicast overlay network for inter-DC bulk data multicast.
-\name is built on two design choices, which
+To optimize inter-DC bulk-data multicast while avoiding 
+interference with latency-sensitive traffic, we present \name, 
+a near-optimal inter-DC multicast overlay network.
+\name is built on a couple of design choices, which
 %To optimize the performance of bulk-data replication, \name 
 %addresses the key challenges of a multicast overlay network
 %by two design choices, both of which 
-trade marginal costs for greater performance benefits. 
+trade marginal costs for substantial performance benefits. 
 Before describing the details of \name's design, we first
-highlight the intuition behind the design choices and
+highlight the design choices and the intuition behind 
 their cost-benefit tradeoffs 
 (summarized in Table~\ref{tab:design-choices}).
 
+\jc{add a figure here to illustrate the centralized
+architecture?}
 
 %The insights obtained from \company's operational experience has inspired the design of \name, a near-optimal inter-DC multicast overlay network. This section starts with \name key design choices, highlights the design philosophy behind our choices, and provide an overview of the \name system, which builds on these design choices.
 
@@ -22,38 +23,35 @@ their cost-benefit tradeoffs
 
 \mypara{Centralized decision-making}
 \name uses a centralized controller to periodically poll 
-the data delivery
-status at all servers, and updates the overlay path selection.
-The benefits of centralized decision-making are
+the data delivery status from all servers, and 
+updates the overlay path selection and bandwidth allocation 
+accordingly.
+The benefits of the centralized decision-making are
 two-fold. 
 First, having a global view on which data each server has 
-received makes it possible to explore the large set of possible 
-overlay servers and circumvent various performance bottlenecks,
+received enables exploring a large set of possible 
+overlay servers to circumvent performance bottlenecks,
 which would be otherwise impossible. 
-Second, the centralized view enables us to 
-balance the number of available sources 
-cross different data units, which appears to be critical to 
-achieving optimal overlay multicast performance (see 
-\Section\ref{??} for more details).
+Second, the centralized view allows us to 
+balance the number of intermediate overlay nodes of different
+data blocks, which is shown in \Section\ref{??} 
+to be critical to 
+achieving optimal overlay multicast performance.
 
 %Our first design choice is the fully centralized control. For large online service providers like \company, there are considerably large number of servers and exponentially more overlay paths, so it is hard to find out the optimal one for any decentralized solutions with only local information. \name, however is able to make near-optimal overlay routing and scheduling decisions with a centralized decision-making scheme. Furthermore, the embedded controller is lightweight in terms of CPU, bandwidth consumed, and thus enjoys good scalability over WANs.
 
 
 \mypara{Clean bandwidth separation}
 To prevent delay caused on the latency-sensitive user data, 
-\name separates background bulk data transfer from 
+\name separates background bulk data transfers from 
 latency-sensitive traffic.
 The \name controller continuously monitors the aggregated 
 volume of each traffic category (e.g., bulk data transfers, 
 latency sensitive short flows), dynamically
 determines how much residual bandwidth should be allocated to
 multicasting bulk data, and enforces a clean separation of 
-bandwdith between bulk data transfers and latency-sensitive 
+bandwidth between bulk data transfers and latency-sensitive 
 traffic.
-As long as the latency-sensitive traffic does not change 
-dramatically over time, 
-this clean separation in bandwidth can efficiently prevent
-interference on latency-sensitive traffic.
 
 %The second design choice is dynamic bandwidth separation. To prevent delay caused on the latency-sensitive user data, \name separates background bulk data transfer from latency-sensitive traffic. Specifically, \name maintains the information of all links and monitors the aggregated traffic from all latency-sensitive data, thus can dynamically calculate the residual bandwidth that can be allocated for background bulk data transfer. This clean bandwidth separation can efficiently prevent interference on latency-sensitive traffic.
 
@@ -73,24 +71,23 @@ interference on latency-sensitive traffic.
 
 \subsection{Design philosophy}
 
-The benefits of these design choices do not come for free. 
+These benefits of \name's design choices do not come for free. 
 On one hand, \name's centralized architecture creates an unwieldy 
-decision-making process that is hard to update decisions in real time 
+decision-making process that is difficult to update in real time 
 (due to the prohibitively large scale of the problem),
 or with the most up-to-date global view (due to inherent latency
 to gather data from globally distributed servers).
-On the other hand, simply enforcing a split on bandwidth resource
-could result in low link utilization, if such split is updated on a
-coarser timescale than how often traffic demands fluctuate 
-significantly.
+On the other hand, enforcing a fixed split on bandwidth resource
+could result in low link utilization, if such split is adjusted on
+a coarser timescale than the speed of traffic demand fluctuation.
 
 %The above two design choices may introduce performance costs, i.e., fully centralized control makes \name unable to update decisions in real time, because the \name controller works in a centralized manner and has to collect information from geo-distributed DCs, and this will naturally introduce some communication latency to the decision making process. Besides, the clean separation on bandwidth will possibly result in low link utilization due to the ever changing link utilization and the coarse-grained scheduling decisions.
 
 
-\mypara{Why benefits outweigh costs}
-Despite the costs introduced by \name's design choices, 
-our intuition that the costs are favorably outweighed by the 
-benefits is driven by several observations. 
+\mypara{Why the benefits outweigh the costs}
+We argue that the costs are favorably outweighed by the 
+benefits. The intuition behind this argument 
+is driven by several empirical observations. 
 \begin{packedenumerate}
 \item Bulk data transfers happen on much longer timescales than 
 how fast new transfer jobs start, and thus it can tolerates a delay
@@ -109,18 +106,21 @@ and thus can be stateless and lightweight.
 
 %Fortunately, the above costs are outweighed by the benefits. (1) bulk data transfer usually takes tens of seconds to minutes, so it can tolerates a delay at coarse timescale of several seconds in exchange for near-optimal scheduling decisions. (2) the aggregation of latency-sensitive data is stable on timescales of several seconds, therefore, it is plausible for the dynamic bandwidth separation to prevent interference on the latency-sensitive data while still maintaining high link utilizations. (3) the resulting system is amenable to a simpler implementation because the decision-making logic running on the controller side does not need to maintain data status or to deliver complex control messages, thus can be stateless and lightweight.
 
-\mypara{Fast, optimal centralized control is critical}
+\mypara{Fast, optimal overlay routing is the key}
 The key challenge to striking a favorable balance in \name between 
 centralized optimal decision-making and being practical at the
 a large scale is a {\em near-optimal and efficient overlay routing
 algorithm} that can be updated in timescales of several seconds. 
-At a first glance, the problem seems intractable: 
+At a first glance, the problem scale is indeed intractable: 
 the centralized overlay routing algorithm must pick the next hops
-from 10,000s servers for 10,000s objects, and the real scale of 
-solving the problem grows exponentially as we consider possible 
-overlay paths that go through these servers, and each object is 
-chopped into many fine-grained blocks to leverage multiple overlay
-paths.
+from 10,000s servers for 10,000s objects, a scale that could 
+even expand exponentially, as we consider all possible 
+overlay paths that go through these servers, and chop each data 
+object into many fine-grained blocks to enable fine-grained 
+multipath overlay routing.
+It is unclear how this problem can be solved even with 
+limited approximation, which was why for many years, \company have
+relied on decentralized protocols for bulk-data multicast.
 
 %The key technical challenge here is how to make optimal overlay scheduling and routing decisions at the scale tens of thousands of objects and tens of thousands of servers in near real time. To achieve desirable performance in a multicast overlay network, fully exploiting all the available overlay paths is essential, but it is untenable to go through all the potential servers and exponentially more paths by traditional approaches.
 
