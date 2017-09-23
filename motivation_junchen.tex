@@ -153,23 +153,57 @@ to optimizing inter-DC bulk-data multicast.
 \subsection{A case for inter-DC multicast overlay}
 \label{subsec:motivation:case-for}
 
+%\begin{figure}[t]
+%\centering
+%\includegraphics[width=80mm]{images/example.eps}
+%\caption{A toy example showing the benefit from inter-DC multicast overlay.}
+%\label{fig:case:example}
+%\vspace{-0.4cm}
+%\end{figure}
+
 \begin{figure}[t]
 \centering
-\includegraphics[width=80mm]{images/example.eps}
+\includegraphics[width=80mm]{images/example-junchen.pdf}
 \caption{A toy example showing the benefit from inter-DC multicast overlay.}
 \label{fig:case:example}
 \vspace{-0.4cm}
 \end{figure}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=75mm]{images/example-junchen.pdf}
-\caption{A toy example showing the benefit from inter-DC multicast overlay.}
-\label{fig:case:example}
-\vspace{-0.4cm}
-\end{figure}
+The benefits of application-level overlays are well-known in 
+many contexts. 
+In this section, we first use an example  to 
+illustrate such benefits in the context of inter-DC bulk-data 
+multicast.
 
-To intuitively show the improvements brought by the inter-DC multicast overlay, we show a toy example here. Fig. \ref{fig:case:example} shows three cases under different transmission strategies. Assume there are 6 DCs in the network: source DC \emph{S}, 2 intermediate DCs \emph{X} and \emph{Y}, 4 destination DCs $d_1,d_2,d_3,d_4$, and the bandwidth of both upload and download links are all 2Gbps. There is a 5G data file in the source DC \emph{S} that should be multicasted to all the 4 destination DCs. The data file is split into 5 blocks ($b_1,b_2,b_3,b_4,b_5$) each with 1G-size. (a) Directly sending data to each destination DC. The four source and destination pairs (s,d) share the link bandwidth fairly, and each is allocated to 0.5Gbps. Thus, the overall completion time in $d_i$ is 10t. (b) Build a multicast tree with chain replications on the intermediate DCs. Take $d_1$ as an example, his parent DC \emph{X} could begins to send $b_1$ with 1Gbps at the beginning of 2nd time slot because \emph{X} has already duplicated $b_1$ after 1t. So that the completion time can be reduced to 6t. (c) An optimal solution on multicast overlay network. \emph{S} sends different blocks to \emph{X} and \emph{Y} in the 1st time slot to make them share those block mutually in the next slot. Thus, in the end of 2nd slot, both \emph{X} and \emph{Y} have 3 blocks. Similarly, $d_1$ and $d_2$ are also able to share complementary blocks while download the other blocks from parent DC simultaneously. The completion time can then be further reduced to 4.5t.
+\mypara{An illustrative example}
+As shown in Figure~\ref{fig:case:example},
+suppose DC $B$ and $C$ want from DC $A$ a 36GB data file
+which has been chopped into six 6GB blocks.
+(The transfer is completed as long as the data is fully received
+by some servers in $B$ and $C$.)
+Topologically, $A$ is directly connected to $B$, and 
+$A$ has two paths to reach $C$: the WAN path
+which has 2GB/s capacity 
+(note that this path could go through $B$), or the overlay path
+from $A$ to a server $X$ in $B$ with 6BG/s capacity,
+and then from $X$ to $C$ with 3GB/s capacity.
+To begin with, if $A$ sends the data directly to $B$ and $C$, 
+as in Figure~\ref{fig:case:example}(a),
+i.e., no application-level overlay,
+the the completion time would be 18 seconds. 
+If we use overlay routing but only with a simple DC-level chain 
+replication scheme, as shown in Figure~\ref{fig:case:example}(b),
+it would take 13 seconds
+to complete, already a 27\% decrease from 18 seconds.
+However, we can further reduce the completion time 
+by judiciously scheduling blocks on different 
+overlay paths. For instance, Figure~\ref{fig:case:example}(c)
+illustrates an overlay routing scheme which completes in 9
+seconds, another 30\% decrease from 13 seconds.
+
+
+
+%Fig. \ref{fig:case:example} shows three cases under different transmission strategies. Assume there are 6 DCs in the network: source DC \emph{S}, 2 intermediate DCs \emph{X} and \emph{Y}, 4 destination DCs $d_1,d_2,d_3,d_4$, and the bandwidth of both upload and download links are all 2Gbps. There is a 5G data file in the source DC \emph{S} that should be multicasted to all the 4 destination DCs. The data file is split into 5 blocks ($b_1,b_2,b_3,b_4,b_5$) each with 1G-size. (a) Directly sending data to each destination DC. The four source and destination pairs (s,d) share the link bandwidth fairly, and each is allocated to 0.5Gbps. Thus, the overall completion time in $d_i$ is 10t. (b) Build a multicast tree with chain replications on the intermediate DCs. Take $d_1$ as an example, his parent DC \emph{X} could begins to send $b_1$ with 1Gbps at the beginning of 2nd time slot because \emph{X} has already duplicated $b_1$ after 1t. So that the completion time can be reduced to 6t. (c) An optimal solution on multicast overlay network. \emph{S} sends different blocks to \emph{X} and \emph{Y} in the 1st time slot to make them share those block mutually in the next slot. Thus, in the end of 2nd slot, both \emph{X} and \emph{Y} have 3 blocks. Similarly, $d_1$ and $d_2$ are also able to share complementary blocks while download the other blocks from parent DC simultaneously. The completion time can then be further reduced to 4.5t.
 
 \begin{figure}[t]
 \centering
@@ -179,7 +213,31 @@ To intuitively show the improvements brought by the inter-DC multicast overlay, 
 \vspace{-0.4cm}
 \end{figure}
 
-Consider the abstract topology of \company's real network, we can also find the situations similar to the above example. There are several DC groups divided by geographical locations, and every two groups are connected through one fiber link with high bandwidth. Within each DC group, there are dozens of DCs, and in each DC, there are normally 10,000 servers. Thus, there are numbers of possible disjoint paths between any DC pairs.
+\mypara{Opportunities in the wild}
+Next, we use performance measured from \company's DC servers to
+investigate whether the benefits illustrated by 
+Figure~\ref{fig:case:example} can be realized in a real DC WAN.
+The example of Figure~\ref{fig:case:example}
+reveals a well-known observation that the benefits of
+application-level overlay networks depend critically on if
+there exist disjoint paths between two nodes that have diverse 
+performance.
+We argue that global-scale online service providers such as Google
+and \company have such disjoint paths in abundance.
+First, the disjoint paths can emerge both 
+at DC-level (e.g., consider B4~\cite{b4}'s WAN topology) and 
+at server-level (e.g., consider Figure~\ref{fig:case:example} 
+where depending on the intermediate server in $B$, 
+$A$ has many overlay paths to $C$, all via the same DC-level
+path).
+Next, we use Figure~\ref{fig:case:size} show that these paths 
+have substantially diverse performance.
+We consider three DCs from \company's WAN that have the same 
+connectivity as in Figure~\ref{fig:case:example}.
+We randomly selected
+
+
+%Consider the abstract topology of \company's real network, we can also find the situations similar to the above example. There are several DC groups divided by geographical locations, and every two groups are connected through one fiber link with high bandwidth. Within each DC group, there are dozens of DCs, and in each DC, there are normally 10,000 servers. Thus, there are numbers of possible disjoint paths between any DC pairs.
 
 To intuitively show the benefit from disjoint paths, we make the follow measurements on the available bandwidth among three DC groups \emph{X, Y, B}. The topology is shown in Fig. \ref{fig:case:size}(a). $x_i,y_i$ and $b_i$ are servers in \emph{X, Y, B}, while any server in \emph{X} needs to go through \emph{Y} to get to any arbitrary server $b$ in \emph{B}. Let $bw(XYB)$, $bw(YB)$ denote the bandwidth between $x_i$ and $b_k$, and between $y_j$ and $b_k$, respectively, we show the fraction of $bw(XYB)$ and $bw(YB)$ in Fig. \ref{fig:case:size}(b). This figure illustrates that only in a few case (about 20\%), the available bandwidth between \emph{Y} and \emph{B} is higher than that between \emph{X} and \emph{B}, while in the majority of cases, $\frac{bw(XYB)}{bw(YB)}>1$, meaning selecting senders is not straightforward, and we do need to consider large decision spaces.
 
