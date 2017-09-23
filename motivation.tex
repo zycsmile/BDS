@@ -14,9 +14,7 @@ the performance of bulk-data multicast
 (\Section\ref{subsec:motivation:case-for}).
 Finally, we draw lessons from real-world incidents and statistics
 of the \company's existing multicast protocol
-(\Section\ref{subsec:motivation:baseline}), and summarize
-the section with challenges to be addressed in \name
-(\Section\ref{subsec:motivation:challenges}).
+(\Section\ref{subsec:motivation:baseline}).
 
 
 \subsection{The need for bulk-data multicast}
@@ -91,6 +89,28 @@ To further explore the characteristics of the multicast data files, we summarize
 \subsection{A case for inter-DC multicast overlay}
 \label{subsec:motivation:case-for}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=80mm]{images/example.eps}
+\caption{The benefit from inter-DC multicast overlay.}
+\label{fig:case:example}
+\vspace{-0.4cm}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=55mm]{images/XBvsYB.eps}
+\caption{Bandwidth between different (s,d) pairs.}
+\label{fig:case:size}
+\vspace{-0.4cm}
+\end{figure}
+
+To intuitively show the improvements brought by the inter-DC multicast overlay, we show a toy example here. Fig. \ref{fig:case:example} shows three cases under different transmission strategies. Assume there are 6 DCs in the network: source DC \emph{S}, 2 intermediate DCs \emph{X} and \emph{Y}, 4 destination DCs $d_1,d_2,d_3,d_4$, and the bandwidth of both upload and download links are all 2Gbps. There is a 5G data file in the source DC \emph{S} that should be multicasted to all the 4 destination DCs. The data file is split into 5 blocks ($b_1,b_2,b_3,b_4,b_5$) each with 1G-size. (a) Directly sending data to each destination DC. The four source and destination pairs (s,d) share the link bandwidth fairly, and each is allocated to 0.5Gbps. Thus, the overall completion time in $d_i$ is 10t. (b) Build a multicast tree with chain replications on the intermediate DCs. Take $d_1$ as an example, his parent DC \emph{X} could begins to send $b_1$ with 1Gbps at the beginning of 2nd time slot because \emph{X} has already duplicated $b_1$ after 1t. So that the completion time can be reduced to 6t. (c) An optimal solution on multicast overlay network. \emph{S} sends different blocks to \emph{X} and \emph{Y} in the 1st time slot to make them share those block mutually in the next slot. Thus, in the end of 2nd slot, both \emph{X} and \emph{Y} have 3 blocks. Similarly, $d_1$ and $d_2$ are also able to share complementary blocks while download the other blocks from parent DC simultaneously. The completion time can then be further reduced to 4.5t.
+
+Consider the abstract topology of \company's real network, we can also find the situations similar to the above example. There are several DC groups divided by geographical locations, and every two groups are connected through one fiber link with high bandwidth. Within each DC group, there are dozens of DCs, and in each DC, there are normally 10,000 servers. Thus, there are numbers of possible disjoint paths between any DC pairs.
+
+To intuitively show the benefit from disjoint paths, we make the follow measurements on the available bandwidth among three DCs. The topology is shown in \fillme.
+
 \begin{itemize}
 
 \item Give an illustrative toy example to compare (1) directly sending data to each destination DC, (2) use chain replication, i.e., build a multicast tree with each DC being a node, (3) an optimal solution.
@@ -120,16 +140,4 @@ Ideally, we need to show a CDF with two lines that one for flow completion time 
 (1) Use a figure to show that bulk data transfer can cause significant delay on latency-sensitive traffic, and (2) put some concrete numbers to show such delay can cause significant revenue loss.
 
 \end{itemize}
-
-\subsection{Challenges}
-\label{subsec:motivation:challenges}
-
-\begin{itemize}
-
-\item Need for centralized decision-making based on global view
-
-\item Need for clean traffic separation.
-
-\end{itemize}
-
 
