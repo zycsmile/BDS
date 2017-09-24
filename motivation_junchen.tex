@@ -4,23 +4,20 @@
 %\jc{Starting from Section 2, it would be paper outline.
 %Please think each bullet point as a separate paragraph.}
 
-We begin by motivating the need for an inter-DC multicast overlay.
-We first characterize the bulk-data multicast workload in \company
-a large-scale online service provider
-(\Section\ref{subsec:motivation:multicast-traffic}),
-as there is relatively little study on DC-level multicast
-traffic.
-We then show
-a substantial diversity in performance of application-level 
-overlay paths, and thus make a case for an inter-DC multicast
-overlay that picks optimal overlay paths to optimize bulk-data
-multicast.
+To motivate the need for an inter-DC multicast overlay,
+we first characterize the workload of bulk-data multicast in
+\company, a large-scale online service provider which has over 
+20 geographically distributed DCs.
+(\Section\ref{subsec:motivation:multicast-traffic}), 
+and then make a case for an intelligent inter-DC multicast 
+overlay network by showing that disjoint application-level 
+overlay paths are widely available and have great spatial 
+diversity in performance 
 (\Section\ref{subsec:motivation:case-for}).
-Finally, we study the operational experience of \company, a large
-online service provider, and draw important lessons from 
-real-world incidents and statistics
-of the \company's existing multicast protocol
-(\Section\ref{subsec:motivation:baseline}).
+Finally, we examine the existing multicast overlay networks 
+of \company, and draw important lessons from real-world incidents 
+and statistics (\Section\ref{subsec:motivation:baseline}), 
+which inform the design choices of \name.
 
 
 \subsection{Workload of bulk-data multicast}
@@ -69,18 +66,19 @@ consistent with what we observe on other DCs.}
 
 
 \mypara{Share of multicast traffic}
-First, we use \company's WAN to examine whether 
-inter-DC multicast traffic (replicating data from 
-one DC to multiple DCs) 
-amounts to a substantial share of inter-DC traffic.
+First, we examine the share of inter-DC multicast traffic 
+(replicating data from one DC to multiple DCs) 
+as a fraction of all traffic.
 Table~\ref{table:rate} shows multicast traffic as 
 a fraction of inter-DC traffic across all applications as
 well as in some important application types individually.
 We see that multicast traffic dominantes the inter-DC traffic 
 in \company, in terms of both overall traffic and 
-several important types of application traffic,
-which highlights the importance of optimizing multicast 
-traffic.
+several important types of application traffic.
+{\em The fact that inter-DC multicast traffic
+amounts to a substantial share of inter-DC traffic 
+highlights the importance of optimizing multicast 
+traffic.}
 %To check the percentage of multicast traffic, we breakdown all \company's total traffic volume into non-multicast traffic and the multicast traffic of each application, and then calculate the share of multicast traffic. Table \ref{table:rate} shows that a considerably large fraction of traffic is multicast traffic, despite the application types. This result highlights the importance of bulk-data transmission optimization.
 
 \begin{figure}[t]
@@ -105,33 +103,32 @@ fraction of DCs, and (2) huge in volume. \jc{change (a) to 80\% and 60\%, larger
 \end{figure}
 
 \mypara{Destined to many DCs}
-In the premise that multicast traffic amount to a substantial
-fraction of traffic, we then examine whether these transfers
-are destined to just a handful of DCs. 
+Next, we examine whether these transfers are destined to the
+a large fraction (or just a handful) of DCs. 
 Figure~\ref{fig:bulk:dest} sketches the distribution of the 
 percentage of DCs (in total, $\sim$ 30) to which multicast 
-transfers are destined. 
+transfers in \company are destined. 
 We can see that over 64\% of multicast transfers replicate data
 to more than 90\% of DCs, and over 80\% of them are destined 
 to more than half of DCs.
-Moreover, we observed a great diversity (not shown) 
-in terms of source DCs and the sets of destination DCs.
-Together, these observations suggest that it is undesirable to
-pre-configure the multicast overlay. 
+Moreover, we also observed a great diversity  in terms of 
+source DCs and the sets of destination DCs (not shown here).
+Together, these observations suggest that {\em it is not 
+scalable to pre-configure the multicast overlays as there
+are many possible source-destination DCs.} 
 
 %In the premise that bulk data shares a large fraction of overall traffic, we check the number of destination DCs of the data. Fig. \ref{fig:bulk:dest} shows that there are over 60\% applications with bulk data multicast traffic are destined to at least 90\% DCs, and about 20\% applications with bulk data destined to over 50\% (but less than 90\%) DCs. These results show that a large fraction of the bulk data traffic is multicast to almost all DCs.
 
 \mypara{Carrying bulk data}
-Finally, we want to know whether each multicast data transfer
-is small in volume and is thus short-lived.
+Finally, we examine the typical data size of multicast transfers. 
 Figure~\ref{fig:bulk:size} sketches the distribution of the
-size of data files that need to be multicast.
+size of data files that need to be multicast in \company.
 We see that over 60\% of multicast data files are larger than 1TB,
 while 90\% of them are larger than 50GB.
-The large data volumes suggest that the transfers are usually 
-long-lived and thus we could improve multicast performance by 
-routing data adaptively during a data transfer in response to
-dynamic network performance.
+Such large data volumes suggest that the transfers are usually 
+long-lived, and thus {\em we should dynamically adjust 
+the routing scheme during a data transfer in response to
+dynamic network performance.}
 
 
 \vspace{0.1cm}
@@ -177,21 +174,21 @@ multicast.
 
 \mypara{An illustrative example}
 As shown in Figure~\ref{fig:case:example},
-suppose DC $B$ and $C$ want from DC $A$ a 36GB data file
+suppose DC $B$ and $C$ want to fetch from DC $A$ a 36GB data file,
 which has been chopped into six 6GB blocks.
 (The transfer is completed as long as the data is fully received
 by some servers in $B$ and $C$.)
-Topologically, $A$ is directly connected to $B$, and 
-$A$ has two paths to reach $C$: the WAN path
+Topologically, $A$ is directly connected with $B$ by a 2GB/s 
+link, and $A$ has two paths to reach $C$: the WAN path
 which has 2GB/s capacity 
-(note that this path could go through $B$), or the overlay path
-from $A$ to a server $X$ in $B$ with 6BG/s capacity,
-and then from $X$ to $C$ with 3GB/s capacity.
+(note that this path could go through $B$), or an overlay path
+from $A$ first to a server $b$ in $B$ with a 6BG/s link,
+and then from $b$ to $C$ with a 3GB/s link.
 To begin with, if $A$ sends the data directly to $B$ and $C$, 
+i.e., no application-level overlay, 
 as in Figure~\ref{fig:case:example}(a),
-i.e., no application-level overlay,
-the the completion time would be 18 seconds. 
-If we use overlay routing but only with a simple DC-level chain 
+the completion time would be 18 seconds. 
+If we use overlay routing but with a simple DC-level chain 
 replication scheme, as shown in Figure~\ref{fig:case:example}(b),
 it would take 13 seconds
 to complete, already a 27\% decrease from 18 seconds.
@@ -201,6 +198,10 @@ overlay paths. For instance, Figure~\ref{fig:case:example}(c)
 illustrates an overlay routing scheme which completes in 9
 seconds, another 30\% decrease from 13 seconds.
 
+The example of Figure~\ref{fig:case:example}
+reveals a (well-known) observation that {\em the benefits of
+application-level overlay networks depend critically on if
+there exist disjoint paths between two nodes.}
 
 
 %Fig. \ref{fig:case:example} shows three cases under different transmission strategies. Assume there are 6 DCs in the network: source DC \emph{S}, 2 intermediate DCs \emph{X} and \emph{Y}, 4 destination DCs $d_1,d_2,d_3,d_4$, and the bandwidth of both upload and download links are all 2Gbps. There is a 5G data file in the source DC \emph{S} that should be multicasted to all the 4 destination DCs. The data file is split into 5 blocks ($b_1,b_2,b_3,b_4,b_5$) each with 1G-size. (a) Directly sending data to each destination DC. The four source and destination pairs (s,d) share the link bandwidth fairly, and each is allocated to 0.5Gbps. Thus, the overall completion time in $d_i$ is 10t. (b) Build a multicast tree with chain replications on the intermediate DCs. Take $d_1$ as an example, his parent DC \emph{X} could begins to send $b_1$ with 1Gbps at the beginning of 2nd time slot because \emph{X} has already duplicated $b_1$ after 1t. So that the completion time can be reduced to 6t. (c) An optimal solution on multicast overlay network. \emph{S} sends different blocks to \emph{X} and \emph{Y} in the 1st time slot to make them share those block mutually in the next slot. Thus, in the end of 2nd slot, both \emph{X} and \emph{Y} have 3 blocks. Similarly, $d_1$ and $d_2$ are also able to share complementary blocks while download the other blocks from parent DC simultaneously. The completion time can then be further reduced to 4.5t.
@@ -213,33 +214,54 @@ seconds, another 30\% decrease from 13 seconds.
 \vspace{-0.4cm}
 \end{figure}
 
-\mypara{Opportunities in the wild}
-Next, we use performance measured from \company's DC servers to
-investigate whether the benefits illustrated by 
-Figure~\ref{fig:case:example} can be realized in a real DC WAN.
-The example of Figure~\ref{fig:case:example}
-reveals a well-known observation that the benefits of
-application-level overlay networks depend critically on if
-there exist disjoint paths between two nodes that have diverse 
-performance.
-We argue that global-scale online service providers such as Google
-and \company have such disjoint paths in abundance.
-First, the disjoint paths can emerge both 
-at DC-level (e.g., consider B4~\cite{b4}'s WAN topology) and 
-at server-level (e.g., consider Figure~\ref{fig:case:example} 
-where depending on the intermediate server in $B$, 
-$A$ has many overlay paths to $C$, all via the same DC-level
-path).
-Next, we use Figure~\ref{fig:case:size} show that these paths 
-have substantially diverse performance.
+\mypara{Potential benefits in the wild}
+We argue that the benefits illustrated in the example of
+Figure~\ref{fig:case:example} can be actually realized in a 
+real DC WAN. The intuition is that 
+global-scale online service providers,
+such as Google and \company, have disjoint paths in abundance, 
+both at DC-level (e.g., consider B4~\cite{b4}'s WAN topology) 
+and at server-level (e.g., consider Figure~\ref{fig:case:example} 
+where depending on the intermediate server $b$ in $B$, 
+$A$ has many overlay paths to $C$).
+A crucial question, however, is that while two overlay paths are 
+physically disjoint, they might share the same bottleneck, and 
+thus should be counted as not disjoint in our context.
+Here, we answer the question under a case for which physically
+disjoint paths share network bottlenecks.
+When two overlay paths go through different servers but traverse 
+the inter-DC WAN path, they would tend to have the same network 
+bottlenecks, as WAN capacity is usually believed to be more 
+limited than intra-DC networks.
+However, our empirical measurement in \company's networks shows
+otherwise. 
 We consider three DCs from \company's WAN that have the same 
-connectivity as in Figure~\ref{fig:case:example}.
-We randomly selected
+connectivity as in Figure~\ref{fig:case:example},
+and show the distribution of 
+$\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$, 
+the ratio between the available bandwidth
+from $A$ to $C$ through WAN ($BW_{A\rightarrow C}$) and 
+that from $A$ to $C$ through $b$
+($BW_{A\rightarrow b\rightarrow C}$), 
+across all possible choices of $b$.
+If WAN is indeed the bandwidth bottleneck, we should see
+$\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}=1$, 
+but the graph shows a substantial discrepancy between
+$BW(A\rightarrow C)$ and $BW_{A\rightarrow b\rightarrow C}$,
+indicating that the available bandwidth can be bottlenecked by 
+the capacity of server $b$ 
+($BW_{A\rightarrow C}>BW_{A\rightarrow b\rightarrow C}$),
+or the intra-DC network in DC $B$
+($BW_{A\rightarrow C}<BW_{A\rightarrow b\rightarrow C}$).
+These observations corroborate the intuition that
+{\em many physically 
+disjoint overlay paths tend not to share bottleneck}.
+
 
 
 %Consider the abstract topology of \company's real network, we can also find the situations similar to the above example. There are several DC groups divided by geographical locations, and every two groups are connected through one fiber link with high bandwidth. Within each DC group, there are dozens of DCs, and in each DC, there are normally 10,000 servers. Thus, there are numbers of possible disjoint paths between any DC pairs.
 
-To intuitively show the benefit from disjoint paths, we make the follow measurements on the available bandwidth among three DC groups \emph{X, Y, B}. The topology is shown in Fig. \ref{fig:case:size}(a). $x_i,y_i$ and $b_i$ are servers in \emph{X, Y, B}, while any server in \emph{X} needs to go through \emph{Y} to get to any arbitrary server $b$ in \emph{B}. Let $bw(XYB)$, $bw(YB)$ denote the bandwidth between $x_i$ and $b_k$, and between $y_j$ and $b_k$, respectively, we show the fraction of $bw(XYB)$ and $bw(YB)$ in Fig. \ref{fig:case:size}(b). This figure illustrates that only in a few case (about 20\%), the available bandwidth between \emph{Y} and \emph{B} is higher than that between \emph{X} and \emph{B}, while in the majority of cases, $\frac{bw(XYB)}{bw(YB)}>1$, meaning selecting senders is not straightforward, and we do need to consider large decision spaces.
+%To intuitively show the benefit from disjoint paths, we make the follow measurements on the available bandwidth among three DC groups \emph{X, Y, B}. The topology is shown in Fig. \ref{fig:case:size}(a). $x_i,y_i$ and $b_i$ are servers in \emph{X, Y, B}, while any server in \emph{X} needs to go through \emph{Y} to get to any arbitrary server $b$ in \emph{B}. Let $bw(XYB)$, $bw(YB)$ denote the bandwidth between $x_i$ and $b_k$, and between $y_j$ and $b_k$, respectively, we show the fraction of $bw(XYB)$ and $bw(YB)$ in Fig. \ref{fig:case:size}(b). This figure illustrates that only in a few case (about 20\%), the available bandwidth between \emph{Y} and \emph{B} is higher than that between \emph{X} and \emph{B}, while in the majority of cases, $\frac{bw(XYB)}{bw(YB)}>1$, meaning selecting senders is not straightforward, and we do need to consider large decision spaces.
 
 %\begin{itemize}
 %
@@ -264,6 +286,11 @@ To intuitively show the benefit from disjoint paths, we make the follow measurem
         \label{fig:lesson2}
 %\vspace{0.1in}
 \end{figure*}
+
+We have seen that inter-DC multicast overlay networks have promising
+potentials to optimize inter-DC bulk-data multicast. 
+Realizing such potential in practice is easier said than done.
+
 
 The being used protocol in \company is a receiver-driven decentralized protocol. Once a receiver wants to download a data file, it announces the requirement to the source DC, then the required data will be forwarded to it through both the source DC and intermediate DCs. For the intermediate DCs, there is a customized store-and-forward strategy that decides whether to store the data or not and when to delete the data. This solution has been running for more than 5 years and has been continuously improved over time.
 
