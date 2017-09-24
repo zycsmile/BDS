@@ -8,7 +8,7 @@
 To motivate the need for an inter-DC multicast overlay,
 we first characterize the workload of bulk-data multicast in
 \company, a large-scale online service provider which has over
-20 geographically distributed DCs.
+20 geographically distributed DCs
 (\Section\ref{subsec:motivation:multicast-traffic}),
 and then make a case for an intelligent inter-DC multicast
 overlay network by showing that disjoint application-level
@@ -120,7 +120,7 @@ traffic.}
         \centering
         \begin{subfigure}[b]{0.23\textwidth}
                 \centering
-                \includegraphics[width=\textwidth]{images/destinationDC.eps}
+                \includegraphics[width=\textwidth]{images/destinationDC.eps}%NeedMulticast.m
                 \caption{\% of multicast transfers destined to \% of DCs.}
                 \label{fig:bulk:dest}
         \end{subfigure}
@@ -132,7 +132,7 @@ traffic.}
                 \label{fig:bulk:size}
         \end{subfigure}
         \caption{Inter-DC multicast data transfers are (1) destined to a significant
-fraction of DCs, and (2) huge in volume. \jc{change (a) to 80\% and 60\%, larger font, use the same color}}
+fraction of DCs, and (2) huge in volume.}
         \label{fig:bulk}
 \vspace{-0.4cm}
 \end{figure}
@@ -152,9 +152,9 @@ transfers in \company are destined.
 %percentage of DCs (in total, $\sim$ 30) to which multicast
 %transfers are destined.
 %>>>>>>> 09029e454f71e5a5e01f13f554477705e665f4ec
-We can see that over 64\% of multicast transfers replicate data
-to more than 90\% of DCs, and over 80\% of them are destined
-to more than half of DCs.
+We can see that over 71\% of multicast transfers replicate data
+to more than 80\% of DCs, and nearly 70\% of them are destined
+to more than 60\% of DCs.
 %<<<<<<< HEAD
 Moreover, we also observed a great diversity  in terms of
 source DCs and the sets of destination DCs (not shown here).
@@ -416,6 +416,24 @@ This solution has been running for more than 5 years and has been continuously i
 \mypara{Key observations}
 To sum up, we can get two key lessons from the current baseline solutions.
 
+\begin{figure}[t]
+        \centering
+        \begin{subfigure}[b]{0.23\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{images/SE_3.eps}
+                \caption{The completion time of the 643 servers.}
+                \label{fig:motivation:observation1}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.23\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{images/SE_3_cdf.eps}
+                \caption{The CDF of transmission completion time.}
+                \label{fig:motivation:observation2}
+        \end{subfigure}
+        \caption{The completion time under the current baseline solution.}
+        \label{fig:motivation}
+\vspace{-0.4cm}
+\end{figure}
 
 \begin{itemize}
 %\item Briefly describe how \company does multicast today: how to data is forwarded through an intermediate DC? what's the protocol (a receiver-driven decentralized protocol)?
@@ -423,16 +441,17 @@ To sum up, we can get two key lessons from the current baseline solutions.
 %
 %\item Briefly mention other solutions (layered structure, hybrid approach, and why not optimizing pair-wise DC link is not sufficient)
 
-\item {\em Observation \#1: Completion times are often suboptimal.}
-Decentralized protocols lacks the global information about the whole network, and thus cannot make optimal scheduling. We conduct an experiment under a simplest topology that there is 1 source DC $s$ and 2 destination DCs $d_1, d_2$ (there are 640 servers in each DC), transferring a 30GB data file on $s$ to $d_1$ and $d_2$, with 20Mbps upload and download bandwidth. Theoretically, the optimal overlay solution could always select the better source for any block of the data file, and the ideal completion time for $d_1$ and $d_2$ is $\frac{30\times 1024}{640\times 20Mbps \times 60s/min} = 41$ minutes. While under the existing protocol, the average completion time is about 195 minutes, 4.75 times longer than the optimal completion time.
 
-\jc{this is still a toy example. we want to use real data to show these observations. how about using the previous figure to show tail latency.}
+\item {\em Observation \#1: Completion times are often suboptimal.}
+Decentralized protocols lacks the global information about the whole network, and thus cannot make optimal scheduling. We conduct an experiment under a simplest topology that there is 1 source DC $s$ and 2 destination DCs $d_1, d_2$ (there are 640 servers in each DC), transferring a 30GB data file on $s$ to $d_1$ and $d_2$, with 20Mbps upload and download bandwidth. Theoretically, the optimal overlay solution could always select the better source for any block of the data file, and the ideal completion time for $d_1$ and $d_2$ is $\frac{30\times 1024}{640\times 20Mbps \times 60s/min} = 41$ minutes. While Figure \ref{fig:motivation} shows the results under the existing protocol, the average completion time is about 195 minutes, 4.75 times longer than the optimal completion time. What's worse, it also exhibits heavy tail latency and there are about 5\% servers whose completion time is more than $200min$.
+
+%\jc{this is still a toy example. we want to use real data to show these observations. how about using the previous figure to show tail latency.}
 
 \item {\em Observation \#2: Latency-sensitive online traffic can be impacted (even with QoS enabled at gateway routers).}
-We continuously monitored the bandwidth utilization of an inter-DC link in four days where there is a bulk data transfer at 11:00 on the 4th day (lasted for 6 hours and finished at 17:00). Fig. \ref{fig:lesson2} shows the link utilization during the four days, from which we can see that the bulk data transfer caused significant traffic burst. As a result, the latency-sensitive online traffic that runs simultaneously on this link therefore suffered over 30 times longer delay.
+We continuously monitored the bandwidth utilization of an inter-DC link in four days where there is a bulk data transfer at 11:00 on the 4th day (lasted for 6 hours and finished at 17:00). Fig. \ref{fig:lesson2} shows the link utilization during the four days, from which we can see that the bulk data transfer caused significant traffic burst. As a result, the latency-sensitive online traffic that runs simultaneously on this link therefore suffered over 30 times longer delay, usually speaking, from about $60ms$ to nearly 2 seconds.
 %(1) Use a figure to show that bulk data transfer can cause significant delay on latency-sensitive traffic, and (2) put some concrete numbers to show such delay can cause significant revenue loss.
 
-\jc{can we show some numbers on how much delay on latency-sensitive traffic during that incident? and how much losses did it cause (either in terms of application quality or in \$\$)?}
+%\jc{can we show some numbers on how much delay on latency-sensitive traffic during that incident? and how much losses did it cause (either in terms of application quality or in \$\$)?}
 
 \end{itemize}
 
