@@ -11,13 +11,13 @@ a large-scale online service provider
 as there is relatively little study on DC-level multicast
 traffic.
 We then show
-a substantial diversity in performance of application-level 
+a substantial diversity in performance of application-level
 overlay paths, and thus make a case for an inter-DC multicast
 overlay that picks optimal overlay paths to optimize bulk-data
 multicast.
 (\Section\ref{subsec:motivation:case-for}).
 Finally, we study the operational experience of \company, a large
-online service provider, and draw important lessons from 
+online service provider, and draw important lessons from
 real-world incidents and statistics
 of the \company's existing multicast protocol
 (\Section\ref{subsec:motivation:baseline}).
@@ -54,32 +54,32 @@ Other DB sync-ups & 99.1\%\\% ?? vs ??
 \end{tabular}
 %}
 \end{center}
-\caption{DC-level multicast traffic (replicating data from 
-one DC to multiple DCs) dominantes the inter-DC traffic 
+\caption{DC-level multicast traffic (replicating data from
+one DC to multiple DCs) dominantes the inter-DC traffic
 in \company (across all applications and in
 several important individual application types.}
 \label{table:rate}
 \end{table}
 \footnotetext[2]{The overall multicast traffic
-share is estimated by that of the traffic goes through one 
-randomly sampled DC, because we do not have access to 
-information of all inter-DC traffic, but this number is 
+share is estimated by that of the traffic goes through one
+randomly sampled DC, because we do not have access to
+information of all inter-DC traffic, but this number is
 consistent with what we observe on other DCs.}
 %We randomly select one link from all inter-DC links whose traffic is monitored by different application types. As all these links carry the similar traffic, so the randomly selected one could exhibit good representatives.}
 
 
 \mypara{Share of multicast traffic}
-First, we use \company's WAN to examine whether 
-inter-DC multicast traffic (replicating data from 
-one DC to multiple DCs) 
+First, we use \company's WAN to examine whether
+inter-DC multicast traffic (replicating data from
+one DC to multiple DCs)
 amounts to a substantial share of inter-DC traffic.
-Table~\ref{table:rate} shows multicast traffic as 
+Table~\ref{table:rate} shows multicast traffic as
 a fraction of inter-DC traffic across all applications as
 well as in some important application types individually.
-We see that multicast traffic dominantes the inter-DC traffic 
-in \company, in terms of both overall traffic and 
+We see that multicast traffic dominantes the inter-DC traffic
+in \company, in terms of both overall traffic and
 several important types of application traffic,
-which highlights the importance of optimizing multicast 
+which highlights the importance of optimizing multicast
 traffic.
 %To check the percentage of multicast traffic, we breakdown all \company's total traffic volume into non-multicast traffic and the multicast traffic of each application, and then calculate the share of multicast traffic. Table \ref{table:rate} shows that a considerably large fraction of traffic is multicast traffic, despite the application types. This result highlights the importance of bulk-data transmission optimization.
 
@@ -107,17 +107,17 @@ fraction of DCs, and (2) huge in volume. \jc{change (a) to 80\% and 60\%, larger
 \mypara{Destined to many DCs}
 In the premise that multicast traffic amount to a substantial
 fraction of traffic, we then examine whether these transfers
-are destined to just a handful of DCs. 
-Figure~\ref{fig:bulk:dest} sketches the distribution of the 
-percentage of DCs (in total, $\sim$ 30) to which multicast 
-transfers are destined. 
+are destined to just a handful of DCs.
+Figure~\ref{fig:bulk:dest} sketches the distribution of the
+percentage of DCs (in total, $\sim$ 30) to which multicast
+transfers are destined.
 We can see that over 64\% of multicast transfers replicate data
-to more than 90\% of DCs, and over 80\% of them are destined 
+to more than 90\% of DCs, and over 80\% of them are destined
 to more than half of DCs.
-Moreover, we observed a great diversity (not shown) 
+Moreover, we observed a great diversity (not shown)
 in terms of source DCs and the sets of destination DCs.
 Together, these observations suggest that it is undesirable to
-pre-configure the multicast overlay. 
+pre-configure the multicast overlay.
 
 %In the premise that bulk data shares a large fraction of overall traffic, we check the number of destination DCs of the data. Fig. \ref{fig:bulk:dest} shows that there are over 60\% applications with bulk data multicast traffic are destined to at least 90\% DCs, and about 20\% applications with bulk data destined to over 50\% (but less than 90\%) DCs. These results show that a large fraction of the bulk data traffic is multicast to almost all DCs.
 
@@ -128,8 +128,8 @@ Figure~\ref{fig:bulk:size} sketches the distribution of the
 size of data files that need to be multicast.
 We see that over 60\% of multicast data files are larger than 1TB,
 while 90\% of them are larger than 50GB.
-The large data volumes suggest that the transfers are usually 
-long-lived and thus we could improve multicast performance by 
+The large data volumes suggest that the transfers are usually
+long-lived and thus we could improve multicast performance by
 routing data adaptively during a data transfer in response to
 dynamic network performance.
 
@@ -169,10 +169,10 @@ to optimizing inter-DC bulk-data multicast.
 \vspace{-0.4cm}
 \end{figure}
 
-The benefits of application-level overlays are well-known in 
-many contexts. 
-In this section, we first use an example  to 
-illustrate such benefits in the context of inter-DC bulk-data 
+The benefits of application-level overlays are well-known in
+many contexts.
+In this section, we first use an example  to
+illustrate such benefits in the context of inter-DC bulk-data
 multicast.
 
 \mypara{An illustrative example}
@@ -181,22 +181,22 @@ suppose DC $B$ and $C$ want from DC $A$ a 36GB data file
 which has been chopped into six 6GB blocks.
 (The transfer is completed as long as the data is fully received
 by some servers in $B$ and $C$.)
-Topologically, $A$ is directly connected to $B$, and 
+Topologically, $A$ is directly connected to $B$, and
 $A$ has two paths to reach $C$: the WAN path
-which has 2GB/s capacity 
+which has 2GB/s capacity
 (note that this path could go through $B$), or the overlay path
 from $A$ to a server $X$ in $B$ with 6BG/s capacity,
 and then from $X$ to $C$ with 3GB/s capacity.
-To begin with, if $A$ sends the data directly to $B$ and $C$, 
+To begin with, if $A$ sends the data directly to $B$ and $C$,
 as in Figure~\ref{fig:case:example}(a),
 i.e., no application-level overlay,
-the the completion time would be 18 seconds. 
-If we use overlay routing but only with a simple DC-level chain 
+the the completion time would be 18 seconds.
+If we use overlay routing but only with a simple DC-level chain
 replication scheme, as shown in Figure~\ref{fig:case:example}(b),
 it would take 13 seconds
 to complete, already a 27\% decrease from 18 seconds.
-However, we can further reduce the completion time 
-by judiciously scheduling blocks on different 
+However, we can further reduce the completion time
+by judiciously scheduling blocks on different
 overlay paths. For instance, Figure~\ref{fig:case:example}(c)
 illustrates an overlay routing scheme which completes in 9
 seconds, another 30\% decrease from 13 seconds.
@@ -207,7 +207,7 @@ seconds, another 30\% decrease from 13 seconds.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=80mm]{images/potential.eps}
+\includegraphics[width=80mm]{images/potential.eps}%DrawUp.m
 \caption{Measurements showing the potential bandwidth between different (s,d) pairs.}
 \label{fig:case:size}
 \vspace{-0.4cm}
@@ -215,24 +215,24 @@ seconds, another 30\% decrease from 13 seconds.
 
 \mypara{Opportunities in the wild}
 Next, we use performance measured from \company's DC servers to
-investigate whether the benefits illustrated by 
+investigate whether the benefits illustrated by
 Figure~\ref{fig:case:example} can be realized in a real DC WAN.
 The example of Figure~\ref{fig:case:example}
 reveals a well-known observation that the benefits of
 application-level overlay networks depend critically on if
-there exist disjoint paths between two nodes that have diverse 
+there exist disjoint paths between two nodes that have diverse
 performance.
 We argue that global-scale online service providers such as Google
 and \company have such disjoint paths in abundance.
-First, the disjoint paths can emerge both 
-at DC-level (e.g., consider B4~\cite{b4}'s WAN topology) and 
-at server-level (e.g., consider Figure~\ref{fig:case:example} 
-where depending on the intermediate server in $B$, 
+First, the disjoint paths can emerge both
+at DC-level (e.g., consider B4~\cite{b4}'s WAN topology) and
+at server-level (e.g., consider Figure~\ref{fig:case:example}
+where depending on the intermediate server in $B$,
 $A$ has many overlay paths to $C$, all via the same DC-level
 path).
-Next, we use Figure~\ref{fig:case:size} show that these paths 
+Next, we use Figure~\ref{fig:case:size} show that these paths
 have substantially diverse performance.
-We consider three DCs from \company's WAN that have the same 
+We consider three DCs from \company's WAN that have the same
 connectivity as in Figure~\ref{fig:case:example}.
 We randomly selected
 
