@@ -320,15 +320,9 @@ across all possible choices of $b$.
 If WAN is indeed the bandwidth bottleneck, we should see
 $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}=1$,
 but the graph shows a substantial discrepancy between
-<<<<<<< HEAD
 $BW_{A\rightarrow C}$ and $BW_{A\rightarrow b\rightarrow C}$,
 indicating that the available bandwidth can be bottlenecked by 
 the capacity of server $b$ 
-=======
-$BW(A\rightarrow C)$ and $BW_{A\rightarrow b\rightarrow C}$,
-indicating that the available bandwidth can be bottlenecked by
-the capacity of server $b$
->>>>>>> ee2e124a1431c0b2784f49fe55c14b09e082e382
 ($BW_{A\rightarrow C}>BW_{A\rightarrow b\rightarrow C}$),
 or the intra-DC network in DC $B$
 ($BW_{A\rightarrow C}<BW_{A\rightarrow b\rightarrow C}$).
@@ -379,7 +373,7 @@ disjoint overlay paths tend not to share bottleneck}.
 %
 %\end{itemize}
 
-\subsection{Lessons from a baseline solution}
+\subsection{Experience of an industry solution}
 \label{subsec:motivation:baseline}
 
 \begin{figure*}[t]
@@ -393,22 +387,33 @@ disjoint overlay paths tend not to share bottleneck}.
 We have seen that inter-DC multicast overlay networks have 
 promising potentials to optimize inter-DC bulk-data multicast. 
 Realizing such potential in practice is easier said than done.
-At a first glance, it seems desirable to 
-This section uses \company's multicast overlay networks as a case 
-study, and identify two unique requirements of an multicast 
-overlay network
-\company have deployed and improved a 
-5-year experience of evolving the overlay networks.
+At a first glance, it seems we should borrow ideas from other 
+multicast overlay systems, which logically solves a similar
+problem. 
+However, drawing on \company's experience deploying and evolving 
+its multicast overlay networks, we identify two requirements
+unique to applying multicast overlay for inter-DC bulk data 
+multicast.
 
-
-Drawing on \company's experience of deploying and evolving its multicast
-overlay networks, we identify two unique requirements from  that need to be addressed
-
-
-The being used protocol in \company is a receiver-driven decentralized protocol. Once a receiver wants to download a data file, it announces the requirement to the source DC, then the required data will be forwarded to it through both the source DC and intermediate DCs. For the intermediate DCs, there is a customized store-and-forward strategy that decides whether to store the data or not and when to delete the data. This solution has been running for more than 5 years and has been continuously improved over time.
+\mypara{Existing solution}
+A few years ago, to meet the need of rapid growth in multicast
+data, \company deployed a simple 
+receiver-driven decentralized protocol
+that was similar to what was used in other overlay networks 
+(such as CDNs and peer-to-peer video streaming) 
+where multicast is needed, and since then \company has been 
+improving its protocol 
+At a high level, when multiple DC wants to download a data 
+file, they send the request to the source DC, and then the 
+requested data would flow back through intermediate DCs towards 
+the destinations. 
+For the intermediate DCs, there is a customized store-and-forward strategy that decides whether to store the data or not and when to delete the data. 
+%The being used protocol in \company is a receiver-driven decentralized protocol. Once a receiver wants to download a data file, it announces the requirement to the source DC, then the required data will be forwarded to it through both the source DC and intermediate DCs. For the intermediate DCs, there is a customized store-and-forward strategy that decides whether to store the data or not and when to delete the data. 
+This solution has been running for more than 5 years and has been continuously improved over time.
 
 At the same time, there are also some other solutions. For example, layered structures of DCs \cite{??} could simplify the scheduling and routing algorithm in the latency-sensitive systems but cannot explore more potential spaces and thus far from being optimal. Some pair-wise solutions like \cite{b4,bwe} improving inter-DC scheduling and routing are also not sufficient in the multicast overlay networks, due to the ignorance of multiple overlay paths.
 
+\mypara{Key observations}
 To sum up, we can get two key lessons from the current baseline solutions.
 
 
@@ -418,12 +423,12 @@ To sum up, we can get two key lessons from the current baseline solutions.
 %
 %\item Briefly mention other solutions (layered structure, hybrid approach, and why not optimizing pair-wise DC link is not sufficient)
 
-\item Lesson \#1: Completion times are often suboptimal.
-
+\item {\em Observation \#1: Completion times are often suboptimal.}
 Decentralized protocols lacks the global information about the whole network, and thus cannot make optimal scheduling. We conduct an experiment under a simplest topology that there is 1 source DC $s$ and 2 destination DCs $d_1, d_2$ (there are 640 servers in each DC), transferring a 30GB data file on $s$ to $d_1$ and $d_2$, with 20Mbps upload and download bandwidth. Theoretically, the optimal overlay solution could always select the better source for any block of the data file, and the ideal completion time for $d_1$ and $d_2$ is $\frac{30\times 1024}{640\times 20Mbps \times 60s/min} = 41$ minutes. While under the existing protocol, the average completion time is about 195 minutes, 4.75 times longer than the optimal completion time.
 
-\item Lesson \#2: Latency-sensitive online traffic can be impacted (even with QoS enabled at gateway routers).
+\jc{add the previous figure to show tail latency.}
 
+\item {\em Observation \#2: Latency-sensitive online traffic can be impacted (even with QoS enabled at gateway routers).}
 We continuously monitored the bandwidth utilization of an inter-DC link in four days where there is a bulk data transfer at 11:00 on the 4th day (lasted for 6 hours and finished at 17:00). Fig. \ref{fig:lesson2} shows the link utilization during the four days, from which we can see that the bulk data transfer caused significant traffic burst. As a result, the latency-sensitive online traffic that runs simultaneously on this link therefore suffered over 30 times longer delay.
 %(1) Use a figure to show that bulk data transfer can cause significant delay on latency-sensitive traffic, and (2) put some concrete numbers to show such delay can cause significant revenue loss.
 
