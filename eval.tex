@@ -132,17 +132,6 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
 \label{table:usage}
 \vspace{-0.4cm}
 \end{table}
-
-As \name implements strict bandwidth separation between latency-sensitive traffic and bulk data transfer while still showing shorter completion time, does \name increase link utilization significantly? To answer this question, we record the average utilizations of: (1) the egress link of the source DC, and (2) 3 randomly selected inter-DC links, denoted as $l_1,l_2$ and $l_3$. Results are shown in Table \ref{table:usage}, which shows that link utilizations do not change much with \name or with \company. This is because \name can make disjoint data transfers to different receivers and thus avoids transferring repeated data compared the self-organized \company's solution.
-
-%\begin{itemize}
-%\item Draw a graph (what graph can you get on this?) to show with bandwidth separation, \name can reduce the incidents of delay on latency-sensitive traffic caused by bulk data transfers.%DrawLink.m
-%\item Draw a graph (what graph can you get on this?) to show the link utilization does not change much with \name or with \company.%DrawUsage.m
-%\end{itemize}
-
-\subsection{Micro-benchmarks}
-\label{subsec:evaluation:benchmarks}
-
 \begin{figure*}[t]
         \centering
         \begin{subfigure}[b]{0.3\textwidth}
@@ -192,6 +181,17 @@ As \name implements strict bandwidth separation between latency-sensitive traffi
         \label{fig:analysis}
 \vspace{-0.4cm}
 \end{figure*}
+
+
+As \name implements strict bandwidth separation between latency-sensitive traffic and bulk data transfer while still showing shorter completion time, does \name increase link utilization significantly? To answer this question, we record the average utilizations of: (1) the egress link of the source DC, and (2) 3 randomly selected inter-DC links, denoted as $l_1,l_2$ and $l_3$. Results are shown in Table \ref{table:usage}, which shows that link utilizations do not change much with \name or with \company. This is because \name can make disjoint data transfers to different receivers and thus avoids transferring repeated data compared the self-organized \company's solution.
+
+%\begin{itemize}
+%\item Draw a graph (what graph can you get on this?) to show with bandwidth separation, \name can reduce the incidents of delay on latency-sensitive traffic caused by bulk data transfers.%DrawLink.m
+%\item Draw a graph (what graph can you get on this?) to show the link utilization does not change much with \name or with \company.%DrawUsage.m
+%\end{itemize}
+
+\subsection{Micro-benchmarks}
+\label{subsec:evaluation:benchmarks}
 
 This section focuses on some benchmarks of \name. On one hand, as \name adopts centralized control, the running time of controller and the scalability of the algorithm are key concerns. On the other hand, \fillme.
 
