@@ -89,7 +89,29 @@ We use the same topology with 12 DCs (1 DC acts as the source DC), 1000 servers 
 
 Bullet \cite{kostic2003bullet} is a distributed algorithm that works on an overlay mesh network, it enables geo-spread nodes to self-organize into a overlay mesh. Specifically, each node uses RanSub \cite{Rodriguez2003Using} to distribute summary tickets information to other nodes, and receives disjoint data from his sending peers. The most obvious difference between \name and Bullet lies in the control scheme, i.e., \name is centralized method, who can maximize total system traffic, while Bullet is a decentralized scheme and each node makes decision according to his obtained information. We conduct three series of experiments and show the results in Figure \ref{fig:versusCDN}: baseline \ref{fig:cdn:baseline}, large scale \ref{fig:cdn:scale} and small bandwidth experiments \ref{fig:cdn:bw}. We find \name achieves 3$\times$ shorter completion time than Bullet in the baseline experiments, and more than 4$\times$ improvement in the large scale experiments and small bandwidth experiments.
 
-Akamai design a 3-layer overlay network for delivering live streams \cite{Andreev2013Designing}, where a source forwards its streams to reflectors, and a reflector sends outgoing streams to the final stage sinks. Things \name and Akamai have in common is that both of them are designed for data distribution on overlay multicast networks. There are two main differences  between Akamai and \name: (1) Akamai adopts a 3-layer topology where an edgeserver receives data from the parent reflectors, while \name could explore more potential searching space without layer limitation. (2) A sink in Akamai receives must receive data in sequential order because it serves for the live streaming application, but \name does care about blocks arriving order. Thus, to achieve optimal scheduling results, \name should also solve the scheduling problem so as to work out the optimal block download order $\overrightarrow{o}(s_i)$. The comparison results of Akamai and \name are shown in \fillme.
+
+Akamai design a 3-layer overlay network for delivering live streams \cite{Andreev2013Designing}, where a source forwards its streams to reflectors, and a reflector sends outgoing streams to the final stage sinks. Things \name and Akamai have in common is that both of them are designed for data distribution on overlay multicast networks. There are two main differences  between Akamai and \name: (1) Akamai adopts a 3-layer topology where an edgeserver receives data from the parent reflectors, while \name could explore more potential searching space without layer limitation. (2) A sink in Akamai receives must receive data in sequential order because it serves for the live streaming application, but \name does care about blocks arriving order. Thus, to achieve optimal scheduling results, \name should also solve the scheduling problem so as to work out the optimal block download order $\overrightarrow{o}(s_i)$. The comparison results of Akamai and \name are shown in Table \ref{table:versusAkamai}, which shows that \name achieves 4-8$\times$ speedup over Akamai's layered solution.
+
+\begin{table}[htbp]
+\begin{center}
+\resizebox{3in}{!}{
+%\begin{tabular}{p{2cm}<{\centering}|p{2cm}<{\centering}}
+\begin{tabular}{| c | c| c| c|}
+\hline
+ \rowcolor[gray]{0.9}
+\textbf{Solution} & \textbf{Baseline} & \textbf{Large Scale} & \textbf{Rate Limit} \\
+\hline \hline
+Akamai & $75m$ & $742m$ & $447m$\\
+\hline
+\name & $9.41m$ & $171.33m$ & $128.25m$\\
+\hline
+\end{tabular}
+}
+\end{center}
+\vspace{-0.4cm}
+\caption{Completion time of PieBridge and Akamai.}
+\label{table:versusAkamai}
+\end{table}
 
 %\begin{itemize}
 %\item \name vs. other overlay multicast techniques
@@ -132,6 +154,7 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
 \label{table:usage}
 \vspace{-0.4cm}
 \end{table}
+
 \begin{figure*}[t]
         \centering
         \begin{subfigure}[b]{0.3\textwidth}
