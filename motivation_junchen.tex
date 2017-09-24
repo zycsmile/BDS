@@ -320,7 +320,7 @@ across all possible choices of $b$.
 If WAN is indeed the bandwidth bottleneck, we should see
 $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}=1$, 
 but the graph shows a substantial discrepancy between
-$BW(A\rightarrow C)$ and $BW_{A\rightarrow b\rightarrow C}$,
+$BW_{A\rightarrow C}$ and $BW_{A\rightarrow b\rightarrow C}$,
 indicating that the available bandwidth can be bottlenecked by 
 the capacity of server $b$ 
 ($BW_{A\rightarrow C}>BW_{A\rightarrow b\rightarrow C}$),
@@ -384,9 +384,19 @@ disjoint overlay paths tend not to share bottleneck}.
 %\vspace{0.1in}
 \end{figure*}
 
-We have seen that inter-DC multicast overlay networks have promising
-potentials to optimize inter-DC bulk-data multicast. 
+We have seen that inter-DC multicast overlay networks have 
+promising potentials to optimize inter-DC bulk-data multicast. 
 Realizing such potential in practice is easier said than done.
+At a first glance, it seems desirable to 
+This section uses \company's multicast overlay networks as a case 
+study, and identify two unique requirements of an multicast 
+overlay network
+\company have deployed and improved a 
+5-year experience of evolving the overlay networks.
+
+
+Drawing on \company's experience of deploying and evolving its multicast
+overlay networks, we identify two unique requirements from  that need to be addressed
 
 
 The being used protocol in \company is a receiver-driven decentralized protocol. Once a receiver wants to download a data file, it announces the requirement to the source DC, then the required data will be forwarded to it through both the source DC and intermediate DCs. For the intermediate DCs, there is a customized store-and-forward strategy that decides whether to store the data or not and when to delete the data. This solution has been running for more than 5 years and has been continuously improved over time.
