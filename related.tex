@@ -1,1 +1,40 @@
 \section{Related Work}
+
+\begin{table*}[t]
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{| c | c| c |c | c | c |c |}
+\hline
+ \rowcolor[gray]{0.9}
+\textbf{Solutions} & \textbf{Design Point} & \textbf{Network Structure} & \textbf{Data source} & \textbf{Global Info} & \textbf{Control} & \textbf{Hardware Modification} \\
+\hline
+\hline
+B4 \cite{jain2013b4}  & \multirow{2}{*}{Traffic engineering} & \multirow{2}{*}{Non-tiered} & \multirow{2}{*}{Determined} & \multirow{2}{*}{Yes} & \multirow{2}{*}{Software-defined}   & \multirow{2}{*}{Yes}\\
+SWAN \cite{mckeown2009software} &  &  &  &  &  & \\
+\hline
+CDN \cite{kostic2003bullet} & Spread strategy & Tiered & Determined & Yes & Centralized & No \\
+\hline
+%\multirow{2}{*}{Multicast} & No & \multirow{2}{*}{Complete} & \multirow{2}{*}{No} & \multirow{2}{*}{-} & \multirow{2}{*}{Yes}\\
+% & No & & & & \\
+%\hline
+P2P & Data sharing & Non-tiered & Undetermined & No & Distributed & No \\
+\hline
+\hline
+\textbf{Ideal solution} & Data distribution & Non-tiered & Undetermined & Yes & Centralized & No\\
+\hline
+\end{tabular}
+}
+\end{center}
+%\vspace{0.1in}
+\vspace{-0.4cm}
+\caption{ Summary of prior works. Data source means when choosing a sender, whether the sender is determined. For undetermined situations, one optimal sender is chosen from multiple candidate senders.}
+\label{table:summary}
+\end{table*}
+
+The efficient management of geographically located IDCs is a common challenge for large ICPs. Some traditional technologies are related to the proposed data distribution problem, here we follow Table \ref{table:summary} to discuss some of them.
+
+\textbf{Inter-DC management.} This has long been a hot research topic from an enterprise standpoint, and many recent studies \cite{chen2012design, kavulya2010analysis, mishra2010towards, reiss2012heterogeneity, sharma2011modeling, More, zhang2011characterizing} have illustrated the challenges of scalability, heterogeneity and other difficulties. Under these difficulties, some companies published their inter-DC management system, for example Google's B4 \cite{jain2013b4} and Microsoft's SWAN \cite{hong2013achieving}. B4 adopts SDN \cite{mckeown2009software} and OpenFlow \cite{OpenFlow,mckeown2008openflow} to manage individual switch and deploy efficient strategies on the path. SWAN is another online traffic engineering platform, which achieves high network utilization with its software-driven WAN. But these systems cannot be applied in our data distribution problem, because: 1) B4 and SWAN run on their private backbone networks. Google and Microsoft are able to manage inter-DC links, modify intermediate switches, control specific routing or even deploy new protocols in a software defined manner. But in Baidu, the inter-DC links are dedicated optical-fiber channel that are rent from Internet Service Providers (ISP), so we cannot (and do not need to) make modifications on intermediate devices, thus, all the SDN-based solutions become impractical. 2) The design points are different. What B4 and SWAN solve is a traffic engineering problem. For a particular transmission, data sources and destinations are determined, so the algorithms only need to schedule flows and make routing decisions on the links. But in our proposed data distribution problem, for any specific transmission, data source and destination depend on the duplication situations, thus are changing over time. In summary, these inter-DC management platforms are impractical in our scenario.
+
+\textbf{Content Delivery Network (CDN).} The goal of CDN is to distribute services spatially relative to end-users to provide high availability and performance (e.g., to reduce page load time). CDN serves many applications today, such as multimedia \cite{zhu2011multimedia} and live streaming \cite{sripanidkulchai2004analysis}. But CDN cannot be applied in the data distribution problem directly due to the following two reasons: 1) The objective of most CDN schemes is to make data spread strategies, i.e., algorithmically decide which part of the data (``hot'' data) should be duplicated on which server \cite{zhang2013maygh}, so as to push data close to users and reduce request latency. 2) The few solutions that focus on duplicate transmission are limited to the tiered structure, i.e., from origin server to edge servers, and then to end servers \cite{kostic2003bullet}. But in our data distribution problem, all servers can be treated as in the same tier, and this makes the data transmission strategy more difficult and flexible.
+
+\textbf{P2P-based Schemes.} As a mature distributed application protocol, P2P has already been verified by many applications, such as live streaming systems (CoolStreaming \cite{zhang2005coolstreaming}, Joost \cite{Joost}, PPStream \cite{PPStream}, UUSee \cite{UUSee}), video-on-demand (VoD) applications (OceanStore \cite{oceanstore}), distributed hash tables \cite{rhea2005opendht} and even nowaday's Bitcoin \cite{eyal2016bitcoin}. P2P does work in the data distribution problem, but it cannot achieve the optimal solution due to the lack of global visibility. With the only local information, P2P surely cannot make optimal scheduling. But in our data distribution problem, we have global information that can help to make better decisions.
