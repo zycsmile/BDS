@@ -54,27 +54,80 @@ near-optimal decision with proved guarantees.
 \label{table:para}
 \end{table}
 
+\mypara{Under fixed network capacity}
+Suppose the network capacity is fixed, the problem of multicast 
+overlay routing can be formulated as following:
+%The data distribution problem over inter-DC WANs is defined as follows: We are given one data source DC $S$ and sets of destinations DC $D=\{d_i\}$ in an overlay network, what's the optimal transmission strategy with shortest completion time under a serious of constraints. To formulate this problem and design the decision-making logic for the centralized controller, we should first clarify the following aspects (Table \ref{table:para} summarizes some key variables used in \name):
 
-The data distribution problem over inter-DC WANs is defined as follows: We are given one data source DC $S$ and sets of destinations DC $D=\{d_i\}$ in an overlay network, what's the optimal transmission strategy with shortest completion time under a serious of constraints. To formulate this problem and design the decision-making logic for the centralized controller, we should first clarify the following aspects (Table \ref{table:para} summarizes some key variables used in \name):
+\noindent(1) {\em Input.}
+One data source DC $S$, sets of destinations DC 
+$D=\{d_i\}_{i=1,\dots,m}$, 
+the size of data file: $\mathbb{S}$
+potential paths between $S$ and $d_i$, $p(S,d_i)$,
+the upload (and download) rate of server $n$: $R_{up}(n)$
+(and $R_{down}(n)$),
+the link capacity  $c(l_{u,v})$ of each link $l_{u,v}$,
+We name the transmission of a data file between $(S,d_i)$ 
+as a {\em task} $T_j$, and each data file is split into
+many smaller fixed-sized {\em blocks}, and we denote 
+the transfer of block $i$ in task $j$ as $B_{i,j}$.
 
-(1) \textbf{Input.} The number of destination DCs: $m$, the size of data file: $\mathbb{S}$, the set of source and destination pairs: $S=\{(S,d_i)\}, 1\leq i\leq m$ (we name the transmission of data file between $(S,d_i)$ as a ``task'' $T_j$), potential paths between $S$ and $d_i$: $p(S,d_i)$ that consists of multiple links, link capacity of $l_{u,v}$: $c(l_{u,v})$, the upload/download rate of server $n$: $R_{up}(n)/R_{down}(n)$.
+\noindent(2) {\em Output.} 
+The transmission schedule of blocks on each server $s_i$: 
+$\overrightarrow{o}(s_i)$ which is a sequence of 
+$s_{B_{i,j}}$, 
+the optimal overlay path for the block: 
+$p_{B_{i,j}}^*$, 
+and the optimal allocated bandwidth on this path: 
+$f^*_{B_{i,j},p_{B_{i,j}}^*}$.
 
-(2) \textbf{Output.} The transmission order of blocks on server $s_i$: $\overrightarrow{o}(s_i)$ (we split one task into multiple ``blocks'' because a task is always too large to be transferred in one connection), the optimal source server for the $i$th block of $T_j$ ($B_{i,j}$): $s_{B_{i,j}}^*$, the optimal path for the block: $p_{B_{i,j}}^*$, and the optimal allocated bandwidth on this path: $f^*_{B_{i,j},p_{B_{i,j}}^*}$.
+\noindent(3) {\em Constraints.} 
+The constraints are similar to the flow conservation 
+constraints in the multicommodity flow problem:
+\jc{maybe it's better in math after all. please write
+it in math and add comments in the end to describe the 
+meaning}
+%%The link capacity constraint takes effect on any arbitrary link $l_{u,v}$: 
+%for each link $l_{u,v}$, 
+%the summed allocated bandwidth on this path should be 
+%no more than its capacity $c(l_{u,v})$, 
+%and for each path $p_\lambda$, the available capacity 
+%$c(p_\lambda)$ should be no more than the minimum 
+%capacity of the consisting links.
+%%The path capacity constraint takes effect on path $p_\lambda$: the available capacity $c(p_\lambda)$ should be no more than the minimum capacity of the consisting links. 
+%The data size constraint takes effect on blocks: the sum of allocated bandwidth should be no less than its size. The bandwidth constraint defines the allocated bandwidth for $B_{i,j}$ on $p_\lambda$: $f^*_{B_{i,j},p_{B_{i,j}}}$ should be no more than the minimum of the following three parameters: path capacity $c(p_\lambda)$, the upload rate of source node $R_{up}(s)$ and the download rate of destination node $R_{down}(d)$.
 
-(3) \textbf{Constraints.} The link capacity constraint takes effect on any arbitrary link $l_{u,v}$: the summed allocated bandwidth on this path should be no more than its capacity $c(l_{u,v})$. The path capacity constraint takes effect on path $p_\lambda$: the available capacity $c(p_\lambda)$ should be no more than the minimum capacity of the consisting links. The data size constraint takes effect on blocks: the sum of allocated bandwidth should be no less than its size. The bandwidth constraint defines the allocated bandwidth for $B_{i,j}$ on $p_\lambda$: $f^*_{B_{i,j},p_{B_{i,j}}}$ should be no more than the minimum of the following three parameters: path capacity $c(p_\lambda)$, the upload rate of source node $R_{up}(s)$ and the download rate of destination node $R_{down}(d)$.
+\noindent(4) {\em Objective function.} To speed up the bulk data distribution, \name aims at maximizing the allocated weighted bandwidth for all the blocks over all the paths.
 
-(4) \textbf{Objective function.} To speed up the bulk data distribution, \name aims at maximizing the allocated weighted bandwidth for all the blocks over all the paths.
+\mypara{Dynamic updates} 
+Since any change in network performance or arrival of
+new requests may potentially alter the optimal overlay
+routing decisions, 
+%The problem can be formulated precisely according to the above definitions only when the network is static and all the conditions stay unchanged during the whole transmission period. However, it is impractical to make such assumptions because bulk data transfer and constantly changing online traffic co-exists in the network and the design choice of \name is to make dynamic bandwidth separation. Therefore, 
+so \name should react to the changing network conditions by monitoring residual bandwidth and re-configured the above formulation (By default, \name tries to update network information and resolve the problem every 3 seconds). Unfortunately, the origin problem becomes considerably complex and hard to solve when making re-formulation, because there will be multiple optional data sources for any arbitrary task. Thus, the searching space grows exponentially and it becomes impossible to find out the optimal transmission. To make it solvable, \name decouples the problem into two parts and tries to find the optimal solutions for each procedure.
 
-The problem can be formulated precisely according to the above definitions only when the network is static and all the conditions stay unchanged during the whole transmission period. However, it is impractical to make such assumptions because bulk data transfer and constantly changing online traffic co-exists in the network and the design choice of \name is to make dynamic bandwidth separation. Therefore, \name should react to the changing network conditions by monitoring residual bandwidth and re-configured the above formulation (By default, \name tries to update network information and resolve the problem every 3 seconds). Unfortunately, the origin problem becomes considerably complex and hard to solve when making re-formulation, because there will be multiple optional data sources for any arbitrary task. Thus, the searching space grows exponentially and it becomes impossible to find out the optimal transmission. To make it solvable, \name decouples the problem into two parts and tries to find the optimal solutions for each procedure.
-
-\subsection{Separation scheduling and routing}
+\subsection{Decoupling scheduling and routing}
 \label{subsec:logic:separation}
 
-The key insight underlying the above re-formulated problem is the separation of data scheduling and overlay routing, in other words, the data scheduling procedure aims at finding out a subset of blocks that should be transferred first, and only the blocks in this subset should be considered in the following routing process, i.e., outputting the block transmission order $\overrightarrow{o}(s_i)$ ; the overlay routing procedure aims at make optimal routing strategies (assign $s_{B_{i,j}}^*$, $p_{B_{i,j}}^*$ and $f^*_{B_{i,j},p_{B_{i,j}}^*}$) for all selected blocks $B_{i,j}$ in the overlay network.
+The key insight underlying the above re-formulated problem is the 
+separation of data scheduling and overlay routing. 
+In other words, we use the data scheduling procedure to identify 
+what data blocks to be transferred 
+(i.e., $\overrightarrow{o}(s_i)$), 
+and a subsequent routing procedure determine the routing paths 
+(i.e., $p_{B_{i,j}}^*$)
+and bandwidth allocation to send these blocks
+(i.e., $f^*_{B_{i,j},p_{B_{i,j}}^*}$).
+%, i.e., outputting the block transmission order $\overrightarrow{o}(s_i)$ ; the overlay routing procedure aims at make optimal routing strategies (assign $s_{B_{i,j}}^*$, $p_{B_{i,j}}^*$ and $f^*_{B_{i,j},p_{B_{i,j}}^*}$) for all selected blocks $B_{i,j}$ in the overlay network.
+There are two main benefits of this separation. 
+\begin{packedenumerate}
+\item It reduces the computational complexity on the centralized controller side. The objective of the separated scheduling stage is to select a subset of blocks, and only these selected blocks will be routed and transferred in the following routing stage. So the separated data scheduling could avoid exploring unnecessary searching spaces for those unselected blocks. 
+\item It speeds up the overall data distribution. This advantage comes from the customized block selection scheme that picks out a specific subset of blocks so as to reduce the overall completion time.
+\end{packedenumerate}
 
-There are two main benefits of this separation. The first one is to reduce the computational complexity on the centralized controller side. The objective of the separated scheduling stage is to select a subset of blocks, and only these selected blocks will be routed and transferred in the following routing stage. So the separated data scheduling could avoid exploring unnecessary searching spaces for those unselected blocks. The second benefit is to speed up the overall data distribution. This advantage comes from the customized block selection scheme that picks out a specific subset of blocks so as to reduce the overall completion time.
-
+\mypara{Why such decoupling is near-optimal}
 To avoid introducing degradation by the separation to the origin problem, we should make sure that the optimal results does not exist in the ignored searching spaces by the subset selection. In other words, the data scheduling procedure should retain the optimal results although reducing the searching scope. In this way, the optimal routing results in the overlay routing procedure is thus equal to the optimal solution to the origin problem.
+\jc{still unclear why this decoupling is efficient and near optimal}
 
 \subsection{Scheduling}
 \label{subsec:logic:scheduling}
@@ -89,6 +142,8 @@ For efficient selection, \name keeps a counter $c_i$ in the controller for each 
 
 \subsection{Routing}
 \label{subsec:logic:routing}
+
+\jc{are the maths stuff really critical?}
 
 In the overlay routing stage, \name routes and transfers blocks according to $\overrightarrow{o}(s_i)$, the output of data scheduling stage, and then tries to make optimal routing strategy (assign $s_{B_{i,j}}^*$, $p_{B_{i,j}}^*$ and $f^*_{B_{i,j},p_{B_{i,j}}^*}$) for each block $B_{i,j}$.
 
