@@ -18,7 +18,7 @@ The evaluation results of the pilot deployment, together with trace-driven simul
         \end{subfigure}
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
-                \includegraphics[width=\textwidth]{images/BDS_VS_ANON.eps}
+                \includegraphics[width=\textwidth]{images/BDS_VS_ANON_v2.eps}
                 \caption{Comparison by application types.}
                 \label{fig:BDSvsAnon:FCT}
         \end{subfigure}
@@ -66,11 +66,11 @@ To evaluate the benefits of centralized control, we conduct two series of experi
 
 We measure \name's performance versus \company's existing solution that has already run for more than 5 years. In this series of experiments, we choose a 70~TB data file that is distributed stored in the source DC (with 1000 servers) at the very beginning, and each of the other DCs announces a downloading requirement and stores the file in the same way with 1000 servers.
 
-To intuitively present the overall improvements by \name, we draw the CDF of the completion time in Fig.\ref{fig:BDSvsAnon:overall}, from which we can see that the completion time under \company's existing solution is about 200 minutes while that of \name is less than 40 minutes, 5 times shorter completion time.
+To intuitively present the overall improvements by \name, we draw the CDF of the completion time in Figure \ref{fig:BDSvsAnon:overall}, from which we can see that the completion time under \company's existing solution is about 200 minutes while that of \name is less than 40 minutes, 5 times shorter completion time.
 
-For detailed illustration, we pick three applications whose data volumes are large, medium and small, and draw a bar chart of three pairs of bars in Fig.\ref{fig:BDSvsAnon:FCT}, each representing \name's and \company's mean (stddev) completion time for one application. These bars show that for small data volume, \name outperforms 1.6$\times$ than \company, but raises up to more than 3$\times$ than \company for large data volume. In other words, the benefit of \name will increase along with the data volumes.
+For detailed illustration, we pick three applications whose data volumes are large, medium and small, and draw a bar chart of three pairs of bars in Figure \ref{fig:BDSvsAnon:FCT}, each representing \name's and \company's mean (stddev) completion time for one application. These bars show that for small data volume, \name outperforms 1.6$\times$ than \company, but raises up to more than 3$\times$ than \company for large data volume. In other words, the benefit of \name will increase along with the data volumes.
 
-To prove that this is not a special case, we repeat the experiments during the 7 days, and draw the average completion time of both \name and \company in Fig.\ref{fig:BDSvsAnon:time}. \name is quite stable during the 7 days while \company illustrates some volatilities. But in general, \name achieves about 4.5$\times$ shorter completion time than \company.
+To prove that this is not a special case, we repeat the experiments during the 7 days, and draw the average completion time of both \name and \company in Figure \ref{fig:BDSvsAnon:time}. \name is quite stable during the 7 days while \company illustrates some volatilities. But in general, \name achieves about 4.5$\times$ shorter completion time than \company.
 %\item \name vs. \company's existing solution (pilot deployment)
 %\begin{itemize}
 %\item Overall improvement: A CDF with two lines to show the aggregated flow completion time
@@ -84,7 +84,7 @@ As we cannot implement other experimental systems in our real online network jus
 
 We use the same topology with 12 DCs (1 DC acts as the source DC), 1000 servers per DC for all simulations, and set the parameters all the same as the real network, including data file size $\mathbb{S}$, set of source and destination pairs $S=(s,d_i),1\leq i \leq 11$, path $p_\lambda$, link capacities $c(l_{u,v})$ and server upload/download rate $R_{up}(n)/R_{down}(n)$.
 
-Bullet \cite{kostic2003bullet} is a distributed algorithm that works on an overlay mesh network, it enables geo-spread nodes to self-organize into a overlay mesh. Specifically, each node uses RanSub \cite{Rodriguez2003Using} to distribute summary tickets information to other nodes, and receives disjoint data from his sending peers. The most obvious difference between \name and Bullet lies in the control scheme, i.e., \name is centralized method, who can maximize total system traffic, while Bullet is a decentralized scheme and each node makes decision according to his obtained information. We conduct three series of experiments and show the results in Fig.\ref{fig:versusCDN}: baseline, large scale and small bandwidth experiments. We find \name achieves 3$\times$ shorter completion time than Bullet in the baseline experiments, and more than 4$\times$ improvement in the large scale experiments and small bandwidth experiments.
+Bullet \cite{kostic2003bullet} is a distributed algorithm that works on an overlay mesh network, it enables geo-spread nodes to self-organize into a overlay mesh. Specifically, each node uses RanSub \cite{Rodriguez2003Using} to distribute summary tickets information to other nodes, and receives disjoint data from his sending peers. The most obvious difference between \name and Bullet lies in the control scheme, i.e., \name is centralized method, who can maximize total system traffic, while Bullet is a decentralized scheme and each node makes decision according to his obtained information. We conduct three series of experiments and show the results in Figure \ref{fig:versusCDN}: baseline, large scale and small bandwidth experiments. We find \name achieves 3$\times$ shorter completion time than Bullet in the baseline experiments, and more than 4$\times$ improvement in the large scale experiments and small bandwidth experiments.
 
 Akamai design a 3-layer overlay network for delivering live streams \cite{Andreev2013Designing}, where a source forwards its streams to reflectors, and a reflector sends outgoing streams to the final stage sinks. Things \name and Akamai have in common is that both of them are designed for data distribution on overlay multicast networks. There are two main differences  between Akamai and \name: (1) Akamai adopts a 3-layer topology where an edgeserver receives data from the parent reflectors, while \name could explore more potential searching space without layer limitation. (2) A sink in Akamai receives must receive data in sequential order because it serves for the live streaming application, but \name does care about blocks arriving order. Thus, to achieve optimal scheduling results, \name should also solve the scheduling problem so as to work out the optimal block download order $\overrightarrow{o}(s_i)$. The comparison results of Akamai and \name are shown in \fillme.
 
@@ -97,13 +97,45 @@ Akamai design a 3-layer overlay network for delivering live streams \cite{Andree
 %\end{itemize}
 %\end{itemize}
 
-\subsection{Benefits of dynamic bandwidth separation}
+\subsection{Benefits of bandwidth separation}
 \label{subsec:evaluation:separation}
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=45mm]{images/Quota.eps}
+  \caption{The effectiveness of bandwidth separation.}
+  \label{fig:quota}
+\end{figure}
+\vspace{-0.4cm}
 
-\begin{itemize}
-\item Draw a graph (what graph can you get on this?) to show with bandwidth separation, \name can reduce the incidents of delay on latency-sensitive traffic caused by bulk data transfers.
-\item Draw a graph (what graph can you get on this?) to show the link utilization does not change much with \name or with \company.
-\end{itemize}
+To test the effectiveness of bandwidth separation and check whether the bulk data transfer will reserve bandwidth for latency-sensitive traffic according to the separation quota, we set the upper bound of available bandwidth for bulk data transfer to 10~Gbps, and then monitor the real usage of one inter-DC link. The results are shown in Figure \ref{fig:quota}, from which we can see the real bandwidth usage stays below the upper bound (10~Gbps) throughout the whole transmission process, verifying that the separation does take effects on link bandwidth usage and thus can reduce the incidents of delay on latency-sensitive traffic caused by bulk data transfers.
+
+\begin{table}[t]
+\begin{center}
+%\resizebox{\textwidth/2}{!}{
+%\begin{tabular}{p{2cm}<{\centering}|p{2cm}<{\centering}}
+\begin{tabular}{| c | c | c | c | c |}
+\hline
+ \rowcolor[gray]{0.9}
+\textbf{System} & \textbf{Source DC} & \textbf{$l_1$} & \textbf{$l_2$} & \textbf{$l_3$}\\
+\hline \hline
+\company & 69.82\% & 53.09\% & 57.98\% & 63.01\% \\
+\hline
+\name & 70.55\% & 62.46\% & 63.23\% & 64.24\% \\
+\hline
+\end{tabular}
+%}
+\end{center}
+\caption{Average utilization of 4 links under \company and \name.}
+\label{table:usage}
+\vspace{-0.4cm}
+\end{table}
+
+As \name implements strict bandwidth separation between latency-sensitive traffic and bulk data transfer while still showing shorter completion time, does \name increase link utilization significantly? To answer this question, we record the average utilizations of: (1) the egress link of the source DC, and (2) 3 randomly selected inter-DC links, denoted as $l_1,l_2$ and $l_3$. Results are shown in Table \ref{table:usage}, which shows that link utilizations do not change much with \name or with \company. This is because \name can make disjoint data transfers to different receivers and thus avoids transferring repeated data compared the self-organized \company's solution.
+
+%\begin{itemize}
+%\item Draw a graph (what graph can you get on this?) to show with bandwidth separation, \name can reduce the incidents of delay on latency-sensitive traffic caused by bulk data transfers.%DrawLink.m
+%\item Draw a graph (what graph can you get on this?) to show the link utilization does not change much with \name or with \company.%DrawUsage.m
+%\end{itemize}
 
 \subsection{Micro-benchmarks}
 \label{subsec:evaluation:benchmarks}
