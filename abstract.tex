@@ -1,39 +1,52 @@
 \begin{abstract}
 
-A common communication pattern in the inter-DC traffic of large 
-online service providers is replicating bulk data from one DC to 
-multiple DCs. 
-While recent work has improved bulk-data
+One of the most common inter-DC  communication pattern 
+of online service providers is replicating bulk data from 
+one DC to multiple DCs. 
+While recent work seeks to improve bulk-data 
 multicast by optimizing WAN performance, it is necessarily 
-incomplete, as it falls short 
-of exploring the abundant disjoint paths via servers in 
-different DCs,
+incomplete, as it falls short of fully exploring the 
+disjoint inter-DC paths that exist in abundance,
 as well as servers' capability to store-and-forward data.
 %Inspired by the early success of multicast overlay networks, 
-To utilize these unexplored opportuntieis, we 
+To utilize these unexplored opportunities, we 
 argue that an application-level multicast overlay network 
-is needed to optimally deliver data via selectively picked 
-overlay servers to fully exploit overlay paths.
-Despite its promise, introducing multicast overlays to 
-the context of inter-DC communication poses new challenges:
-(1) the sheer number of servers and overlay paths renders
-it untenable to maintain data delivery status at all servers 
-in real-time, and make optimal overlay selections, and  
-(2) it is vital to avoid any delay of latency-sensitive traffic 
-caused by multicasting bulk data, since all traffic share the 
-network resource. 
+is needed to optimally schedule and route data transfers 
+on overlay paths.
+Despite the promise, introducing multicast overlays in
+the context of inter-DC communication poses new challenges,
+such as the sheer number of servers and overlay paths 
+which renders it untenable to make optimal overlay selections 
+in real-time, and a strong need for preventing any delay of 
+latency-sensitive traffic caused by multicasting bulk data. 
 We present {\em \name}, a near-optimal multicast overlay network 
 for bulk data multicast. 
-\name is built on two design choices:
-(a) fully centralized decision-making in near real-time, and 
-(b) enforcing a clean, dynamic separation of bandwidth.
-While both design choices introduce costs on performance 
-(\name is unable to update decisions in real time or achieve full
-link utilization), we believe these costs are outweighed by the 
-benefits, such as centralized optimization driven by a global view.
+Contrary to the intuition that servers must retain the capability 
+to adapt locally in order to scale out, \name demonstrates the 
+feasibility of fully centralizing the overlay path selection
+and scheduling of data transfers.
+The key insight underlying this centralized design is the 
+observation that bulk-data transfers tend to last on long 
+timescales so they can 
+tolerate a slight delay of centralized decision-making 
+in the hope of
+a closer-to-optimal overlay routing.
+Moreover, centrally coordinated decision-making makes it simpler
+to enforce bandwidth allocated to bulk-data transfers,
+and is more amenable to eliminating interference of bulk-data
+transfers on latency-sensitive traffic.
+%\name is built on design choices:
+%(a) fully centralized decision-making in near real-time, and 
+%(b) enforcing a clean, dynamic separation of bandwidth.
+%While both design choices introduce costs on performance 
+%(\name is unable to update decisions in real time or achieve 
+%full link utilization), we believe these costs are outweighed by 
+%the benefits, such as centralized optimization driven by a global 
+%view.
 A pilot deployment of \name in one of the largest online
 service providers shows that \name achieves 3-5$\times$
-speedup over the provider's existing systems.
+speedup over the provider's existing systems, as well
+as several widely used overlay routing systems.
 
 
 %Distributing bulk data across datacenters (DCs) in a timely and
