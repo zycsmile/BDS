@@ -5,10 +5,11 @@ To optimize inter-DC bulk-data multicast while avoiding
 interference with latency-sensitive traffic, we present \name,
 a near-optimal inter-DC multicast overlay network.
 Unlike previous designs which always, to some extent, keep 
-local control capability at individual servers,
+some local control capability at individual servers,
 \name takes an explicit stance of {\em fully centralizing} the 
 control of an inter-DC multicast overlay network. 
-This section highlights the intuitions behind this design 
+Before presenting \name in more details, 
+we first highlight the intuitions behind this design 
 choice and the key challenge to make it practical.
 
 
@@ -28,18 +29,19 @@ choice and the key challenge to make it practical.
 \mypara{Conventional wisdom}
 The limitations of many prior approaches, including \company's 
 system, as highlighted in \Section\ref{subsec:??},
-stem from the suboptimal adaptation made at individual servers 
-locally based on a limited visibility of multicast states at
+stem from the suboptimal adaptation made locally 
+at individual servers 
+based on a limited visibility of multicast states at
 other servers. 
-These limitations persist, though on a smaller scale, in a hybrid
-control scheme (e.g.,~\cite{vdn}) where local 
-adaptation happens in real-time and a centralized logic
-operates on coarse timescales.
-Despite the performance issues resulting from this
-lacking of global view and coordination, conventional wisdom has 
+These limitations remain, though to a lesser extent, in hybrid
+control schemes (e.g.,~\cite{vdn}) where local 
+adaptation happens in real-time while a centralized logic
+operates on more coarse timescales.
+Despite this lacking of global view and coordination, the 
+conventional wisdom has 
 been that local adaptation is needed to achieve 
 scalability and responsiveness, and the cost of suboptimal 
-performance is deemed necessary.
+performance is thus deemed necessary.
 
 
 \mypara{Centralized design}
@@ -50,19 +52,27 @@ suboptimal performance is not necessary after all.
 As illustrated in Figure~\ref{??}, 
 \jc{add a figure here to illustrate the centralized
 architecture?}
-\name uses a centralized controller to periodically poll
-the data delivery status from all servers, and
-updates the overlay path selection and bandwidth allocation
-accordingly.
+\name uses a centralized controller to update decisions,
+including schedule of data transfers, and path selection and 
+bandwidth allocation of each transfer, on timescales of 
+several seconds.
+At a high level, \name controller periodically polls information
+from all servers to maintain a most up-to-date global view of 
+multicast states, updates the decisions, and pushes them 
+to agents running locally on servers.
+That said, under failure scenarios where the controller is 
+not available, \name will reverse to a default decentralized
+overlay protocol to ensure graceful degradation on performance.
 
 \mypara{Design philosophy}
 Our intuition in favor of a centralized design is four-fold:
 \begin{packedenumerate}
 \item {\em Larger data sizes:} 
 Data sizes of bulk-data multicast are much larger 
-than typical use of overlay networks (e.g., live streaming).
-This means that data transfers happen on much longer timescales 
-than changes in network conditions or new job arrivals. 
+than those of overlay networks (e.g., live streaming).
+This means that data transfers happen on long timescales, 
+potentially longer than changes in network conditions or 
+new job arrivals. 
 Therefore, being highly responsive to network congestions 
 is secondary.
 Instead, we can tolerate a small delay of several seconds for
@@ -95,21 +105,26 @@ and thus can be stateless and lightweight.
 
 \end{packedenumerate}
 
-\mypara{Fast and optimal overlay routing is the key}
-The key challenge to striking a favorable balance in \name between
-centralized optimal decision-making and being practical at the
-a large scale is a {\em near-optimal and efficient overlay routing
-algorithm} that can be updated in timescales of several seconds.
-At a first glance, the problem scale is indeed intractable:
+\mypara{Fast and optimal decision-making is the key}
+In essence, \name trades updating decisions on coarse timescales 
+for the potential of making optimal decisions in a centralized
+fashion. 
+Therefore, the key to striking a favorable is a
+{\em near-optimal and efficient overlay routing
+algorithm} that can be updated on near-realtime timescales of 
+several seconds.
+At a first glance, this is indeed intractable:
 the centralized overlay routing algorithm must pick the next hops
 from 10,000s servers for 10,000s objects, a scale that could
-even expand exponentially, as we consider all possible
+even explode exponentially, as we consider all possible
 overlay paths that go through these servers, and chop each data
 object into many fine-grained blocks to enable fine-grained
 multipath overlay routing.
 It is unclear how this problem can be solved even with
 limited approximation, which was why for many years, \company have
 relied on decentralized protocols for bulk-data multicast.
+The next section  will present how \name addresses this
+challenge.
 
 %The key technical challenge here is how to make optimal overlay scheduling and routing decisions at the scale tens of thousands of objects and tens of thousands of servers in near real time. To achieve desirable performance in a multicast overlay network, fully exploiting all the available overlay paths is essential, but it is untenable to go through all the potential servers and exponentially more paths by traditional approaches.
 
