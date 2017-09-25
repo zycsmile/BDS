@@ -288,7 +288,7 @@ there exist disjoint paths between two nodes.}
 \end{figure}
 
 %<<<<<<< HEAD
-\mypara{Path diversity in the wild}
+\mypara{Inter-DC path diversity}
 We argue that the benefits illustrated in the example of
 Figure~\ref{fig:case:example} can be actually realized in a
 real DC WAN. The intuition is that
@@ -462,6 +462,8 @@ deployed, this protocol has begun to show two limitations.
 %
 %\item Briefly mention other solutions (layered structure, hybrid approach, and why not optimizing pair-wise DC link is not sufficient)
 
+\jc{overall, these limitations need a bit elevation, and need to tie
+to the existing decentralized design}
 
 \noindent{\bf Limitation 1:
 Inefficiency due to the price of anarchy.}
@@ -482,6 +484,9 @@ protocol. We see that the average completion time is about
 195 minutes, 4.75$\times$ longer than the optimal completion time.
 What's worse, it also exhibits heavy tail latency and there are
 about 5\% servers whose completion time is more than $200min$.
+\jc{can you say something like such inefficiency is due to 
+the inability to explore the whole decision space without a 
+global view?}
 
 %\jc{this is still a toy example. we want to use real data to show these observations. how about using the previous figure to show tail latency.}
 
@@ -502,6 +507,9 @@ significant traffic burst. As a result, the latency-sensitive online
 traffic that runs simultaneously on this link therefore suffered over
 30 times longer delay, usually speaking,
 from about $60ms$ to nearly 2 seconds.
+\jc{can you say something like: such inefficiency is due to the inability
+to prevent exceeding bandwidth usage by bulk-data transfers in a 
+decentralized manner}
 %(1) Use a figure to show that bulk data transfer can cause significant delay on latency-sensitive traffic, and (2) put some concrete numbers to show such delay can cause significant revenue loss.
 
 %\jc{can we show some numbers on how much delay on latency-sensitive traffic during that incident? and how much losses did it cause (either in terms of application quality or in \$\$)?}
