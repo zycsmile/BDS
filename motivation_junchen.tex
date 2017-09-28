@@ -7,7 +7,7 @@
 %<<<<<<< HEAD
 To motivate the need for an inter-DC multicast overlay,
 we first characterize the workload of bulk-data multicast in
-\company, one of the largest global-scale online service 
+\company, one of the largest global-scale online service
 providers (\Section\ref{subsec:motivation:multicast-traffic}).
 We then make a case for an intelligent inter-DC multicast
 overlay network by showing that disjoint application-level
@@ -169,7 +169,7 @@ request.}
 %In the premise that bulk data shares a large fraction of overall traffic, we check the number of destination DCs of the data. Fig. \ref{fig:bulk:dest} shows that there are over 60\% applications with bulk data multicast traffic are destined to at least 90\% DCs, and about 20\% applications with bulk data destined to over 50\% (but less than 90\%) DCs. These results show that a large fraction of the bulk data traffic is multicast to almost all DCs.
 
 \mypara{Carrying bulk data}
-Finally, we examine the data sizes of inter-DC 
+Finally, we examine the data sizes of inter-DC
 multicast transfers.
 Figure~\ref{fig:bulk:size} sketches the distribution of the
 size of data files that need to be multicast in \company.
@@ -226,7 +226,7 @@ to optimizing inter-DC bulk-data multicast.
 In general, it is well-known that multicast over WANs can benefit
 from an application-level overlays.
 Here, we demonstrate, first by an illustrative example and then by
-real-world measurement, that similar ideas could lead to 
+real-world measurement, that similar ideas could lead to
 substantial improvement in inter-DC bulk-data multicast.
 
 \mypara{An illustrative example}
@@ -246,7 +246,7 @@ To begin with, if $A$ sends the data directly to $B$ and $C$,
 i.e., no application-level overlay,
 as in Figure~\ref{fig:case:example}(b),
 the completion time would be 18 seconds.
-If we apply the idea of application-level overlay but with 
+If we apply the idea of application-level overlay but with
 a simple DC-level chain
 %=======
 %Topologically, $A$ is directly connected to $B$, and
@@ -271,7 +271,7 @@ illustrates an overlay routing scheme which completes in 9
 seconds, another 30\% decrease from 13 seconds.
 
 The example of Figure~\ref{fig:case:example}
-reveals a key (and well-known) observation that 
+reveals a key (and well-known) observation that
 {\em the benefits of
 application-level overlay networks depend critically on if
 there exist disjoint paths between two nodes.}
@@ -304,8 +304,8 @@ $A$ has many overlay paths to $C$).
 A crucial question, however, is that while two overlay paths are
 physically disjoint, they might share the same bottleneck, and
 thus should be counted as not disjoint in our context.
-While sharing bottleneck is unlikely when two paths go through 
-different sequence of DCs, 
+While sharing bottleneck is unlikely when two paths go through
+different sequence of DCs,
 when two overlay paths go through different servers but traverse
 the inter-DC WAN path, they would tend to have the same network
 bottlenecks, as WAN capacity is usually believed to be more
@@ -380,14 +380,13 @@ disjoint overlay paths tend not to share bottleneck}.
 \subsection{Limitations of existing solutions}
 \label{subsec:motivation:baseline}
 
-\begin{figure*}[t]
+\begin{figure}[t]
         \center
-        \includegraphics[height=25mm,width=150mm]{images/nj02-M2A_0212-0216.eps}
-        \caption{Bulk data transfer on the 4th day caused significant traffic burst.
-        \jc{remove the first few days, only show the last day, and make it single column}}
+        \includegraphics[width=3in]{images/nj02-M2A_0212-0216_v2.eps}
+        \caption{Bulk data transfer on the 2nd day caused obvious irregular traffic.}
         \label{fig:lesson2}
 %\vspace{0.1in}
-\end{figure*}
+\end{figure}
 
 We have seen that inter-DC multicast overlay networks have
 promising potentials in optimizing inter-DC bulk-data multicast.
@@ -408,7 +407,7 @@ receiver-driven decentralized protocol, which
 was similar to what was used in other overlay networks
 (such as CDNs and overlay video streaming)
 where multicast is needed.
-Since then \company has refined and improved the performance of 
+Since then \company has refined and improved the performance of
 this solution, but the basic workflow of
 data requests remains the same.
 When multiple DC wants to download a data
@@ -486,8 +485,8 @@ protocol. We see that the average completion time is about
 195 minutes, 4.75$\times$ longer than the optimal completion time.
 What's worse, it also exhibits heavy tail latency and there are
 about 5\% servers whose completion time is more than $200min$.
-\jc{can you say something like such inefficiency is due to 
-the inability to explore the whole decision space without a 
+\jc{can you say something like such inefficiency is due to
+the inability to explore the whole decision space without a
 global view?}
 
 %\jc{this is still a toy example. we want to use real data to show these observations. how about using the previous figure to show tail latency.}
@@ -502,15 +501,15 @@ latency-sensitive traffic caused by bursty arrival of bulk data
 requests.
 We continuously monitored the bandwidth utilization of an inter-DC
 link in four days where there is a bulk data transfer at 11:00 on the
-4th day (lasted for 6 hours and finished at 17:00).
+2nd day (lasted for 6 hours and finished at 17:00).
 Figure~\ref{fig:lesson2} shows the link utilization during the four
 days, from which we can see that the bulk data transfer caused
 significant traffic burst. As a result, the latency-sensitive online
 traffic that runs simultaneously on this link therefore suffered over
 30 times longer delay, usually speaking,
-from about $60ms$ to nearly 2 seconds.
+from about $15ms$ to nearly $500ms$.
 \jc{can you say something like: such inefficiency is due to the inability
-to prevent exceeding bandwidth usage by bulk-data transfers in a 
+to prevent exceeding bandwidth usage by bulk-data transfers in a
 decentralized manner}
 %(1) Use a figure to show that bulk data transfer can cause significant delay on latency-sensitive traffic, and (2) put some concrete numbers to show such delay can cause significant revenue loss.
 
