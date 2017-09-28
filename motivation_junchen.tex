@@ -150,9 +150,9 @@ transfers in \company are destined.
 %percentage of DCs (in total, $\sim$ 30) to which multicast
 %transfers are destined.
 %>>>>>>> 09029e454f71e5a5e01f13f554477705e665f4ec
-We can see that over 71\% of multicast transfers replicate data
-to more than 80\% of DCs, and nearly 70\% of them are destined
-to more than 60\% of DCs.
+We can see that about 90\% of multicast transfers replicate data
+to more than 60\% of DCs, and about 70\% of them are destined
+to more than 80\% of DCs.
 %<<<<<<< HEAD
 Moreover, we also observed a great diversity  in terms of
 source DCs and the sets of destination DCs (not shown here).
@@ -281,10 +281,10 @@ there exist disjoint paths between two nodes.}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=80mm]{images/potential.eps}%DrawUp.m
+\includegraphics[width=1.5in]{images/potential_v2.eps}%DrawUp.m
 \caption{
-Measurements showing the potential bandwidth between different (s,d) pairs.
-\jc{drop (a). avoid using notions in figure captions. captions should be standalone}}
+Measurements showing the potential bandwidth between different (s,d) pairs.}
+%\jc{drop (a). avoid using notions in figure captions. captions should be standalone}}
 \label{fig:case:size}
 \vspace{-0.4cm}
 \end{figure}
@@ -310,7 +310,7 @@ when two overlay paths go through different servers but traverse
 the inter-DC WAN path, they would tend to have the same network
 bottlenecks, as WAN capacity is usually believed to be more
 limited than intra-DC networks.
-However, our empirical measurement in \company's networks shows
+However, as shown in Figure \ref{fig:case:size}, our empirical measurement in \company's networks shows
 otherwise.
 We consider three DCs from \company's WAN that have the same
 connectivity as in Figure~\ref{fig:case:example},
