@@ -4,12 +4,12 @@
 To optimize inter-DC bulk-data multicast while avoiding
 interference with latency-sensitive traffic, we present \name,
 a near-optimal inter-DC multicast overlay network.
-Unlike previous designs which always, to some extent, keep 
+Unlike previous designs which always, to some extent, keep
 some local control capability at individual servers,
-\name takes an explicit stance of {\em fully centralizing} the 
-control of an inter-DC multicast overlay network. 
-Before presenting \name in more details, 
-we first highlight the intuitions behind this design 
+\name takes an explicit stance of {\em fully centralizing} the
+control of an inter-DC multicast overlay network.
+Before presenting \name in more details,
+we first highlight the intuitions behind this design
 choice and the key challenge to make it practical.
 
 
@@ -27,76 +27,80 @@ choice and the key challenge to make it practical.
 %\subsection{Why a fully centralized design}
 
 \mypara{Conventional wisdom}
-The limitations of many prior approaches, including \company's 
+The limitations of many prior approaches, including \company's
 system, as highlighted in \Section\ref{subsec:??},
-stem from the suboptimal adaptation made locally 
-at individual servers 
+stem from the suboptimal adaptation made locally
+at individual servers
 based on a limited visibility of multicast states at
-other servers. 
+other servers.
 These limitations remain, though to a lesser extent, in hybrid
-control schemes (e.g.,~\cite{vdn}) where local 
+control schemes (e.g.,~\cite{vdn}) where local
 adaptation happens in real-time while a centralized logic
 operates on more coarse timescales.
-Despite this lacking of global view and coordination, the 
-conventional wisdom has 
-been that local adaptation is needed to achieve 
-scalability and responsiveness, and the cost of suboptimal 
+Despite this lacking of global view and coordination, the
+conventional wisdom has
+been that local adaptation is needed to achieve
+scalability and responsiveness, and the cost of suboptimal
 performance is thus deemed necessary.
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=2in]{images/framework.eps}
+  \caption{The centralized design of \name.}
+  \label{fig:framework}
+\vspace{-0.4cm}
+\end{figure}
 
 \mypara{Centralized design}
-However, we believe that such arguement does not apply in our 
-setting of bulk-data inter-DC multicast; instead, we argue for 
+However, we believe that such arguement does not apply in our
+setting of bulk-data inter-DC multicast; instead, we argue for
 a fully centralized design and demonstrate the cost of
 suboptimal performance is not necessary after all.
-As illustrated in Figure~\ref{??}, 
-\jc{add a figure here to illustrate the centralized
-architecture?}
-\name uses a centralized controller to update decisions,
-including schedule of data transfers, and path selection and 
-bandwidth allocation of each transfer, on timescales of 
+As illustrated in Figure~\ref{fig:framework}, \name uses a centralized controller to update decisions,
+including schedule of data transfers, and path selection and
+bandwidth allocation of each transfer, on timescales of
 several seconds.
-At a high level, \name controller periodically polls information
-from all servers to maintain a most up-to-date global view of 
-multicast states, updates the decisions, and pushes them 
+At a high level, \name controller periodically pulls information
+from all servers to maintain a most up-to-date global view of
+multicast states, updates the decisions, and pushes them
 to agents running locally on servers.
-That said, under failure scenarios where the controller is 
+That said, under failure scenarios where the controller is
 not available, \name will reverse to a default decentralized
 overlay protocol to ensure graceful degradation on performance.
 
 \mypara{Design philosophy}
 Our intuition in favor of a centralized design is four-fold:
 \begin{packedenumerate}
-\item {\em Larger data sizes:} 
-Data sizes of bulk-data multicast are much larger 
+\item {\em Larger data sizes:}
+Data sizes of bulk-data multicast are much larger
 than those of overlay networks (e.g., live streaming).
-This means that data transfers happen on long timescales, 
-potentially longer than changes in network conditions or 
-new job arrivals. 
-Therefore, being highly responsive to network congestions 
+This means that data transfers happen on long timescales,
+potentially longer than changes in network conditions or
+new job arrivals.
+Therefore, being highly responsive to network congestions
 is secondary.
 Instead, we can tolerate a small delay of several seconds for
 querying a centralized controller,
 in exchange for closer-to-optimal scheduling decisions.
-\item {\em Larger decision space:} 
-Given the sheer number of inter-DC overlay paths, 
+\item {\em Larger decision space:}
+Given the sheer number of inter-DC overlay paths,
 which grows exponentially with more servers that can
-serve as overlay nodes, 
-it is hard for individual servers to explore possible overlay 
+serve as overlay nodes,
+it is hard for individual servers to explore possible overlay
 paths based only on its local measurements.
-Instead, overlay routing must be driven by a global 
-view of across all servers in order to 
-balance the availability across different data blocks, which 
+Instead, overlay routing must be driven by a global
+view of across all servers in order to
+balance the availability across different data blocks, which
 turned out to be critical to achieve near-optimal performance.
 \item {\em Need for more strict traffic control:}
-As observed in \Section\ref{??}, it is vital that inter-DC 
-bulk-data multicast avoids hotspots and excessive use of 
+As observed in \Section\ref{??}, it is vital that inter-DC
+bulk-data multicast avoids hotspots and excessive use of
 bandwidth that could interference with latency sensitive traffic.
 While it is difficult to enforce a limit on outgoing traffic
 without any coordination across overlay servers, it is practical
 to determine the bandwidth allocation and periodically update it
 to all servers in a centralized fashion.
-\item {\em Engineeringly simpler:} 
+\item {\em Engineeringly simpler:}
 In some sense, the resulting centralized system is conceptually
 simpler and amenable to a simple implementation.
 For instance, the control logic running locally in each server
@@ -106,12 +110,12 @@ and thus can be stateless and lightweight.
 \end{packedenumerate}
 
 \mypara{Fast and optimal decision-making is the key}
-In essence, \name trades updating decisions on coarse timescales 
+In essence, \name trades updating decisions on coarse timescales
 for the potential of making optimal decisions in a centralized
-fashion. 
+fashion.
 Therefore, the key to striking a favorable is a
 {\em near-optimal and efficient overlay routing
-algorithm} that can be updated on near-realtime timescales of 
+algorithm} that can be updated on near-realtime timescales of
 several seconds.
 At a first glance, this is indeed intractable:
 the centralized overlay routing algorithm must pick the next hops

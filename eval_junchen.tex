@@ -62,10 +62,10 @@ The evaluation results of the pilot deployment, together with trace-driven simul
 \subsection{Benefits of centralized control}
 \label{subsec:evaluation:centralized}
 
-We compare \name's against three baselines in terms of 
+We compare \name's against three baselines in terms of
 multicast completion time:
 \company's existing solution (a decentralized strategy),
-Bullet~\cite{??} (a centralized strategy), and 
+Bullet~\cite{??} (a centralized strategy), and
 Akamai's overlay network~\cite{??} for live video streaming
 multicast.
 
@@ -153,19 +153,19 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
 
 \begin{table}[t]
 \begin{center}
-%\resizebox{\textwidth/2}{!}{
+\resizebox{.5\textwidth}{!}{%
 %\begin{tabular}{p{2cm}<{\centering}|p{2cm}<{\centering}}
 \begin{tabular}{| c | c | c | c | c |}
 \hline
  \rowcolor[gray]{0.9}
-\textbf{System} & \textbf{Source DC} & \textbf{$l_1$} & \textbf{$l_2$} & \textbf{$l_3$}\\
+\textbf{System} & \textbf{Link from the source DC} & \textbf{$l_1$} & \textbf{$l_2$} & \textbf{$l_3$}\\
 \hline \hline
 \company & 69.82\% & 53.09\% & 57.98\% & 63.01\% \\
 \hline
 \name & 70.55\% & 62.46\% & 63.23\% & 64.24\% \\
 \hline
 \end{tabular}
-%}
+}
 \end{center}
 \caption{Average link utilizations under \company and \name.}
 \label{table:usage}
