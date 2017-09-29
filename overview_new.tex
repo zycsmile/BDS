@@ -28,13 +28,13 @@ choice and the key challenge to make it practical.
 
 \mypara{Conventional wisdom}
 The limitations of many prior approaches, including \company's
-system, as highlighted in \Section\ref{subsec:??},
+system, as highlighted in \Section\ref{subsec:motivation:baseline},
 stem from the suboptimal adaptation made locally
 at individual servers
 based on a limited visibility of multicast states at
 other servers.
 These limitations remain, though to a lesser extent, in hybrid
-control schemes (e.g.,~\cite{vdn}) where local
+control schemes (e.g.,~\cite{yin2009design}) where local
 adaptation happens in real-time while a centralized logic
 operates on more coarse timescales.
 Despite this lacking of global view and coordination, the
@@ -93,7 +93,7 @@ view of across all servers in order to
 balance the availability across different data blocks, which
 turned out to be critical to achieve near-optimal performance.
 \item {\em Need for more strict traffic control:}
-As observed in \Section\ref{??}, it is vital that inter-DC
+As observed in \Section\ref{subsec:motivation:baseline}, it is vital that inter-DC
 bulk-data multicast avoids hotspots and excessive use of
 bandwidth that could interference with latency sensitive traffic.
 While it is difficult to enforce a limit on outgoing traffic
