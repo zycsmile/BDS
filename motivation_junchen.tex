@@ -463,8 +463,8 @@ deployed, this protocol has begun to show two limitations.
 %
 %\item Briefly mention other solutions (layered structure, hybrid approach, and why not optimizing pair-wise DC link is not sufficient)
 
-\jc{overall, these limitations need a bit elevation, and need to tie
-to the existing decentralized design}
+%\jc{overall, these limitations need a bit elevation, and need to tie
+%to the existing decentralized design}
 
 \noindent{\bf Limitation 1:
 Inefficiency due to the price of anarchy.}
@@ -484,10 +484,8 @@ Figure~\ref{fig:motivation} shows the results under the existing
 protocol. We see that the average completion time is about
 195 minutes, 4.75$\times$ longer than the optimal completion time.
 What's worse, it also exhibits heavy tail latency and there are
-about 5\% servers whose completion time is more than $200min$.
-\jc{can you say something like such inefficiency is due to
-the inability to explore the whole decision space without a
-global view?}
+about 5\% servers whose completion time is more than $200min$. Such a heavy tail is due to the inefficiency data source (probably with limited bandwidth or poor connections). Without a global view, the existing decentralized protocol in anarchy cannot explore the whole decision space to find the most efficient data source.
+
 
 %\jc{this is still a toy example. we want to use real data to show these observations. how about using the previous figure to show tail latency.}
 
@@ -507,10 +505,10 @@ days, from which we can see that the bulk data transfer caused
 obviously irregular traffic. As a result, the latency-sensitive online
 traffic that runs simultaneously on this link therefore suffered over
 30 times longer delay, usually speaking,
-from about $15ms$ to nearly $500ms$.
-\jc{can you say something like: such inefficiency is due to the inability
-to prevent exceeding bandwidth usage by bulk-data transfers in a
-decentralized manner}
+from about $15ms$ to nearly $500ms$. The reason of such inefficiency is that in a decentralized manner, although all the servers worked under the standard QoS requirements, the exceeding bandwidth usage of the inter-DC link still cannot be prevented due to the invisibility of global traffic.
+%\jc{can you say something like: such inefficiency is due to the inability
+%to prevent exceeding bandwidth usage by bulk-data transfers in a
+%decentralized manner}
 %(1) Use a figure to show that bulk data transfer can cause significant delay on latency-sensitive traffic, and (2) put some concrete numbers to show such delay can cause significant revenue loss.
 
 %\jc{can we show some numbers on how much delay on latency-sensitive traffic during that incident? and how much losses did it cause (either in terms of application quality or in \$\$)?}
