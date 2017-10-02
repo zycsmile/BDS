@@ -1,27 +1,33 @@
 \section{Near-Optimal and Efficient Decision-Making Logic}
 \label{sec:logic}
 
-
-At a high level, to optimize inter-DC data multicast, \name fully
-exploits application-level overlay paths by splitting data into
-small blocks and periodically selecting the overlay paths to send
-each data block.
-While optimal overlay routing in our context is
-indeed intractable due to the
-sheer number of available overlay paths and data blocks, but
-\name achieves near-optimal and efficient overlay routing by
-decouple the problem into two steps,
+The key challenge of \name is how to update the overlay routing 
+in near real-time by finding an optimal solution of an overlay 
+routing problem at scales of 
+\fillme overlay paths and \fillme objects.
+%At a high level, to optimize inter-DC data multicast, \name fully
+%exploits application-level overlay paths by splitting data into
+%small blocks and periodically selecting the overlay paths to send
+%each data block.
+While achieving optimal overlay routing may 
+indeed be intractable due to the
+sheer number of available overlay paths and data blocks,
+\name strikes a favorable tradeoff between optimality of solutions
+and time to solve the problem. 
+The key idea here is to {\em decouple} the problem into two steps,
 scheduling (i.e., which data blocks to be sent)
-and routing (to which servers), and it is feasible to solve them
-efficiently and can still find
-near-optimal decision with proved guarantees.
+and routing (to which servers)
+ (\Section\ref{subsec:logic:separation}). 
+After this logical decoupling, \name can solve both problems 
+efficiently and near-optimally with proved guarantees
+(\Section\ref{subsec:logic:scheduling},~\ref{subsec:logic:routing}).
 
 %At a high level, \name optimizes the data distribution performance by splitting data into fine-grained blocks so as to exploiting all available server-level overlay paths, and possible reordering of blocks to speed up the process.
 %In a general case, it is indeed intractable to solve the problem in near real-time, but \name can find a near-optimal solution for our problem scale in several seconds by using applying two approximations: (1) separating the problem of data scheduling and overlay routing, and (2) using standard linear-programming relaxation to solve them efficiently.
 
 %\jc{In general, please avoid use of big formulations (like eq 5-10 on p6). May strike a negative impression in nsdi submissions}
 
-\subsection{Problem formulation}
+\subsection{Basic formulation}
 \label{subsec:logic:formulation}
 
 \begin{table}[t]
@@ -54,10 +60,17 @@ near-optimal decision with proved guarantees.
 \label{table:para}
 \end{table}
 
+We start with the basic formulation of overlay routing in \name,
+first under network capacity and multicast 
+transfers are fixed, and then extending it to
+handle dynamic changes in network performance and request arrivals.
+
 \mypara{Under fixed network capacity}
 Suppose the network capacity is fixed, the problem of multicast
 overlay routing can be formulated as following:
 %The data distribution problem over inter-DC WANs is defined as follows: We are given one data source DC $S$ and sets of destinations DC $D=\{d_i\}$ in an overlay network, what's the optimal transmission strategy with shortest completion time under a serious of constraints. To formulate this problem and design the decision-making logic for the centralized controller, we should first clarify the following aspects (Table \ref{table:para} summarizes some key variables used in \name):
+
+\jc{Notions are too complicated. Please simplify. 4.1 should be at most 1/3 pg.}
 
 \noindent(1) {\em Input.}
 One data source DC $S$, sets of destinations DC
@@ -152,16 +165,23 @@ In other words, we use the data scheduling procedure to select a subset of data 
 and a subsequent routing procedure determine the routing paths
 (i.e., $p_{B_{i,j}}^*$)
 and bandwidth allocation (i.e., $f^*_{B_{i,j},p_{B_{i,j}}^*}$) to these blocks.
-Different from the existing hybrid CDN and P2P architecture \cite{yin2009design} or centralized P2P scheme \cite{lee2003centralized} where the centralized server with global information is used for specific tasks (like system bootstrapping and maintaining global index) \cite{androutsellis2004survey}, \name uses the uses the global information to decouple scheduling and routing without introducing degradation.
+Different from the existing hybrid CDN and P2P architecture \cite{yin2009design} or centralized P2P scheme \cite{lee2003centralized} where the centralized server with global information is used for specific tasks (like system bootstrapping and maintaining global index) \cite{androutsellis2004survey}, \name uses the uses the global information to decouple scheduling and routing without introducing degradation.\jc{put the last sentence after the benefits. also, i don't get the point of this sentence.}
 %, i.e., outputting the block transmission order $\overrightarrow{o}(s_i)$ ; the overlay routing procedure aims at make optimal routing strategies (assign $s_{B_{i,j}}^*$, $p_{B_{i,j}}^*$ and $f^*_{B_{i,j},p_{B_{i,j}}^*}$) for all selected blocks $B_{i,j}$ in the overlay network.
 There are two main benefits of this separation.
 \begin{packedenumerate}
 \item It reduces the computational complexity on the centralized controller side. The objective of the separated scheduling stage is to select a subset of blocks, and only these selected blocks will be routed and transferred in the following routing stage. So the separated data scheduling could avoid exploring unnecessary searching spaces for those unselected blocks.
 \item It speeds up the overall data distribution. This advantage comes from the customized block selection scheme that picks out a specific subset of blocks so as to reduce the overall completion time.
+\jc{why this is a benefit of decoupling? seems an advantage of centralized control?}
 \end{packedenumerate}
 
 \mypara{Why such decoupling is near-optimal}
 The optimal solution for the origin bulk data transfer problem is to decide the optimal order $\overrightarrow{o}(s_i)$ to transmit block for all servers, while such decoupling converts the origin problem into an equivalent one: to decide the optimal order to transmit the selected blocks in each scheduling cycle (so as to enforce network dynamic updates). Thus, the decoupling introduces no degradation as long as \name finds the optimal solutions for both of the scheduling and routing procedures.
+
+\jc{how about the following flow: 
+para1: what the decoupling means; \\
+para2: why it saves costs; \\
+para3: why it could be near-optimal;\\
+para4: why people haven't thought about this or why our solution is unique}
 
 %\jc{still unclear why this decoupling is efficient and near optimal}
 
