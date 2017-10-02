@@ -251,8 +251,6 @@ This section focuses on some benchmarks of \name. On one hand, as \name adopts c
 
 \mypara{Availability of disjoint overlay paths} \Section\ref{subsec:motivation:case-for} reveals the observation that the benefits of application-level overlay networks depend critically on if there exist disjoint paths between two nodes. To explore the potential benefit, we record the ratio of the number of blocks downloaded from the original source to the total number of blocks, and the CDF is shown in Figure \ref{fig:analysis:overlay}. For about 90\% servers, the proportion of blocks downloaded from the original source is less than 20\%, which means that more than 80\% blocks are downloaded from other DCs on the disjoint paths, demonstrating great potential of multicast overlay network.
 
-In summary, both the prototype pilot deployed on \company network and the trace-driven simulations of \name achieve 3-5$\times$ speedup over existing solutions, with good scalability, fast algorithm convergence and lightweight resource consumption.
-
 \begin{figure*}[t]
         \centering
         \begin{subfigure}[b]{0.3\textwidth}
@@ -277,6 +275,16 @@ In summary, both the prototype pilot deployed on \company network and the trace-
         \label{fig:further}
 \vspace{-0.4cm}
 \end{figure*}
+
+\mypara{Optimization over algorithm running time} \name decouples scheduling and routing, which can significantly reduce the computational complexity. To clearly show the optimization, we measure the algorithm running time under \name and the standard linear programming (LP) solution. For the standard LP experiments, we use the \textit{linprog} library on MATLAB, set the upper bound of the iteration number ($10^6$) if the algorithm does not converge, and then record the CPU time various with block number. Figure \ref{fig:further:BDSvsLP} illustrates the comparison results, which shows that the running time of \name keeps under $25ms$ even with 3000 blocks (same as Figure \ref{fig:scale:cpu}) while that of standard LP grows quickly (nearly $4000ms$) with block number and will grow even higher with larger scale (we leave out that part in the figure).
+
+\mypara{Duration of a cycle} Since any change in network performance or arrival of new requests may potentially alter the optimal overlay
+routing decisions, \name reacts to the changing network conditions by adjusting the routing scheme periodically. To testify the granularity of sensing network changing, we set different cycle lengths to the same bulk data transfer. Figure \ref{fig:further:cycleDiff} (to be updated) shows that fine-grained sensing and updating will result in shorter completion time. But with the consideration on overhead of calculation and connection re-establish, we finally choose 3s as the default time cycle.
+
+\mypara{Fault tolerance} \Section\ref{subsec:system:fault} introduces the working principles under failures, here we design the following scenario to verify the fault tolerance of \name. We use the average completion time of a block as reference. From cycle 0 to 10, \name works as usual, one agent fails in the 11th cycle, then the controller fails in the 20th cycle and recovers in the 30th cycle. Figure \ref{fig:further:failure} shows the average block completion time. We find that the failure of one agent affects the algorithm efficiency for only one cycle and the system recovers in the 12th cycle, and the influence is not notable. When the controller is not available, \name reverses to a default decentralized overlay protocol, thus resulting in more obvious degradation on performance. With the recovery of the controller, the performance returns to normal in the 36th cycle.
+
+In summary, both the prototype pilot deployed on \company network and the trace-driven simulations of \name achieve 3-5$\times$ speedup over existing solutions, with good scalability, fast algorithm convergence and lightweight resource consumption.
+
 
 %\begin{itemize}
 %\item Scalability of centralized control:
