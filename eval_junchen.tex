@@ -253,6 +253,31 @@ This section focuses on some benchmarks of \name. On one hand, as \name adopts c
 
 In summary, both the prototype pilot deployed on \company network and the trace-driven simulations of \name achieve 3-5$\times$ speedup over existing solutions, with good scalability, fast algorithm convergence and lightweight resource consumption.
 
+\begin{figure*}[t]
+        \centering
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=50mm]{images/BDSvsLP.eps} % BDSvsLP.m
+                \caption{Algorithm running time of \name and standard LP.}
+                \label{fig:further:BDSvsLP}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=50mm]{images/cycleDiff.eps}%cycleDiff.m
+                \caption{Completion time under different cycle lengths.}
+                \label{fig:further:cycleDiff}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=50mm]{images/failure.eps}%failure.m
+                \caption{Average block completion time under agent and controller failure.}
+                \label{fig:further:failure}
+        \end{subfigure}
+        \caption{Further analysis on (1) running time, (2) cycle length, and (3) fault tolerance.}
+        \label{fig:further}
+\vspace{-0.4cm}
+\end{figure*}
+
 %\begin{itemize}
 %\item Scalability of centralized control:
 %\begin{itemize}
