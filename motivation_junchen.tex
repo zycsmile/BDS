@@ -494,12 +494,12 @@ bulk data transfers, we still see frequent interference with
 latency-sensitive traffic caused by bursty arrival of bulk data
 requests.
 We continuously monitored the bandwidth utilization of an inter-DC
-link in four days where there is a bulk data transfer at 11:00 on the
+link in two days where there is a bulk data transfer at 11:00 on the
 2nd day (lasted for 6 hours and finished at 17:00).
 Figure~\ref{fig:lesson2} shows the link utilization during the two
-days, from which we can see that the bulk data transfer caused
+days. The blue line denotes the outgoing (outbound) bandwidth and the green line denotes the ingoing (inbound) bandwidth. From this figure we can see that the bulk data transfer caused
 obviously irregular traffic. As a result, the latency-sensitive online
-traffic that runs simultaneously on this link therefore suffered over
+traffic that runs simultaneously on this link therefore experienced over
 30 times longer delay, usually speaking,
 from about $15ms$ to nearly $500ms$. The reason of such inefficiency is that in a decentralized manner, although all the servers worked under the standard QoS requirements, the exceeding bandwidth usage of the inter-DC link still cannot be prevented due to the invisibility of global traffic.
 
@@ -507,7 +507,7 @@ from about $15ms$ to nearly $500ms$. The reason of such inefficiency is that in 
 \begin{figure}[t]
         \center
         \includegraphics[width=3in]{images/nj02-M2A_0212-0216_v2.eps}
-        \caption{Bulk data transfer on the 2nd day caused obviously irregular traffic.\jc{what's green line and blue line?? unclear from the figure why the boxed period has bad performance of latency-sensitive traffic. please add a horizontal line at 80\%, and an arrow with the text like ``Latency-sensitive traffic experienced 30$\times$ longer delay''}}
+        \caption{Bulk data transfer on the 2nd day caused obviously irregular traffic.}
         \label{fig:lesson2}
 %\vspace{0.1in}
 \end{figure}
