@@ -459,29 +459,26 @@ deployed, this protocol has begun to show two limitations.
 Inefficiency due to the price of anarchy.}
 The existing decentralized protocol lacks the global information
 about the whole network, and thus cannot make optimal scheduling.
-\jc{again, is the following example from real traffic?}
-To show this, we run an experiment under a simplest topology that
-there is 1 source DC $s$ and 2 destination DCs $d_1, d_2$
-(there are 640 servers in each DC), transferring a 30GB data file
-on $s$ to $d_1$ and $d_2$, with 20Mbps upload and download
-bandwidth.
+To show this, we run an experiment under a simplest topology in \name's network using real traffic trace.
+There is 1 source DC and 2 destination DCs 
+(there are 640 servers in each DC), and the data need to be transferred is 30GB, with 20Mbps upload and download
+bandwidth on each server.
 Theoretically, the optimal overlay solution could always select
 the better source for any block of the data file, and the ideal
-completion time for $d_1$ and $d_2$ is
+completion time for destination DCs is
 $\frac{30\times 1024}{640\times 20Mbps \times 60s/min} = 41$
 minutes.
 Figure~\ref{fig:motivation} shows the results under the existing
 protocol. We see that the average completion time is about
 195 minutes, 4.75$\times$ longer than the optimal completion time.
-\jc{why {\em exactly} is decentralized stuff performing so badly?}
 What's worse, it also exhibits heavy tail latency and there are
-about 5\% servers whose completion time is more than $200min$. Such a heavy tail is due to the inefficiency data source (probably with limited bandwidth or poor connections). Without a global view, the existing decentralized protocol in anarchy cannot explore the whole decision space to find the most efficient data source.
+about 5\% servers whose completion time is more than $200min$. Such inefficiency is due to the unreasonable selection of data source (probably with limited bandwidth or poor connections). Without a global view, the existing decentralized protocol in anarchy cannot explore the whole decision space to find the most efficient data source.
 
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=45mm]{images/SEvsIdeal.eps}
-  \caption{The real and ideal completion time of servers in destination DC. \jc{what's $d_1$?}}
+  \caption{The real and ideal completion time of servers in destination DC.}
   \label{fig:motivation}
 \vspace{-0.4cm}
 \end{figure}
