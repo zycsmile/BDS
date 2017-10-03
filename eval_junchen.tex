@@ -243,7 +243,7 @@ This section focuses on some benchmarks of \name. On one hand, as \name adopts c
 
 \mypara{Feedback loop delay} The feedback loop delay of centralized algorithms is essential to the algorithm scalability. In \name, this loop delay consists of several processes: controller collects update information from agents, runs the centralized algorithm, and then updates control messages to local agents. We measure the delay of the whole process, show the CDF in Figure \ref{fig:scale:feedback}, and find that in most cases (over 80\%), the feedback loop delay is lower than $200ms$. So we can claim that \name demonstrates a short enough update delay and thus enjoys good scalability to even larger systems.
 
-\tightsubsubsection{In-depth analysis.}
+\tightsubsubsection{In-depth analysis.}\label{subsubsec:evaluation:depth}
 
 \mypara{Impact of block sizes} In \name, the bulk data file is split into blocks so that can be transferred from multiple sources on disjoint paths. But this introduces a tradeoff caused by different block sizes. We therefore conduct two series of experiments using different block sizes (2M and 64M). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2M/block scenario is 1.5-2$\times$ shorter than that in the 64M/block scenario. This is because smaller block size leads to less degeneration on the theoretical optimum (see Appendix 2 for the proof). However, this optimization introduces longer controller running time, as shown in Figure \ref{fig:scale:cpu}, there will be 32$\times$ more blocks in 2M/block scenario. Overall, block size decisions depend on: (1) requirements on the completion time, and (2) controller's running time.
 
