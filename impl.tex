@@ -9,7 +9,11 @@ We have deployed \name on \company's DCs, which consist of 67 servers in 10 IDCs
 %
 %The basic workflow of \name can be described as follows: All the \emph{Agent} sends its task and status to \emph{Agent Monitor} by HTTP POST, then \emph{Agent Monitor} aggregates all information for \emph{Controller} to perform scheduling. Once scheduling is finished. \emph{Agent Monitor} send the control message to all the \emph{Agent} by HTTP POST, then \emph{Agent} uses \emph{wget} tools to download bulk data. After one scheduling cycle (\fillme), the above procedure will performed again.
 
-Note that only \emph{Agent} is deployed in each IDC's machines, the other components is deployed in centralized clusters, so \name is also applicable to other companies' DCs. 	
+Note that only \emph{Agent} is deployed in each IDC's machines, the other components is deployed in centralized clusters, so \name is also applicable to other companies' DCs. 	\jc{this is oversimplistic. did you make any assumption about the agent? what if a hadoop application wants to use your stuff?}
+
+\jc{a missing piece is what's application interface. if an application wants to send a file, does it make a function call to your system?}
+
+\jc{what changes did you make on each server? where was the controller implemented? what's the protocol? how did data transfer happen (wget?)? how was bandwidth enforcement done (wget option)? }
 
 \begin{figure}[t]
   \centering
