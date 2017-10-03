@@ -149,29 +149,31 @@ so \name should react to the changing network conditions by monitoring residual 
 \label{subsec:logic:separation}
 
 The key insight underlying the above re-formulated problem is the
-separation of data scheduling and overlay routing.
-In other words, we use the data scheduling procedure to select a subset of data blocks to be transferred first
-(i.e., $\overrightarrow{o}(s_i)$),
-and a subsequent routing procedure determine the routing paths
-(i.e., $p_{B_{i,j}}^*$)
-and bandwidth allocation (i.e., $f^*_{B_{i,j},p_{B_{i,j}}^*}$) to these blocks.
-Different from the existing hybrid CDN and P2P architecture \cite{yin2009design} or centralized P2P scheme \cite{lee2003centralized} where the centralized server with global information is used for specific tasks (like system bootstrapping and maintaining global index) \cite{androutsellis2004survey}, \name uses the uses the global information to decouple scheduling and routing without introducing degradation.\jc{put the last sentence after the benefits. also, i don't get the point of this sentence.}
+separation of data scheduling and overlay routing: the scheduling procedure selects a subset of blocks to be transferred first
+($\overrightarrow{o_B}$), and the subsequent routing procedure determines the routing paths ($p_{B_{i,j}}^*$) and allocated bandwidth ($f^*_{B_{i,j},p_{B_{i,j}}^*}$) to these blocks.
+
+This decoupling reduces the computational complexity on the centralized controller side. As the scheduling stage selects a subset of blocks, and only these selected blocks will be routed and transferred in the following routing stage, the searching spaces are thus significantly reduced for the subsequent routing procedure, speeding up the execution of the centralized algorithm.
+
+What worth mentioning is that such decoupling is near-optimal. For the origin bulk data transfer problem, the optimal solution is to decide the optimal block transmission order $\overrightarrow{o_B}$ for all servers, while such decoupling converts this optimal solution into an equivalent one: to decide the optimal order to transmit the selected blocks in each scheduling cycle (so as to enforce network dynamic updates). Thus, the decoupling introduces no degradation as long as \name finds the optimal solutions for both of the scheduling and routing procedures in each cycle.
+
+In the existing hybrid CDN and P2P architecture \cite{yin2009design} or centralized P2P scheme \cite{lee2003centralized}, there are also centralized servers with global information, but those servers are used for specific tasks (like system bootstrapping and maintaining global index) \cite{androutsellis2004survey}. While the centralized controller of \name faces more challenges in terms of real-time computing. The above mentioned decoupling could not only sense the changing network conditions, but also reduce the calculation scale of the centralized algorithm running on the controller.
+%uses the global information to decouple scheduling and routing without introducing degradation.\jc{put the last sentence after the benefits. also, i don't get the point of this sentence.}
 %, i.e., outputting the block transmission order $\overrightarrow{o}(s_i)$ ; the overlay routing procedure aims at make optimal routing strategies (assign $s_{B_{i,j}}^*$, $p_{B_{i,j}}^*$ and $f^*_{B_{i,j},p_{B_{i,j}}^*}$) for all selected blocks $B_{i,j}$ in the overlay network.
-There are two main benefits of this separation.
-\begin{packedenumerate}
-\item It reduces the computational complexity on the centralized controller side. The objective of the separated scheduling stage is to select a subset of blocks, and only these selected blocks will be routed and transferred in the following routing stage. So the separated data scheduling could avoid exploring unnecessary searching spaces for those unselected blocks.
-\item It speeds up the overall data distribution. This advantage comes from the customized block selection scheme that picks out a specific subset of blocks so as to reduce the overall completion time.
-\jc{why this is a benefit of decoupling? seems an advantage of centralized control?}
-\end{packedenumerate}
-
-\mypara{Why such decoupling is near-optimal}
-The optimal solution for the origin bulk data transfer problem is to decide the optimal order $\overrightarrow{o}(s_i)$ to transmit block for all servers, while such decoupling converts the origin problem into an equivalent one: to decide the optimal order to transmit the selected blocks in each scheduling cycle (so as to enforce network dynamic updates). Thus, the decoupling introduces no degradation as long as \name finds the optimal solutions for both of the scheduling and routing procedures.
-
-\jc{how about the following flow:
-para1: what the decoupling means; \\
-para2: why it saves costs; \\
-para3: why it could be near-optimal;\\
-para4: why people haven't thought about this or why our solution is unique}
+%There are two main benefits of this separation.
+%\begin{packedenumerate}
+%\item It reduces the computational complexity on the centralized controller side. The objective of the separated scheduling stage is to select a subset of blocks, and only these selected blocks will be routed and transferred in the following routing stage. So the separated data scheduling could avoid exploring unnecessary searching spaces for those unselected blocks.
+%\item It speeds up the overall data distribution. This advantage comes from the customized block selection scheme that picks out a specific subset of blocks so as to reduce the overall completion time.
+%\jc{why this is a benefit of decoupling? seems an advantage of centralized control?}
+%\end{packedenumerate}
+%
+%\mypara{Why such decoupling is near-optimal}
+%The optimal solution for the origin bulk data transfer problem is to decide the optimal order $\overrightarrow{o}(s_i)$ to transmit block for all servers, while such decoupling converts the origin problem into an equivalent one: to decide the optimal order to transmit the selected blocks in each scheduling cycle (so as to enforce network dynamic updates). Thus, the decoupling introduces no degradation as long as \name finds the optimal solutions for both of the scheduling and routing procedures.
+%
+%\jc{how about the following flow:
+%para1: what the decoupling means; \\
+%para2: why it saves costs; \\
+%para3: why it could be near-optimal;\\
+%para4: why people haven't thought about this or why our solution is unique}
 
 %\jc{still unclear why this decoupling is efficient and near optimal}
 
