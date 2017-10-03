@@ -1,39 +1,40 @@
 \begin{abstract}
 
-One of the most common inter-DC  communication pattern 
+One of the most common inter-DC  communication patterns
 of online service providers is replicating bulk data from 
 one DC to multiple DCs. 
-While recent work seeks to improve bulk-data 
+While recent work has sought to improve bulk-data 
 multicast by optimizing WAN performance, it is necessarily 
-incomplete, as it falls short of fully exploring the 
-disjoint inter-DC paths that exist in abundance,
-as well as servers' capability to store-and-forward data.
+incomplete, as it falls short of fully exploring servers' 
+capability to store-and-forward data, as well as 
+the disjoint inter-DC paths that exist in abundance.
 %Inspired by the early success of multicast overlay networks, 
 To utilize these unexplored opportunities, we 
 argue that an application-level multicast overlay network 
 is needed to optimally schedule and route data transfers 
 on overlay paths.
-Despite the promise, introducing multicast overlays in
-the context of inter-DC communication poses new challenges,
-such as the sheer number of servers and overlay paths 
-which renders it untenable to make optimal overlay selections 
-in real-time, and a strong need for preventing any delay of 
+Despite these promises, building an optimal overlay network 
+for inter-DC multicast poses two challenges:
+(1) the sheer numbers of servers and overlay paths 
+which render it untenable to make optimal overlay selections 
+in real-time, and (2) a strict requirement to prevent delays of 
 latency-sensitive traffic caused by multicasting bulk data. 
-We present {\em \name}, a near-optimal multicast overlay network 
-for bulk data multicast. 
+We present {\em \name}, a simple yet near-optimal overlay network
+for bulk-data multicast. 
 Contrary to the intuition that servers must retain the capability 
-to adapt locally in order to scale out, \name demonstrates the 
-feasibility of fully centralizing the overlay path selection
-and scheduling of data transfers.
+to adapt locally (and thus suboptimally) 
+in order to scale out, \name demonstrates the 
+feasibility and practical benefits of fully centralizing the
+selection of overlay paths.
 The key insight underlying this centralized design is the 
-observation that bulk-data transfers tend to last on long 
+observation that bulk-data transfers tend to last on coarse 
 timescales so they can 
 tolerate a slight delay of centralized decision-making 
-in the hope of
+in the hope of getting
 a closer-to-optimal overlay routing.
-Moreover, allocating bandwidth to each data transfer in a 
-centralized manner is amenable to eliminating interference of 
-bulk-data transfers on latency-sensitive traffic.
+Moreover, centralized bandwidth allocation on the granularity
+of each data transfer proves efficient in eliminating 
+interference of bulk-data transfers on latency-sensitive traffic.
 %\name is built on design choices:
 %(a) fully centralized decision-making in near real-time, and 
 %(b) enforcing a clean, dynamic separation of bandwidth.
