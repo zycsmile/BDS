@@ -1,27 +1,26 @@
 \subsection{Implementation and Deployment}
 \label{sec:deployment}
 
-We have deployed \name on \company's DCs, which consist of 67 servers in 10 IDCs located in three major regions in China. The topology is shown as Fig. \ref{fig:topology}. Evaluations in the next section are based on this deployment.
-
-\name is implemented with 3621 lines of golang code \cite{golang}, and can be fully integrated in \company's DCs.
-
-%Figure \ref{fig:implementation} shows the detailed implementation of \name. It  consists of five components: \emph{Controller}, \emph{Agent Monitor}, \emph{Agent}, \emph{Storage Platform}, \emph{Network Monitor}. 1) \emph{Controller} is a scheduler which executes the customized scheduling algorithm. 2) \emph{Agent Monitor} delivers messages between the \emph{Controller} and \emph{Agent}. 3) \emph{Agent} is a module deployed in each machines. It announces the bulk data that need to be downloaded to \emph{Agent Monitor}. 4) \emph{Network Monitor} records the each link capacity and the traffic of latency-sensitive data, which is the basic input of the scheduling algorithm. 5) \emph{Storage platform} records the system snapshot, including master and slave status, etc. The \emph{Controller} is replicated three times for fault tolerance. Once the master controller fails, the \emph{Storage Platform} will announce one slave becomes the master.
-%
-%The basic workflow of \name can be described as follows: All the \emph{Agent} sends its task and status to \emph{Agent Monitor} by HTTP POST, then \emph{Agent Monitor} aggregates all information for \emph{Controller} to perform scheduling. Once scheduling is finished. \emph{Agent Monitor} send the control message to all the \emph{Agent} by HTTP POST, then \emph{Agent} uses \emph{wget} tools to download bulk data. After one scheduling cycle (\fillme), the above procedure will performed again.
-
-Note that only \emph{Agent} is deployed in each IDC's machines, the other components is deployed in centralized clusters, so \name is also applicable to other companies' DCs. 	\jc{this is oversimplistic. did you make any assumption about the agent? what if a hadoop application wants to use your stuff?}
-
-\jc{a missing piece is what's application interface. if an application wants to send a file, does it make a function call to your system?}
-
-\jc{what changes did you make on each server? where was the controller implemented? what's the protocol? how did data transfer happen (wget?)? how was bandwidth enforcement done (wget option)? }
-
 \begin{figure}[t]
   \centering
   \includegraphics[width=3in]{images/Testbed_v2.eps}
   \caption{The abstract topology of our intra-net WAN.}
   \label{fig:topology}
 \end{figure}
-\vspace{-15pt}
+%\vspace{-15pt}
+
+We have deployed \name on \company's DCs, which consist of 67 geo-distributed servers in 10. The topology is shown as Fig. \ref{fig:topology}. Evaluations in the next section are based on this deployment.
+
+\name is implemented with 3621 lines of golang code \cite{golang}, and can be fully integrated in \company's DCs. The three duplications of the controller are implemented on three geo-located different servers. The data plane (bulk data transmissions) between controller and agents adopts TCP, and the control plane (control messages) adopts HTTP. For the specific transmissions, \name uses \emph{wget} to make data transfer and sets particular \emph{wget options} to enforce bandwidth.
+
+This implementation makes no specific requirements on applications, and each application that needs to distribute bulk data distribution just follows three steps: 1. register on \name, initiate the basic information about source DC, all end servers and the bulk data. 2. install agents on the involved end servers, 3. assign the start time of bulk data transmission. Then \name will start the data distribution at the specified time. Such simple implementation also makes \name applicable to other companies' DCs. 	
+
+%\jc{this is oversimplistic. did you make any assumption about the agent? what if a hadoop application wants to use your stuff?}
+
+%\jc{a missing piece is what's application interface. if an application wants to send a file, does it make a function call to your system?}
+
+%\jc{what changes did you make on each server? where was the controller implemented? what's the protocol? how did data transfer happen (wget?)? how was bandwidth enforcement done (wget option)? }
+
 
 
 %
