@@ -33,30 +33,30 @@ The evaluation results of the pilot deployment, together with trace-driven simul
         \label{fig:BDSvsAnon}
 \vspace{-0.4cm}
 \end{figure*}
-\begin{figure*}[t] %@X:\6 PieBridge\simulation\DrawFig
-        \centering
-        \begin{subfigure}[b]{0.3\textwidth}
-                \centering
-                \includegraphics[width=50mm]{images/Test1.eps}
-                \caption{Baseline experiment.}
-                \label{fig:cdn:baseline}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.3\textwidth}
-                \centering
-                \includegraphics[width=50mm]{images/Test2.eps}
-                \caption{Large scale experiments.}
-                \label{fig:cdn:scale}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.3\textwidth}
-                \centering
-                \includegraphics[width=50mm]{images/Test3.eps}
-                \caption{Small bandwidth experiments.}
-                \label{fig:cdn:bw}
-        \end{subfigure}
-        \caption{[\name versus Bullet] Comparisons under different network scenarios.}
-        \label{fig:versusCDN}
-\vspace{-0.4cm}
-\end{figure*}
+%\begin{figure*}[t] %@X:\6 PieBridge\simulation\DrawFig
+%        \centering
+%        \begin{subfigure}[b]{0.3\textwidth}
+%                \centering
+%                \includegraphics[width=50mm]{images/Test1.eps}
+%                \caption{Baseline experiment.}
+%                \label{fig:cdn:baseline}
+%        \end{subfigure}
+%        \begin{subfigure}[b]{0.3\textwidth}
+%                \centering
+%                \includegraphics[width=50mm]{images/Test2.eps}
+%                \caption{Large scale experiments.}
+%                \label{fig:cdn:scale}
+%        \end{subfigure}
+%        \begin{subfigure}[b]{0.3\textwidth}
+%                \centering
+%                \includegraphics[width=50mm]{images/Test3.eps}
+%                \caption{Small bandwidth experiments.}
+%                \label{fig:cdn:bw}
+%        \end{subfigure}
+%        \caption{[\name versus Bullet] Comparisons under different network scenarios.}
+%        \label{fig:versusCDN}
+%\vspace{-0.4cm}
+%\end{figure*}
 
 
 \subsection{Benefits of centralized control}
@@ -65,24 +65,22 @@ The evaluation results of the pilot deployment, together with trace-driven simul
 We compare \name's against three baselines in terms of
 multicast completion time:
 \company's existing solution (a decentralized strategy),
-Bullet~\cite{??} (a centralized strategy), and
-Akamai's overlay network~\cite{??} for live video streaming
+Bullet~\cite{kostic2003bullet} (a centralized strategy), and
+Akamai's overlay network~\cite{Andreev2013Designing} for live video streaming
 multicast.
 
 \tightsubsubsection{Methodology}
 
-\mypara{Pilot deployment}
-\jc{briefly explain how two schemes are compared
-side by side in the pilot deployment}
+Pilot deployment. We choose a service with 70~TB daily data file to transfer. In general, this bulk data is transferred by \company's existing solution (that has already run for more than 5 years), while we randomly choose several days using \name instead of the current solution. To make sure the two solutions work in the same environment, we conduct the following experiments at the same time of a day.
 
-\mypara{Trace-driven simulation}
-\jc{how trace-driven simulation is done.}
+Trace-driven simulation. For safety reasons, we cannot implement other solutions on the real network, so we simulate the other two overlay multicast techniques and evaluate their performance using real data trace. We set the same topology, source DC, destination DCs, server configurations as the real environments, and compare the results against \name.
+
 
 %To evaluate the benefits of centralized control, we conduct two series of experiments: the comparisons with \company's existing solution based on the pilot deployments, and the comparisons with other overlay multicast techniques using trace-driven simulations.
 
 \tightsubsubsection{\name vs. \company's existing solution}
 
-We measure \name's performance versus \company's existing solution that has already run for more than 5 years. In this series of experiments, we choose a 70~TB data file that is distributed stored in the source DC (with 1000 servers) at the very beginning, and each of the other DCs announces a downloading requirement and stores the file in the same way with 1000 servers.
+The above mentioned 70~TB data file is distributed stored in the source DC (with 1000 servers) at the very beginning, and each of the other DCs announces a downloading requirement and finally stores the file in the same way with 1000 servers.
 
 %First of all, we present the completion time of destination servers under \name and \company in Figure
 
@@ -100,16 +98,20 @@ To prove that this is not a special case, we repeat the experiments during the 7
 
 \tightsubsubsection{\name vs. other overlay multicast techniques}
 
-As we cannot implement other experimental systems in our real online network just as comparisons, we conduct a series of simulations using trace-driven simulations in this section, and compare \name's performance versus Bullet \cite{kostic2003bullet} and a CDN-based solution \cite{Andreev2013Designing} adopted by Akamai.
+%As we cannot implement other experimental systems in our real online network just as comparisons, we conduct a series of simulations using trace-driven simulations in this section, and compare \name's performance versus Bullet \cite{kostic2003bullet} and a CDN-based solution \cite{Andreev2013Designing} adopted by Akamai.
 
-We use the same topology with 12 DCs (1 DC acts as the source DC), 1000 servers per DC for all simulations, and set the parameters all the same as the real network, including data file size $\mathbb{S}$, set of source and destination pairs $S=(s,d_i),1\leq i \leq 11$, path $p_\lambda$, link capacities $c(l_{u,v})$ and server upload/download rate $R_{up}(n)/R_{down}(n)$.
+We use the same topology with 12 DCs (1 DC acts as the source DC) for all simulations, and set the parameters all the same as the real network, including data file size, data source and destination, paths, link capacities and server upload/download rates.
 
-Bullet \cite{kostic2003bullet} is a distributed algorithm that works on an overlay mesh network, it enables geo-spread nodes to self-organize into a overlay mesh. Specifically, each node uses RanSub \cite{Rodriguez2003Using} to distribute summary tickets information to other nodes, and receives disjoint data from his sending peers. The most obvious difference between \name and Bullet lies in the control scheme, i.e., \name is centralized method, who can maximize total system traffic, while Bullet is a decentralized scheme and each node makes decision according to his obtained information. We conduct three series of experiments and show the results in Figure \ref{fig:versusCDN}: baseline \ref{fig:cdn:baseline}, large scale \ref{fig:cdn:scale} and small bandwidth experiments \ref{fig:cdn:bw}. We find \name achieves 3$\times$ shorter completion time than Bullet in the baseline experiments, and more than 4$\times$ improvement in the large scale experiments and small bandwidth experiments.
+Bullet \cite{kostic2003bullet} is a distributed algorithm that works on an overlay mesh network, it enables geo-spread nodes to self-organize into a overlay mesh. Specifically, each node uses RanSub \cite{Rodriguez2003Using} to distribute summary tickets information to other nodes, and receives disjoint data from his sending peers. The most obvious difference between \name and Bullet lies in the control scheme, i.e., \name is centralized method, who can maximize total system traffic, while Bullet is a decentralized scheme and each node makes decision according to his obtained information. 
 
+Akamai design a 3-layer overlay network for delivering live streams \cite{Andreev2013Designing}, where a source forwards its streams to reflectors, and a reflector sends outgoing streams to the final stage sinks. Things \name and Akamai have in common is that both of them are designed for data distribution on overlay multicast networks. There are two main differences  between Akamai and \name: (1) Akamai adopts a 3-layer topology where an edgeserver receives data from the parent reflectors, while \name could explore more potential searching space without layer limitation. (2) A sink in Akamai receives must receive data in sequential order because it serves for the live streaming application, but \name does care about blocks arriving order. Thus, to achieve optimal scheduling results, \name should also solve the scheduling problem so as to work out the optimal block download order $\overrightarrow{o}(s_i)$.
 
-Akamai design a 3-layer overlay network for delivering live streams \cite{Andreev2013Designing}, where a source forwards its streams to reflectors, and a reflector sends outgoing streams to the final stage sinks. Things \name and Akamai have in common is that both of them are designed for data distribution on overlay multicast networks. There are two main differences  between Akamai and \name: (1) Akamai adopts a 3-layer topology where an edgeserver receives data from the parent reflectors, while \name could explore more potential searching space without layer limitation. (2) A sink in Akamai receives must receive data in sequential order because it serves for the live streaming application, but \name does care about blocks arriving order. Thus, to achieve optimal scheduling results, \name should also solve the scheduling problem so as to work out the optimal block download order $\overrightarrow{o}(s_i)$. The comparison results of Akamai and \name are shown in Table \ref{table:versusAkamai}, which shows that \name achieves 4-8$\times$ speedup over Akamai's layered solution.
+%We conduct three series of experiments and show the results in Figure \ref{fig:versusCDN}: baseline \ref{fig:cdn:baseline}, large scale \ref{fig:cdn:scale} and small bandwidth experiments \ref{fig:cdn:bw}. We find \name achieves 3$\times$ shorter completion time than Bullet in the baseline experiments, and more than 4$\times$ improvement in the large scale experiments and small bandwidth experiments.
+We conduct three series of experiments and show the results in Table \ref{table:versusAkamai}: baseline, large scale and small bandwidth experiments. In the baseline experiments, the size of the bulk data is 10TB , the number of server per DC is 100, and the upload/download rate limits are set to 20Mbps, while in the large scale experiment, the bulk data is 100TB, server number per DC is 1000, and in the small bandwidth experiment, server upload/download rate limit is reduced to 5M/bps. We find that \name achieves 3$\times$ shorter completion time than Bullet and Akamai in the baseline experiments, and more than 4$\times$ improvement in the large scale experiments and small bandwidth experiments.
 
-\begin{table}[htbp]
+In the large scale experiments, the completion time of Bullet increases to about 3 times than that in the baseline experiment, and that of Akamai multicast solution is about 3.5 times. But \name only increase to about 2 times. This advantage proves \name's good scalability. In the small bandwidth experiments (when delay-sensitive traffic bursts, such bandwidth reduction is very common), the completion time of \name increase to about 4 times while that of Bullet and Akamai is 6.1 and 5.52, respectively. These results illustrate the high transmission efficiency of \name.
+
+\begin{table}[t]
 \begin{center}
 \resizebox{3in}{!}{
 %\begin{tabular}{p{2cm}<{\centering}|p{2cm}<{\centering}}
@@ -118,15 +120,17 @@ Akamai design a 3-layer overlay network for delivering live streams \cite{Andree
  \rowcolor[gray]{0.9}
 \textbf{Solution} & \textbf{Baseline} & \textbf{Large Scale} & \textbf{Rate Limit} \\
 \hline \hline
-Akamai & $75m$ & $742m$ & $447m$\\
+Bullet & $28m$ & $82m$ & $171m$\\
 \hline
-\name & $9.41m$ & $171.33m$ & $128.25m$\\
+Akamai & $25m$ & $87m$ & $138m$\\
+\hline
+\name & $9.41m$ & $20.33m$ & $38.25m$\\
 \hline
 \end{tabular}
 }
 \end{center}
 \vspace{-0.4cm}
-\caption{Completion time of PieBridge and Akamai.}
+\caption{Average completion time of Bullet \cite{kostic2003bullet}, Akamai \cite{Andreev2013Designing} and \name.}
 \label{table:versusAkamai}
 \end{table}
 
