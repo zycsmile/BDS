@@ -5,8 +5,8 @@ To evaluate \name, we integrated our end-to-end prototype in \company, and ran a
 The evaluation results of the pilot deployment, together with trace-driven simulation and microbenchmarks, show that:
 \begin{packedenumerate}
 \item \name completes bulk-data multicast 3-5$\times$ faster than \company's existing solution, as well as other industry-standard solutions (\Section\ref{subsec:evaluation:centralized}).
-\item \name eliminates interference with latency-sensitive data using a clean bandwidth separation, while having only negligible impact on link utilization (\Section\ref{subsec:evaluation:benchmarks})
-\item \name can update decisions every 3 seconds over a WAN of the same size as B4, is lightweight in terms of CPU, bandwidth consumed (\Section\ref{subsec:evaluation:benchmarks}).
+\item \name eliminates interference with latency-sensitive data using a clean bandwidth separation (\Section\ref{subsec:evaluation:separation}).
+\item \name can update decisions over a WAN of the same size as B4, while still being lightweight in terms of CPU, bandwidth consumed (\Section\ref{subsec:evaluation:benchmarks}).
 \end{packedenumerate}
 
 \begin{figure*}[t]
@@ -102,7 +102,7 @@ To prove that this is not a special case, we repeat the experiments during the 7
 
 We use the same topology with 12 DCs (1 DC acts as the source DC) for all simulations, and set the parameters all the same as the real network, including data file size, data source and destination, paths, link capacities and server upload/download rates.
 
-Bullet \cite{kostic2003bullet} is a distributed algorithm that works on an overlay mesh network, it enables geo-spread nodes to self-organize into a overlay mesh. Specifically, each node uses RanSub \cite{Rodriguez2003Using} to distribute summary tickets information to other nodes, and receives disjoint data from his sending peers. The most obvious difference between \name and Bullet lies in the control scheme, i.e., \name is centralized method, who can maximize total system traffic, while Bullet is a decentralized scheme and each node makes decision according to his obtained information. 
+Bullet \cite{kostic2003bullet} is a distributed algorithm that works on an overlay mesh network, it enables geo-spread nodes to self-organize into a overlay mesh. Specifically, each node uses RanSub \cite{Rodriguez2003Using} to distribute summary tickets information to other nodes, and receives disjoint data from his sending peers. The most obvious difference between \name and Bullet lies in the control scheme, i.e., \name is centralized method, who can maximize total system traffic, while Bullet is a decentralized scheme and each node makes decision according to his obtained information.
 
 Akamai design a 3-layer overlay network for delivering live streams \cite{Andreev2013Designing}, where a source forwards its streams to reflectors, and a reflector sends outgoing streams to the final stage sinks. Things \name and Akamai have in common is that both of them are designed for data distribution on overlay multicast networks. There are two main differences  between Akamai and \name: (1) Akamai adopts a 3-layer topology where an edgeserver receives data from the parent reflectors, while \name could explore more potential searching space without layer limitation. (2) A sink in Akamai receives must receive data in sequential order because it serves for the live streaming application, but \name does care about blocks arriving order. Thus, to achieve optimal scheduling results, \name should also solve the scheduling problem so as to work out the optimal block download order $\overrightarrow{o}(s_i)$.
 
@@ -196,7 +196,7 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
                 \caption{Feedback loop delay.}
                 \label{fig:scale:feedback}
         \end{subfigure}
-        \caption{Scalability of \name.}
+        \caption{[System scalability] Measurements on (a) controller running time, (b) network delay, (c) Feedback loop delay.}
         \label{fig:scale}
 \vspace{-0.4cm}
 \end{figure*}
@@ -205,23 +205,35 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
         \centering
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
+                \includegraphics[width=50mm]{images/failure.eps}%fail.m
+                \caption{Average number of downloaded blocks per cycle under failures.}
+                \label{fig:analysis:failure}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
                 \includegraphics[width=50mm]{images/blkSize.eps} % cpu.m
                 \caption{Completion time under different block sizes.}
                 \label{fig:analysis:blksize}
         \end{subfigure}
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
-                \includegraphics[width=50mm]{images/cycle.eps} %calculation_origin
-                \caption{Reduction on algorithm running time due to approximation.}
-                \label{fig:analysis:time}
+                \includegraphics[width=50mm]{images/cycleDiff.eps}%cycleDiff.m
+                \caption{Completion time under different cycle lengths.}
+                \label{fig:analysis:cycleDiff}
         \end{subfigure}
-        \begin{subfigure}[b]{0.3\textwidth}
-                \centering
-                \includegraphics[width=50mm]{images/overlay.eps}
-                \caption{The proportion of blocks downloaded from the original source.}
-                \label{fig:analysis:overlay}
-        \end{subfigure}
-        \caption{In-depth analysis on (1) block size, (2) optimization of approximation algorithms, and (3) inter-DC multicast overlay.}
+%        \begin{subfigure}[b]{0.3\textwidth}
+%                \centering
+%                \includegraphics[width=50mm]{images/cycle.eps} %calculation_origin
+%                \caption{Reduction on algorithm running time due to approximation.}
+%                \label{fig:analysis:time}
+%        \end{subfigure}
+%        \begin{subfigure}[b]{0.3\textwidth}
+%                \centering
+%                \includegraphics[width=50mm]{images/overlay.eps}
+%                \caption{The proportion of blocks downloaded from the original source.}
+%                \label{fig:analysis:overlay}
+%        \end{subfigure}
+        \caption{[Algorithm adaptability] Measurements on (a) fault tolerance, (b) different block size, and (c) different cycle length.}
         \label{fig:analysis}
 \vspace{-0.4cm}
 \end{figure*}
@@ -237,9 +249,9 @@ As \name implements strict bandwidth separation between latency-sensitive traffi
 \subsection{Micro-benchmarks}
 \label{subsec:evaluation:benchmarks}
 
-This section focuses on some benchmarks of \name. On one hand, as \name adopts centralized control, the running time of controller and the scalability of the algorithm are key concerns. On the other hand, \name applies two approximations on the origin problem, and the resulting benefits and tradeoffs need to be clarified.
+This section focuses on some benchmarks of \name. 1. Scalability of centralized control. As \name adopts centralized control, the running time and scalability of controller are key indicators of algorithm efficiency. 2. Algorithm adaptability. \name runs on company's network, together with online latency-sensitive traffic, so high fault tolerance and strong robustness are essential requirements. 3. In-depth analysis. The benefits of \name's two approximations and the effects of exploring overlay network also need to be clarified.
 
-\tightsubsubsection{Scalability of centralized control.}
+\tightsubsubsection{System scalability.}
 
 \mypara{Controller Running Time} As the controller needs to select optimal $s_{B_{i,j}}^*$, $p_{B_{i,j}}^*$ and assign $f^*_{B_{i,j},p_{B_{i,j}}^*}$ for all blocks $B_{i,j}$, the algorithm running time is thus related to the number of blocks. We show the relationship in Figure \ref{fig:scale:cpu}, from which we can see that even when there are $3\times 10^5$ blocks, the controller running time is still lower than $300ms$. Further, the block merging and non-blocking update schemes described in \Section\ref{subsec:system:centralized} also help to mask the algorithm running time.
 
@@ -247,45 +259,84 @@ This section focuses on some benchmarks of \name. On one hand, as \name adopts c
 
 \mypara{Feedback loop delay} The feedback loop delay of centralized algorithms is essential to the algorithm scalability. In \name, this loop delay consists of several processes: controller collects update information from agents, runs the centralized algorithm, and then updates control messages to local agents. We measure the delay of the whole process, show the CDF in Figure \ref{fig:scale:feedback}, and find that in most cases (over 80\%), the feedback loop delay is lower than $200ms$. So we can claim that \name demonstrates a short enough update delay and thus enjoys good scalability to even larger systems.
 
+\tightsubsubsection{Algorithm adaptability.}\label{subsubsec:evaluation:adaptability}
+
+\mypara{Fault tolerance} \Section\ref{subsec:system:fault} introduces the working principles under failures, here we design the following scenario to verify the fault tolerance of \name. We use the average flow completion time (FCT) of a block as reference. From cycle 0 to 10, \name works as usual), one agent fails in the 11th cycle, then the controller fails in the 20th cycle and recovers in the 30th cycle. Figure \ref{fig:analysis:failure} shows the average block completion time. We find that the failure of one agent affects the algorithm efficiency for only one cycle (FCT: from $100ms$ to about $107ms$) and the system recovers in the 12th cycle, and the influence is not notable. When the controller is not available, \name reverses to a default decentralized overlay protocol, thus resulting in more obvious degradation on performance (FCT: from $100ms$ to about $400ms$. With the recovery of the controller, the performance returns to normal in the 36th cycle.
+
+\mypara{Different block sizes} In \name, the bulk data file is split into blocks so that can be transferred from multiple sources on disjoint paths. But this introduces a tradeoff caused by different block sizes. We therefore conduct two series of experiments using different block sizes (2M and 64M). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2M/block scenario is 1.5-2$\times$ shorter than that in the 64M/block scenario. This is because smaller block size leads to less degeneration on the theoretical optimum (see Appendix 2 for the proof). However, this optimization introduces longer controller running time, as shown in Figure \ref{fig:scale:cpu}, there will be 32$\times$ more blocks in 2M/block scenario. Overall, block size decisions depend on: (1) requirements on the completion time, and (2) controller's running time.
+
+\mypara{Different cycle lengths} Since any change in network performance or arrival of new requests may potentially alter the optimal overlay
+routing decisions, \name reacts to the changing network conditions by adjusting the routing scheme periodically. To testify the granularity of sensing network changing, we set different cycle lengths to the same bulk data transfer. Figure \ref{fig:analysis:cycleDiff} (to be updated) shows that fine-grained sensing and updating will result in shorter completion time. But with the consideration on overhead of calculation and connection re-establish, we finally choose 3s as the default time cycle.
+
+
 \tightsubsubsection{In-depth analysis.}\label{subsubsec:evaluation:depth}
-
-\mypara{Impact of block sizes} In \name, the bulk data file is split into blocks so that can be transferred from multiple sources on disjoint paths. But this introduces a tradeoff caused by different block sizes. We therefore conduct two series of experiments using different block sizes (2M and 64M). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2M/block scenario is 1.5-2$\times$ shorter than that in the 64M/block scenario. This is because smaller block size leads to less degeneration on the theoretical optimum (see Appendix 2 for the proof). However, this optimization introduces longer controller running time, as shown in Figure \ref{fig:scale:cpu}, there will be 32$\times$ more blocks in 2M/block scenario. Overall, block size decisions depend on: (1) requirements on the completion time, and (2) controller's running time.
-
-\mypara{Breakdown of feedback loop delay} \name also applies the approximation of separating data scheduling from overlay routing, which can also reduce algorithm running time. We show the measurements on algorithm running time in Figure \ref{fig:analysis:time}. At the very beginning, the running time is nearly $800ms$, but drops to $300ms$ and even less quickly. This is because the separated scheduling stage selects only a subset of blocks, making the number of blocks decrease significantly and simplifying the routing decision making process.
-
-\mypara{Availability of disjoint overlay paths} \Section\ref{subsec:motivation:case-for} reveals the observation that the benefits of application-level overlay networks depend critically on if there exist disjoint paths between two nodes. To explore the potential benefit, we record the ratio of the number of blocks downloaded from the original source to the total number of blocks, and the CDF is shown in Figure \ref{fig:analysis:overlay}. For about 90\% servers, the proportion of blocks downloaded from the original source is less than 20\%, which means that more than 80\% blocks are downloaded from other DCs on the disjoint paths, demonstrating great potential of multicast overlay network.
-
-\begin{figure*}[t]
+\begin{figure}[t]
         \centering
-        \begin{subfigure}[b]{0.3\textwidth}
+        \begin{subfigure}[b]{0.23\textwidth}
                 \centering
-                \includegraphics[width=50mm]{images/BDSvsLP.eps} % BDSvsLP.m
-                \caption{Algorithm running time of \name and standard LP.}
+                \includegraphics[width=\textwidth]{images/BDSvsLP.eps} % BDSvsLP.m
+                \caption{The reduction on algorithm running time of \name over standard LP.}
                 \label{fig:further:BDSvsLP}
         \end{subfigure}
-        \begin{subfigure}[b]{0.3\textwidth}
+	\hspace{0.1cm}
+        \begin{subfigure}[b]{0.23\textwidth}
                 \centering
-                \includegraphics[width=50mm]{images/cycleDiff.eps}%cycleDiff.m
-                \caption{Completion time under different cycle lengths.}
-                \label{fig:further:cycleDiff}
+                \includegraphics[width=\textwidth]{images/overlay.eps}
+                \caption{The proportion of blocks downloaded from the original source.}
+                \label{fig:further:overlay}
         \end{subfigure}
-        \begin{subfigure}[b]{0.3\textwidth}
-                \centering
-                \includegraphics[width=50mm]{images/failure.eps}%fail.m
-                \caption{Average number of downloaded blocks per cycle under failures.}
-                \label{fig:further:failure}
-        \end{subfigure}
-        \caption{Further analysis on (1) running time, (2) cycle length, and (3) fault tolerance.}
+        \caption{[In-depth analysis] on (a) benefits of  approximations and (b) effects of overlay transmission.}
         \label{fig:further}
 \vspace{-0.4cm}
-\end{figure*}
+\end{figure}
+
+%\begin{figure}[t]
+%  \centering
+%  \includegraphics[width=45mm]{images/BDSvsLP.eps} % BDSvsLP.m
+%  \caption{Algorithm running time of \name and standard LP.}
+%  \label{fig:further:BDSvsLP}
+%\end{figure}
 
 \mypara{Optimization over algorithm running time} \name decouples scheduling and routing, which can significantly reduce the computational complexity. To clearly show the optimization, we measure the algorithm running time under \name and the standard linear programming (LP) solution. For the standard LP experiments, we use the \textit{linprog} library on MATLAB, set the upper bound of the iteration number ($10^6$) if the algorithm does not converge, and then record the CPU time various with block number. Figure \ref{fig:further:BDSvsLP} illustrates the comparison results, which shows that the running time of \name keeps under $25ms$ even with 3000 blocks (same as Figure \ref{fig:scale:cpu}) while that of standard LP grows quickly (nearly $4000ms$) with block number and will grow even higher with larger scale (we leave out that part in the figure).
 
-\mypara{Duration of a cycle} Since any change in network performance or arrival of new requests may potentially alter the optimal overlay
-routing decisions, \name reacts to the changing network conditions by adjusting the routing scheme periodically. To testify the granularity of sensing network changing, we set different cycle lengths to the same bulk data transfer. Figure \ref{fig:further:cycleDiff} (to be updated) shows that fine-grained sensing and updating will result in shorter completion time. But with the consideration on overhead of calculation and connection re-establish, we finally choose 3s as the default time cycle.
+%\begin{figure}[t]
+%  \centering
+%  \includegraphics[width=45mm]{images/overlay.eps}
+%  \caption{The proportion of blocks downloaded from the original source.}
+%  \label{fig:further:overlay}
+%\end{figure}
 
-\mypara{Fault tolerance} \Section\ref{subsec:system:fault} introduces the working principles under failures, here we design the following scenario to verify the fault tolerance of \name. We use the average flow completion time (FCT) of a block as reference. From cycle 0 to 10, \name works as usual), one agent fails in the 11th cycle, then the controller fails in the 20th cycle and recovers in the 30th cycle. Figure \ref{fig:further:failure} shows the average block completion time. We find that the failure of one agent affects the algorithm efficiency for only one cycle (FCT: from $100ms$ to about $107ms$) and the system recovers in the 12th cycle, and the influence is not notable. When the controller is not available, \name reverses to a default decentralized overlay protocol, thus resulting in more obvious degradation on performance (FCT: from $100ms$ to about $400ms$. With the recovery of the controller, the performance returns to normal in the 36th cycle.
+\mypara{Availability of disjoint overlay paths} \Section\ref{subsec:motivation:case-for} reveals the observation that the benefits of application-level overlay networks depend critically on if there exist disjoint paths between two nodes. To explore the potential benefit, we record the ratio of the number of blocks downloaded from the original source to the total number of blocks, and the CDF is shown in Figure \ref{fig:further:overlay}. For about 90\% servers, the proportion of blocks downloaded from the original source is less than 20\%, which means that more than 80\% blocks are downloaded from other DCs on the disjoint paths, demonstrating great potential of multicast overlay network.
+
+%\mypara{Breakdown of feedback loop delay} \name also applies the approximation of separating data scheduling from overlay routing, which can also reduce algorithm running time. We show the measurements on algorithm running time in Figure \ref{fig:analysis:time}. At the very beginning, the running time is nearly $800ms$, but drops to $300ms$ and even less quickly. This is because the separated scheduling stage selects only a subset of blocks, making the number of blocks decrease significantly and simplifying the routing decision making process.
+
+
+%\begin{figure*}[t]
+%        \centering
+%        \begin{subfigure}[b]{0.3\textwidth}
+%                \centering
+%                \includegraphics[width=50mm]{images/BDSvsLP.eps} % BDSvsLP.m
+%                \caption{Algorithm running time of \name and standard LP.}
+%                \label{fig:further:BDSvsLP}
+%        \end{subfigure}
+%        \begin{subfigure}[b]{0.3\textwidth}
+%                \centering
+%                \includegraphics[width=50mm]{images/cycleDiff.eps}%cycleDiff.m
+%                \caption{Completion time under different cycle lengths.}
+%                \label{fig:further:cycleDiff}
+%        \end{subfigure}
+%        \begin{subfigure}[b]{0.3\textwidth}
+%                \centering
+%                \includegraphics[width=50mm]{images/failure.eps}%fail.m
+%                \caption{Average number of downloaded blocks per cycle under failures.}
+%                \label{fig:further:failure}
+%        \end{subfigure}
+%        \caption{Further analysis on (1) running time, (2) cycle length, and (3) fault tolerance.}
+%        \label{fig:further}
+%\vspace{-0.4cm}
+%\end{figure*}
+
+
 
 In summary, both the prototype pilot deployed on \company network and the trace-driven simulations of \name achieve 3-5$\times$ speedup over existing solutions, with good scalability, fast algorithm convergence and lightweight resource consumption.
 
