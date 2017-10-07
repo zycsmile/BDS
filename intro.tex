@@ -3,11 +3,15 @@
 Global-scale online services, such as Google, Facebook, and
 Baidu, transfer massive amounts of data between geo-distributed
 datacenters (DCs).
-A common communication pattern is {\em bulk-data multicast},
-which replicates data
-(typically 100s GB to 100s TB), such as user
-logs, search engine indexes, offline file sharing, forum posts and databases,
-to any set of destination DCs.
+One of the most common communication patterns of inter-DC workloads 
+is {\em bulk-data inter-DC multicast},
+which replicates data (e.g., user
+logs, search engine indexes, offline file sharing, forum posts, and 
+databases) from one DC to any set of destination DCs.
+Our study on inter-DC workload of \company\footnote{Anonymized for 
+double-blind review}, a large search engine provider, reveals that 
+91\% of inter-DC traffic is bulk-data multicasts 
+(\Section\ref{sec:motivation}).
 As data sizes continue to explode and more DCs are deployed to
 reach a global footprint, how to multicast bulk data in a timely
 and cost-effective manner has been a key driving force behind
@@ -25,19 +29,19 @@ WANs~\cite{savage1999Theend,jain2013b4,kumar2015bwe,hong2013achieving,Zhang2015G
 %to optimize the WAN performance between two
 %DCs~\cite{b4,bwe,swan,??,??,??}.
 
-In this paper, we argue that the existing approaches that focus
-on WAN performance have fundamentally limitations,
-since they fall short of fully explore the abundant
+In this paper, we argue that the existing approaches which focus
+on improving WAN performance have fundamentally limitations,
+since they fall short of fully exploring the abundant
 disjoint inter-DC paths, and fail to harness servers'
 capability to store-and-forward data.
-In general, the multicast throughput could be improved by
-splitting data into fine-grained units and delivering them
-simultaneously via multiple servers selectively picked as
-intermediate points to circumvent slow paths in DC
-networks and WANs.
+Instead, the multicast throughput could be substantially 
+improved by splitting data into fine-grained units and delivering 
+them simultaneously via servers selectively picked as
+intermediate points to circumvent slow WAN paths and performance
+bottlenecks in DC networks.
 
 
-Inspired by the success of prior work on multicast overlay
+Inspired by the success of multicast overlay
 networks, we argue that to optimize bulk-data multicast,
 a similar {\em application-level multicast
 overlay network} is needed to optimally deliver data in a way that
@@ -50,7 +54,8 @@ network conditions and resource availability.
 
 
 While multicast overlays are well studied in several other settings
-(e.g.,~\cite{Liebeherr2002Application,Wang2007mTreebone,Andreev2013Designing,Mokhtarian2015Minimum}), introducing multicast overlay networks
+(e.g.,~\cite{Liebeherr2002Application,Wang2007mTreebone,
+Andreev2013Designing,Mokhtarian2015Minimum}), introducing multicast overlay networks
 to large online  service providers,
 like Google and Baidu, poses new challenges.
 %Building on the operational experience of
@@ -68,7 +73,7 @@ strictly structured logical topology
 (e.g.,~\cite{Nygren2010The}).
 Second, because any small increase in the delay of
 latency-sensitive traffic due to competing bulk-data transfers
- can cause substantial revenue losses,
+ can cause unbearable revenue losses,
 there is a strong need to prevent any delay on
 latency-sensitive traffic.
 %, even at the expense of a slightly lower link utilization.
@@ -164,8 +169,8 @@ the scheduling and routing of bulk-data multicast}.
 %latency-sensitive user data.
 Contrary to the intuition that, in order to scale out
 and be responsive, servers must retain the capability to make
-certain local decisions, \name is built on the several
-empirical observations:
+certain local decisions, \name's centralized design 
+is built on the several empirical observations:
 \begin{packeditemize}
 \item First, while it is indeed impractical to update centralized
 decision-making in real-time, bulk-data transfers, which take
@@ -174,8 +179,8 @@ overlay routing decisions
 in the hope of getting closer-to-optimal decisions based on
 a global view of data delivery status.
 \item Second, centrally coordinated decision-making makes it easier
-to enforce bandwidth allocated to bulk-data transfers,
-and thus, we can eliminate interference of bulk-data
+to enforce bandwidth allocation on all overlay paths,
+and thus eliminate interference of bulk-data
 transfers on latency-sensitive traffic.
 \item Finally, a centralized design is amenable to a simple
 implementation from an engineering perspective;
@@ -184,17 +189,19 @@ only triggered by data arrivals or control messages, and
 thus can be largely stateless.
 \end{packeditemize}
 
+
 The key challenge for \name to realize these benefits is how to
 update the centralized decision-making in a near-optimal and
 efficient manner.
-\name address the challenge by a novel decoupling of the
-centralized decision-making problem into a process of scheduling
-data transfers and a process of optimally routing each data
-transfer along overlay paths.
+\name addresses this challenge by a novel technique that 
+{\em decouples} the centralized decision-making process into a 
+subprocess of scheduling data transfers and a subprocess of 
+optimally routing each data transfer along overlay paths.
 Our technique achieves performance with proven gap to that of
 optimal decisions, and can be updated in several seconds at the
 scale of typical traffic demand of a large online service
 provider (10s of DCs, each with 1000s of servers).
+
 
 %At the core of \name are two design choices.
 %\begin{packeditemize}
@@ -250,7 +257,7 @@ provider (10s of DCs, each with 1000s of servers).
 
 
 We implemented a prototype of \name and integrated it in
-\company\footnote{Anonymized for double-blind review},
+\company,
 one of the largest search engine service
 providers. We deployed \name in ten of \company's DCs, and
 ran pilot study on \fillme PB data over \fillme days. Our
@@ -261,3 +268,15 @@ we also show that \name outperforms many techniques used in
 today's CDNs, and \name can scale out to the traffic volume
 of \company's inter-DC WAN, and tolerate various failure
 scenarios.
+
+
+Our key contributions can be summarized as following:
+\begin{packeditemize}
+\item Characterizing the workload of inter-DC multicasts of bulk data
+to motivate the benefits and challenges of inter-DC multicast overlay
+networks (\Section2).
+\item Designing \name, which achieves near-optimal flow completion 
+time with a centralized control scheme (\Section3, 4, 5).
+\item Demonstrating the practical benefits of \name by a real-world
+ deployment in a large online service provider (\Section6).
+\end{packeditemize}

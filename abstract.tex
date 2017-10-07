@@ -1,31 +1,33 @@
 \begin{abstract}
 
-One of the most common inter-DC  communication patterns
-of online service providers is replicating bulk data from 
-one DC to multiple DCs. 
+For large-scale online service providers, one of the most 
+common communication patterns of inter-datacenter (DC)
+workload is {\em bulk-data inter-DC multicast}: 
+replicating bulk data from one DC to multiple DCs. 
 While recent work has sought to improve bulk-data 
-multicast by optimizing WAN performance, it is necessarily 
+transfers by optimizing WAN performance, it is necessarily 
 incomplete, as it falls short of fully exploring servers' 
 capability to store-and-forward data, as well as 
-the disjoint inter-DC paths that exist in abundance.
+the disjoint inter-DC paths existing in abundance.
 %Inspired by the early success of multicast overlay networks, 
-To utilize these unexplored opportunities, we 
-argue that an application-level multicast overlay network 
-is needed to optimally schedule and route data transfers 
-on overlay paths.
+Instead, we argue that an optimal application-level multicast 
+overlay network is needed to utilize these unexplored 
+opportunities by dynamically scheduling and routing inter-DC 
+data transfers via overlay paths.
 Despite these promises, building an optimal overlay network 
 for inter-DC multicast poses two challenges:
-(1) the sheer numbers of servers and overlay paths 
-which render it untenable to make optimal overlay selections 
-in real-time, and (2) a strict requirement to prevent delays of 
-latency-sensitive traffic caused by multicasting bulk data. 
+(1) the sheer amounts of servers and overlay paths 
+render it untenable to select optimal overlay paths 
+in real-time, and (2) it must prevent delay of 
+latency-sensitive traffic caused by bulk-data multicasts on
+any multicast overlay paths. 
 We present {\em \name}, a simple yet near-optimal overlay network
-for bulk-data multicast. 
+for bulk-data inter-DC multicasts. 
 Contrary to the intuition that servers must retain the capability 
 to adapt locally (and thus suboptimally) 
 in order to scale out, \name demonstrates the 
 feasibility and practical benefits of fully centralizing the
-selection of overlay paths.
+control of the overlay network.
 The key insight underlying this centralized design is the 
 observation that bulk-data transfers tend to last on coarse 
 timescales so they can 

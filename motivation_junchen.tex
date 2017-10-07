@@ -135,13 +135,13 @@ fraction of DCs, and (2) huge in volume.}
 \vspace{-0.4cm}
 \end{figure}
 
-\mypara{Destined to many DCs}
+\mypara{Where inter-DC multicasts are destined}
 %<<<<<<< HEAD
 Next, we examine whether these transfers are destined to
 a large fraction (or just a handful) of DCs.
 Figure~\ref{fig:bulk:dest} sketches the distribution of the
-percentage of DCs (in total, $\sim$ 30) to which multicast
-transfers in \company are destined.
+percentage of \company's 30+ DCs to which multicast
+transfers are destined.
 %=======
 %In the premise that multicast traffic amount to a substantial
 %fraction of traffic, we then examine whether these transfers
@@ -168,7 +168,7 @@ request.}
 
 %In the premise that bulk data shares a large fraction of overall traffic, we check the number of destination DCs of the data. Fig. \ref{fig:bulk:dest} shows that there are over 60\% applications with bulk data multicast traffic are destined to at least 90\% DCs, and about 20\% applications with bulk data destined to over 50\% (but less than 90\%) DCs. These results show that a large fraction of the bulk data traffic is multicast to almost all DCs.
 
-\mypara{Carrying bulk data}
+\mypara{Scales of inter-DC multicasts}
 Finally, we examine the data sizes of inter-DC
 multicast transfers.
 Figure~\ref{fig:bulk:size} sketches the distribution of the
@@ -223,10 +223,10 @@ to optimizing inter-DC bulk-data multicast.
 \vspace{-0.4cm}
 \end{figure}
 
-In general, it is well-known that multicast over WANs can benefit
-from an application-level overlays.
+It is well-known that multicasts can benefit from an 
+application-level overlays~\cite{end-system-multicast}.
 Here, we demonstrate, first by an illustrative example and then by
-real-world measurement, that similar ideas could lead to
+real-world measurements, that similar ideas could lead to
 substantial improvement in inter-DC bulk-data multicast.
 
 \mypara{An illustrative example}
@@ -293,27 +293,28 @@ across all possible $b$.}
 \end{figure}
 
 %<<<<<<< HEAD
-\mypara{Inter-DC path diversity}
+\mypara{Inter-DC path diversity in the wild}
 We argue that the benefits illustrated in the example of
-Figure~\ref{fig:case:example} can be actually realized in a
-real DC WAN. The intuition is that
+Figure~\ref{fig:case:example} can actually be realized in a
+real DC WAN. This is because
 global-scale online service providers,
 such as Google and \company, have disjoint paths in abundance,
 both at DC-level (e.g., consider B4~\cite{jain2013b4}'s WAN topology)
 and at server-level (e.g., consider Figure~\ref{fig:case:example}
 where depending on the intermediate server $b$ in $B$,
 $A$ has many overlay paths to $C$).
-
 A crucial question, however, is that while two overlay paths are
 physically disjoint, they might share the same bottleneck, and
 thus should be counted as not disjoint in our context.
-While sharing bottleneck is unlikely when two paths go through
-different sequence of DCs,
-when two overlay paths go through different servers but traverse
+When two overlay paths go through different sequence of DCs, 
+they are unlikely to share bottleneck.
+But when two overlay paths go through different servers but traverse
 the inter-DC WAN path, they would tend to have the same network
 bottlenecks, as WAN capacity is usually believed to be more
 limited than intra-DC networks.
-However, as shown in Figure \ref{fig:case:size}, our empirical measurement in \company's networks shows
+
+However, as shown in Figure \ref{fig:case:size}, 
+our empirical measurement in \company's networks shows
 otherwise.
 We consider three DCs from \company's WAN that have the same
 connectivity as in Figure~\ref{fig:case:example},
@@ -455,8 +456,10 @@ deployed, this protocol has begun to show two limitations.
 %\jc{overall, these limitations need a bit elevation, and need to tie
 %to the existing decentralized design}
 
+\jc{please define the flow completion time of multicast traffic first}
+
 \noindent{\bf Limitation 1:
-Inefficiency due to the price of anarchy.}
+Inefficiency of local adaptation.}
 The existing decentralized protocol lacks the global information
 about the whole network, and thus cannot make optimal scheduling.
 To show this, we run an experiment under a simplest topology in \name's network using real traffic trace.
@@ -474,6 +477,7 @@ protocol. We see that the average completion time is about
 What's worse, it also exhibits heavy tail latency and there are
 about 5\% servers whose completion time is more than $200min$. Such inefficiency is due to the unreasonable selection of data source (probably with limited bandwidth or poor connections). Without a global view, the existing decentralized protocol in anarchy cannot explore the whole decision space to find the most efficient data source.
 
+\jc{please explain in more details why lacking a global view will lead to so large a gap to optimal performance? is it that a server doesn't see all possible sources? is it that a server couldn't probe these sources before using them?}
 
 \begin{figure}[t]
   \centering

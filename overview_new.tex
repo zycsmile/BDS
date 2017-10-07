@@ -1,7 +1,7 @@
 \section{Overview of \name}
 \label{sec:overview}
 
-To optimize inter-DC bulk-data multicast while avoiding
+To optimize inter-DC bulk-data multicasts while minimizing
 interference with latency-sensitive traffic, we present \name,
 a near-optimal inter-DC multicast overlay network.
 Unlike previous designs which always, to some extent, keep
@@ -9,7 +9,7 @@ some local control capability at individual servers,
 \name takes an explicit stance of {\em fully centralizing} the
 control of an inter-DC multicast overlay network.
 Before presenting \name in more details,
-we first highlight the intuitions behind this design
+we first highlight the intuitions behind its design
 choice and the key challenge to make it practical.
 
 
@@ -29,9 +29,9 @@ choice and the key challenge to make it practical.
 \mypara{Conventional wisdom}
 The limitations of many prior approaches, including \company's
 system, as highlighted in \Section\ref{subsec:motivation:baseline},
-stem from the suboptimal adaptation made locally
-at individual servers
-based on a limited visibility of multicast states at
+stem from the local suboptimal adaptation 
+at individual servers which have 
+a limited visibility of multicast states at
 other servers.
 These limitations remain, though to a lesser extent, in hybrid
 control schemes (e.g.,~\cite{yin2009design}) where local
@@ -40,8 +40,8 @@ operates on more coarse timescales.
 Despite this lacking of global view and coordination, the
 conventional wisdom has
 been that local adaptation is needed to achieve
-scalability and responsiveness, and the cost of suboptimal
-performance is thus deemed necessary.
+scalability and responsiveness, and thus the cost of suboptimal
+performance is deemed necessary.
 
 \begin{figure}[t]
   \centering
@@ -52,10 +52,9 @@ performance is thus deemed necessary.
 \end{figure}
 
 \mypara{Centralized design}
-However, we believe that such arguement does not apply in our
-setting of bulk-data inter-DC multicast; instead, we argue for
-a fully centralized design and demonstrate the cost of
-suboptimal performance is not necessary after all.
+However, we believe that in the setting of bulk-data inter-DC 
+multicasts, near-optimal performance can be achieved
+through a fully centralized design.
 As illustrated in Figure~\ref{fig:framework}, \name uses a centralized controller to update decisions,
 including schedule of data transfers, and path selection and
 bandwidth allocation of each transfer, on timescales of
@@ -69,9 +68,9 @@ not available, \name will reverse to a default decentralized
 overlay protocol to ensure graceful degradation on performance.
 
 \mypara{Design philosophy}
-Our intuition in favor of a centralized design is four-fold:
+Our insights in favor of a centralized design are four-fold:
 \begin{packedenumerate}
-\item {\em Larger data sizes:}
+\item {\em Large data sizes:}
 Data sizes of bulk-data multicast are much larger
 than those of overlay networks (e.g., live streaming).
 This means that data transfers happen on long timescales,
@@ -82,7 +81,7 @@ is secondary.
 Instead, we can tolerate a small delay of several seconds for
 querying a centralized controller,
 in exchange for closer-to-optimal scheduling decisions.
-\item {\em Larger decision space:}
+\item {\em Large decision space:}
 Given the sheer number of inter-DC overlay paths,
 which grows exponentially with more servers that can
 serve as overlay nodes,
@@ -92,7 +91,7 @@ Instead, overlay routing must be driven by a global
 view of across all servers in order to
 balance the availability across different data blocks, which
 turned out to be critical to achieve near-optimal performance.
-\item {\em Need for more strict traffic control:}
+\item {\em Need for strict traffic isolation:}
 As observed in \Section\ref{subsec:motivation:baseline}, it is vital that inter-DC
 bulk-data multicast avoids hotspots and excessive use of
 bandwidth that could interference with latency sensitive traffic.
