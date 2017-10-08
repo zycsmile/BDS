@@ -129,8 +129,8 @@ traffic.}
                 \caption{\% of multicast transfers larger than certain threshold.}
                 \label{fig:bulk:size}
         \end{subfigure}
-        \caption{Inter-DC multicast data transfers are (1) destined to a significant
-fraction of DCs, and (2) huge in volume.}
+        \caption{Inter-DC multicast data transfers are (a) destined to a significant
+fraction of DCs, and (b) huge in volume.}
         \label{fig:bulk}
 \vspace{-0.4cm}
 \end{figure}
@@ -218,7 +218,7 @@ to optimizing inter-DC bulk-data multicast.
 \begin{figure}[t]
 \centering
 \includegraphics[width=80mm]{images/example-junchen.pdf}
-\caption{A toy example showing the benefit from inter-DC multicast overlay.}
+\caption{An illustrative example showing the benefit from inter-DC multicast overlay.}
 \label{fig:case:example}
 \vspace{-0.4cm}
 \end{figure}
@@ -270,6 +270,9 @@ overlay paths. For instance, Figure~\ref{fig:case:example}(d)
 illustrates an overlay routing scheme which completes in 9
 seconds, another 30\% decrease from 13 seconds.
 
+\jc{need to stress that multicast overlay is orthogonal to 
+prior work's focus of WAN optimization}
+
 The example of Figure~\ref{fig:case:example}
 reveals a key (and well-known) observation that
 {\em the benefits of
@@ -282,7 +285,9 @@ there exist disjoint paths between two nodes.}
 \begin{figure}[t]
 \centering
 \includegraphics[width=1.5in]{images/potential_v2.eps}%DrawUp.m
-\caption{The ratio between the available bandwidth
+\caption{Even among inter-DC paths of the same DC sequence, 
+there is significant variance in performance.
+The figure shows the ratio between the available bandwidth
 from $A$ to $C$ through WAN ($BW_{A\rightarrow C}$) and
 that from $A$ to $C$ through $b$
 ($BW_{A\rightarrow b\rightarrow C}$),
