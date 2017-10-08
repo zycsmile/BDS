@@ -223,8 +223,8 @@ to optimizing inter-DC bulk-data multicast.
 \vspace{-0.4cm}
 \end{figure}
 
-It is well-known that multicasts can benefit from an 
-application-level overlays~\cite{end-system-multicast}.
+It is well-known that multicasts can benefit from an
+application-level overlays~\cite{chu2000case}.
 Here, we demonstrate, first by an illustrative example and then by
 real-world measurements, that similar ideas could lead to
 substantial improvement in inter-DC bulk-data multicast.
@@ -270,14 +270,11 @@ overlay paths. For instance, Figure~\ref{fig:case:example}(d)
 illustrates an overlay routing scheme which completes in 9
 seconds, another 30\% decrease from 13 seconds.
 
-\jc{need to stress that multicast overlay is orthogonal to 
-prior work's focus of WAN optimization}
+The multicast overlay benefits illustrated in the example is orthogonal to prior work's focus of WAN optimization. In other words, such optimization can be achieved on base of the existing solutions, with no conflicts while further reducing the completion time.
+%\jc{need to stress that multicast overlay is orthogonal to
+%prior work's focus of WAN optimization}
 
-The example of Figure~\ref{fig:case:example}
-reveals a key (and well-known) observation that
-{\em the benefits of
-application-level overlay networks depend critically on if
-there exist disjoint paths between two nodes.}
+
 
 
 %Fig. \ref{fig:case:example} shows three cases under different transmission strategies. Assume there are 6 DCs in the network: source DC \emph{S}, 2 intermediate DCs \emph{X} and \emph{Y}, 4 destination DCs $d_1,d_2,d_3,d_4$, and the bandwidth of both upload and download links are all 2Gbps. There is a 5G data file in the source DC \emph{S} that should be multicasted to all the 4 destination DCs. The data file is split into 5 blocks ($b_1,b_2,b_3,b_4,b_5$) each with 1G-size. (a) Directly sending data to each destination DC. The four source and destination pairs (s,d) share the link bandwidth fairly, and each is allocated to 0.5Gbps. Thus, the overall completion time in $d_i$ is 10t. (b) Build a multicast tree with chain replications on the intermediate DCs. Take $d_1$ as an example, his parent DC \emph{X} could begins to send $b_1$ with 1Gbps at the beginning of 2nd time slot because \emph{X} has already duplicated $b_1$ after 1t. So that the completion time can be reduced to 6t. (c) An optimal solution on multicast overlay network. \emph{S} sends different blocks to \emph{X} and \emph{Y} in the 1st time slot to make them share those block mutually in the next slot. Thus, in the end of 2nd slot, both \emph{X} and \emph{Y} have 3 blocks. Similarly, $d_1$ and $d_2$ are also able to share complementary blocks while download the other blocks from parent DC simultaneously. The completion time can then be further reduced to 4.5t.
@@ -285,7 +282,7 @@ there exist disjoint paths between two nodes.}
 \begin{figure}[t]
 \centering
 \includegraphics[width=1.5in]{images/potential_v2.eps}%DrawUp.m
-\caption{Even among inter-DC paths of the same DC sequence, 
+\caption{Even among inter-DC paths of the same DC sequence,
 there is significant variance in performance.
 The figure shows the ratio between the available bandwidth
 from $A$ to $C$ through WAN ($BW_{A\rightarrow C}$) and
@@ -298,9 +295,9 @@ across all possible $b$.}
 \end{figure}
 
 %<<<<<<< HEAD
-\mypara{Inter-DC path diversity in the wild}
-We argue that the benefits illustrated in the example of
-Figure~\ref{fig:case:example} can actually be realized in a
+\mypara{Inter-DC path diversity in the wild} The example of Figure~\ref{fig:case:example} reveals a key (and well-known) observation that
+{\em the benefits of application-level overlay networks depend critically on if there exist disjoint paths between two nodes.} 
+We argue that such benefits can actually be realized in a
 real DC WAN. This is because
 global-scale online service providers,
 such as Google and \company, have disjoint paths in abundance,
@@ -311,14 +308,14 @@ $A$ has many overlay paths to $C$).
 A crucial question, however, is that while two overlay paths are
 physically disjoint, they might share the same bottleneck, and
 thus should be counted as not disjoint in our context.
-When two overlay paths go through different sequence of DCs, 
+When two overlay paths go through different sequence of DCs,
 they are unlikely to share bottleneck.
 But when two overlay paths go through different servers but traverse
 the inter-DC WAN path, they would tend to have the same network
 bottlenecks, as WAN capacity is usually believed to be more
 limited than intra-DC networks.
 
-However, as shown in Figure \ref{fig:case:size}, 
+However, as shown in Figure \ref{fig:case:size},
 our empirical measurement in \company's networks shows
 otherwise.
 We consider three DCs from \company's WAN that have the same
@@ -461,14 +458,14 @@ deployed, this protocol has begun to show two limitations.
 %\jc{overall, these limitations need a bit elevation, and need to tie
 %to the existing decentralized design}
 
-\jc{please define the flow completion time of multicast traffic first}
+%\jc{please define the flow completion time of multicast traffic first}
 
 \noindent{\bf Limitation 1:
 Inefficiency of local adaptation.}
 The existing decentralized protocol lacks the global information
 about the whole network, and thus cannot make optimal scheduling.
-To show this, we run an experiment under a simplest topology in \name's network using real traffic trace.
-There is 1 source DC and 2 destination DCs 
+To show this, we run an experiment under a simplest topology in \name's network using real traffic trace and present the transmission completion time (which is defined as the completion time of the last flow of the transmission).
+There is 1 source DC and 2 destination DCs
 (there are 640 servers in each DC), and the data need to be transferred is 30GB, with 20Mbps upload and download
 bandwidth on each server.
 Theoretically, the optimal overlay solution could always select
@@ -480,9 +477,9 @@ Figure~\ref{fig:motivation} shows the results under the existing
 protocol. We see that the average completion time is about
 195 minutes, 4.75$\times$ longer than the optimal completion time.
 What's worse, it also exhibits heavy tail latency and there are
-about 5\% servers whose completion time is more than $200min$. Such inefficiency is due to the unreasonable selection of data source (probably with limited bandwidth or poor connections). Without a global view, the existing decentralized protocol in anarchy cannot explore the whole decision space to find the most efficient data source.
+about 5\% servers whose completion time is more than $200min$. Without global information, such inefficiency of decentralized solution is due to two reasons: 1. Servers can't see all possible sources and can only choose from partial sources, making it not possible to explore the whole decision space to find the most efficient data source. 2. Decisions are made based on local information and thus will be local optimal, such decisions possibly lead to suboptimal results when taken as a whole.% So for a particular server, it  the unreasonable selection of data source (probably with limited bandwidth or poor connections). Without a global view, the existing decentralized protocol in anarchy cannot explore the whole decision space to find the most efficient data source.
 
-\jc{please explain in more details why lacking a global view will lead to so large a gap to optimal performance? is it that a server doesn't see all possible sources? is it that a server couldn't probe these sources before using them?}
+%\jc{please explain in more details why lacking a global view will lead to so large a gap to optimal performance? is it that a server doesn't see all possible sources? is it that a server couldn't probe these sources before using them?}
 
 \begin{figure}[t]
   \centering
