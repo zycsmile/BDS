@@ -3,20 +3,20 @@
 Global-scale online services, such as Google, Facebook, and
 Baidu, transfer massive amounts of data between geo-distributed
 datacenters (DCs).
-One of the most common communication patterns of inter-DC workloads 
+One of the most common communication patterns of inter-DC workloads
 is {\em bulk-data inter-DC multicast},
 which replicates data (e.g., user
-logs, search engine indexes, offline file sharing, forum posts, and 
+logs, search engine indexes, offline file sharing, forum posts, and
 databases) from one DC to any set of destination DCs.
-Our study on inter-DC workload of \company\footnote{Anonymized for 
-double-blind review}, a large search engine provider, reveals that 
-91\% of inter-DC traffic is bulk-data multicasts 
+Our study on inter-DC workload of \company\footnote{Anonymized for
+double-blind review}, a large search engine provider, reveals that
+91\% of inter-DC traffic is bulk-data multicasts
 (\Section\ref{sec:motivation}).
 As data sizes continue to explode and more DCs are deployed to
 reach a global footprint, how to multicast bulk data in a timely
 and cost-effective manner has been a key driving force behind
 recent efforts to improve the performance of inter-DC
-WANs~\cite{savage1999Theend,jain2013b4,kumar2015bwe,hong2013achieving,Zhang2015Guaranteeing}.
+WANs~\cite{savage1999Theend,jain2013b4,kumar2015bwe,hong2013achieving,zhang2015guarantee}.
 
 
 %Global-scale online services, such as Google, Facebook, and Baidu,
@@ -34,8 +34,8 @@ on improving WAN performance have fundamentally limitations,
 since they fall short of fully exploring the abundant
 disjoint inter-DC paths, and fail to harness servers'
 capability to store-and-forward data.
-Instead, the multicast throughput could be substantially 
-improved by splitting data into fine-grained units and delivering 
+Instead, the multicast throughput could be substantially
+improved by splitting data into fine-grained units and delivering
 them simultaneously via servers selectively picked as
 intermediate points to circumvent slow WAN paths and performance
 bottlenecks in DC networks.
@@ -169,7 +169,7 @@ the scheduling and routing of bulk-data multicast}.
 %latency-sensitive user data.
 Contrary to the intuition that, in order to scale out
 and be responsive, servers must retain the capability to make
-certain local decisions, \name's centralized design 
+certain local decisions, \name's centralized design
 is built on the several empirical observations:
 \begin{packeditemize}
 \item First, while it is indeed impractical to update centralized
@@ -193,9 +193,9 @@ thus can be largely stateless.
 The key challenge for \name to realize these benefits is how to
 update the centralized decision-making in a near-optimal and
 efficient manner.
-\name addresses this challenge by a novel technique that 
-{\em decouples} the centralized decision-making process into a 
-subprocess of scheduling data transfers and a subprocess of 
+\name addresses this challenge by a novel technique that
+{\em decouples} the centralized decision-making process into a
+subprocess of scheduling data transfers and a subprocess of
 optimally routing each data transfer along overlay paths.
 Our technique achieves performance with proven gap to that of
 optimal decisions, and can be updated in several seconds at the
@@ -275,7 +275,7 @@ Our key contributions can be summarized as following:
 \item Characterizing the workload of inter-DC multicasts of bulk data
 to motivate the benefits and challenges of inter-DC multicast overlay
 networks (\Section2).
-\item Designing \name, which achieves near-optimal flow completion 
+\item Designing \name, which achieves near-optimal flow completion
 time with a centralized control scheme (\Section3, 4, 5).
 \item Demonstrating the practical benefits of \name by a real-world
  deployment in a large online service provider (\Section6).
