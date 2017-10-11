@@ -29,8 +29,8 @@ choice and the key challenge to make it practical.
 \mypara{Conventional wisdom}
 The limitations of many prior approaches, including \company's
 system, as highlighted in \Section\ref{subsec:motivation:baseline},
-stem from the local suboptimal adaptation 
-at individual servers which have 
+stem from the local suboptimal adaptation
+at individual servers which have
 a limited visibility of multicast states at
 other servers.
 These limitations remain, though to a lesser extent, in hybrid
@@ -52,7 +52,7 @@ performance is deemed necessary.
 \end{figure}
 
 \mypara{Centralized design}
-However, we believe that in the setting of bulk-data inter-DC 
+However, we believe that in the setting of bulk-data inter-DC
 multicasts, near-optimal performance can be achieved
 through a fully centralized design.
 As illustrated in Figure~\ref{fig:framework}, \name uses a centralized controller to update decisions,
@@ -118,7 +118,7 @@ algorithm} that can be updated on near-realtime timescales of
 several seconds.
 At a first glance, this is indeed intractable:
 the centralized overlay routing algorithm must pick the next hops
-from 10,000s servers for 10,000s objects, a scale that could
+from 10,000s servers for 100,000s objects, a scale that could
 even explode exponentially, as we consider all possible
 overlay paths that go through these servers, and chop each data
 object into many fine-grained blocks to enable fine-grained

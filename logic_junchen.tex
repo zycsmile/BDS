@@ -4,7 +4,7 @@
 The key challenge of \name is how to update the overlay routing
 in near real-time by finding an optimal solution of an overlay
 routing problem at scales of
-\fillme overlay paths and \fillme objects.
+10,000 overlay paths and 100,000s objects.
 %At a high level, to optimize inter-DC data multicast, \name fully
 %exploits application-level overlay paths by splitting data into
 %small blocks and periodically selecting the overlay paths to send
@@ -73,12 +73,12 @@ overlay routing can be formulated as following:
 %\jc{Notions are too complicated. Please simplify. 4.1 should be at most 1/3 pg.}
 
 \noindent(1) {\em Input.}
-One source DC, sets of destinations DC,
+One source DC, sets of destination DCs,
 network topology,
 server upload (and download) rate limit,
 link capacity.
 We name a data transmission a {\em task} $T$, which is split into
-many smaller fixed-sized {\em blocks}, and the $i$th block of task $j$ is denoted as $B_{i,j}$ (By default, the block size is 2M, for efficient transmission and acceptable calculation overhead).
+many smaller fixed-sized {\em blocks}, and the $i$th block of the $j$th task is denoted as $B_{i,j}$ (By default, the block size is 2M, for efficient transmission and acceptable calculation overhead).
 
 \noindent(2) {\em Output.} A four tuple for each server: $\langle \overrightarrow{o_B}, s_{B}^*, p_{B}^*, f^*_{B,p_{B}^*} \rangle$, which denotes the block transmission sequence, the optimal source and overlay path for each block, and the optimal allocated bandwidth on this path, respectively.
 
@@ -87,7 +87,7 @@ There are four constraints on link capacity, file size, bandwidth allocation and
 
 %The mentioned three constraints can then be formulated as follows:
 \begin{packeditemize}
-\item Link capacity. The summed allocated bandwidth on this path should be no more than its capacity $c(p_\lambda)$, where $I_{B_{i,j},p_\lambda}$ denotes whether $p_\lambda$ is selected for $B_{i,j}$
+\item Link capacity. The summed allocated bandwidth on this path should be no more than its capacity $c(p_\lambda)$, where $f_{B_{i,j},p_\lambda}$ is the allocated bandwidth for $B_{i,j}$ on path $p_\lambda$ and $I_{B_{i,j},p_\lambda}$ denotes whether $p_\lambda$ is selected for $B_{i,j}$.
 \begin{equation}
 %\begin{split}
 c(p_\lambda) \geq  \displaystyle{\sum_{(s,d)\in \mathbb{A}}} \displaystyle{\sum_{B_{i,j} \in \mathbb{B}}} f_{B_{i,j},p_\lambda} \cdot I_{B_{i,j},p_\lambda}\\
@@ -103,7 +103,7 @@ c(p_\lambda) \geq  \displaystyle{\sum_{(s,d)\in \mathbb{A}}} \displaystyle{\sum_
 %\end{split}
 \end{equation}
 
-\item Bandwidth constraint. The allocated bandwidth on path $p_\lambda$ should be the minimum of three parameters: link capacity $c(p_\lambda)$, source server upload rate $R_{up}(s)$, destination server download rate $R_{down}(d)$.
+\item Bandwidth constraint. The allocated bandwidth on path $p_\lambda$ should be the minimum of three parameters: the capacity $c(p_\lambda)$, source server upload rate $R_{up}(s)$, destination server download rate $R_{down}(d)$.
 \begin{equation}
 %\begin{split}
 f_{B_{i,j},p_\lambda} \leq  min \{c(p_\lambda),R_{up}(s),R_{down}(d)\}\\
@@ -111,7 +111,7 @@ f_{B_{i,j},p_\lambda} \leq  min \{c(p_\lambda),R_{up}(s),R_{down}(d)\}\\
 %\end{split}
 \end{equation}
 
-\item Path selection: Only one path will be chosen for a particular block.
+\item Path selection constraint: Only one path will be chosen for a particular block.
 $\displaystyle{\sum_{p_\lambda \in Path(s,d)}} I_{B_{i,j},p_\lambda} = 1$
 \end{packeditemize}
 %\jc{maybe it's better in math after all. please write
@@ -127,7 +127,7 @@ $\displaystyle{\sum_{p_\lambda \in Path(s,d)}} I_{B_{i,j},p_\lambda} = 1$
 %%The path capacity constraint takes effect on path $p_\lambda$: the available capacity $c(p_\lambda)$ should be no more than the minimum capacity of the consisting links.
 %The data size constraint takes effect on blocks: the sum of allocated bandwidth should be no less than its size. The bandwidth constraint defines the allocated bandwidth for $B_{i,j}$ on $p_\lambda$: $f^*_{B_{i,j},p_{B_{i,j}}}$ should be no more than the minimum of the following three parameters: path capacity $c(p_\lambda)$, the upload rate of source node $R_{up}(s)$ and the download rate of destination node $R_{down}(d)$.
 
-\noindent(4) {\em Objective function.} To speed up the bulk data distribution, \name aims at maximizing the allocated weighted bandwidth for all the blocks over all the paths.
+\noindent(4) {\em Objective function.} To speed up the bulk data distribution, \name aims at maximizing the sum of allocated bandwidth for all the blocks over all the paths.
 
 \begin{equation}
 \centering
@@ -150,13 +150,13 @@ so \name should react to the changing network conditions by monitoring residual 
 
 The key insight underlying the above re-formulated problem is the
 separation of data scheduling and overlay routing: the scheduling procedure selects a subset of blocks to be transferred first
-($\overrightarrow{o_B}$), and the subsequent routing procedure determines the routing paths ($p_{B_{i,j}}^*$) and allocated bandwidth ($f^*_{B_{i,j},p_{B_{i,j}}^*}$) to these blocks.
+($\overrightarrow{o_B}$), and the subsequent routing procedure determines the routing paths ($p_{B}^*$) and allocated bandwidth ($f^*_{B,p_{B}^*}$) to these blocks.
 
 This decoupling reduces the computational complexity on the centralized controller side. As the scheduling stage selects a subset of blocks, and only these selected blocks will be routed and transferred in the following routing stage, the searching spaces are thus significantly reduced for the subsequent routing procedure, speeding up the execution of the centralized algorithm.
 
 What worth mentioning is that such decoupling is near-optimal. For the origin bulk data transfer problem, the optimal solution is to decide the optimal block transmission order $\overrightarrow{o_B}$ for all servers, while such decoupling converts this optimal solution into an equivalent one: to decide the optimal order to transmit the selected blocks in each scheduling cycle (so as to enforce network dynamic updates). Thus, the decoupling introduces no degradation as long as \name finds the optimal solutions for both of the scheduling and routing procedures in each cycle.
 
-In the existing hybrid CDN and P2P architecture \cite{yin2009design} or centralized P2P scheme \cite{lee2003centralized}, there are also centralized servers with global information, but those servers are used for specific tasks (like system bootstrapping and maintaining global index) \cite{androutsellis2004survey}. While the centralized controller of \name faces more challenges in terms of real-time computing. The above mentioned decoupling could not only sense the changing network conditions, but also reduce the calculation scale of the centralized algorithm running on the controller.
+%In the existing hybrid CDN and P2P architecture \cite{yin2009design} or centralized P2P scheme \cite{lee2003centralized}, there are also centralized servers with global information, but those servers are used for specific tasks (like system bootstrapping and maintaining global index) \cite{androutsellis2004survey}. While the centralized controller of \name faces more challenges in terms of real-time computing. The above mentioned decoupling could not only sense the changing network conditions, but also reduce the calculation scale of the centralized algorithm running on the controller.
 %uses the global information to decouple scheduling and routing without introducing degradation.\jc{put the last sentence after the benefits. also, i don't get the point of this sentence.}
 %, i.e., outputting the block transmission order $\overrightarrow{o}(s_i)$ ; the overlay routing procedure aims at make optimal routing strategies (assign $s_{B_{i,j}}^*$, $p_{B_{i,j}}^*$ and $f^*_{B_{i,j},p_{B_{i,j}}^*}$) for all selected blocks $B_{i,j}$ in the overlay network.
 %There are two main benefits of this separation.
@@ -193,7 +193,7 @@ To be specific, assume the origin bulk data in the source DC is split into $n$ b
 \subsection{Routing}
 \label{subsec:logic:routing}
 
-In the overlay routing stage, \name routes and transfers blocks according to $\overrightarrow{o}(s_i)$, the output of data scheduling stage, and then tries to make optimal routing strategy (assign $s_{B_{i,j}}^*$, $p_{B_{i,j}}^*$ and $f^*_{B_{i,j},p_{B_{i,j}}^*}$) for each block $B_{i,j}$. Note that there are multiple potential data sources for each block in the multicast overlay network, so the objective of routing is to select the most efficient data source and assign intermediate paths to all blocks, and then calculate the bandwidth allocation on those selected paths.
+In the overlay routing stage, \name routes and transfers blocks according to $\overrightarrow{o}(s_i)$, the output of data scheduling stage, and then tries to make optimal routing strategy (assign $s_{B}^*$, $p_{B}^*$ and $f^*_{B,p_{B}^*}$) for each block $B$. Note that there are multiple potential data sources for each block in the multicast overlay network, so the objective of routing is to select the most efficient data source and paths to all blocks, and then allocate the bandwidth of these selected paths.
 
 With the constraints described in \Section\ref{subsec:logic:formulation}, this formulation in Equation \ref{equation:objective} is an integer multi-commodity flow algorithm which is known to be NP-complete \cite{garg1997primal}, and there is no known algorithm to find an optimal solution. To make this problem solvable, we look into it from a different perspective. As the size of a task is dozens of TBs to PBs, while each block is just about several MBs, we can approximate tasks as they are infinitesimally split and can be transferred to a set of possible paths between the source DC and the destination DC. So it is possible to solve this problem by a linear programming (LP) relaxation which can be transformed to a maximum concurrent flow (MCF) problem \cite{garg2007faster,reed2012traffic}, and the relaxed problem aims at transferring at least a fraction $\alpha$ of each transmission. Such MCF problem provides a solution to the original NP-complete problem, although with fractional flows. Specifically, the optimum value $F^*$ in the MCF problem is equivalent to that of the original problem $f^*$ with a relationship given by $F^* / \alpha = f^*$. Thus, the original problem is thus converted to maximize $\alpha$ and can be solved within polynomial time.
 
