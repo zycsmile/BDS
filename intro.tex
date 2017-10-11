@@ -260,7 +260,7 @@ We implemented a prototype of \name and integrated it in
 \company,
 one of the largest search engine service
 providers. We deployed \name in ten of \company's DCs, and
-ran pilot study on \fillme PB data over \fillme days. Our
+ran pilot study on 500 TB data over 7 days. Our
 real-world experiments show that \name achieves 3-5$\times$
 speedup over \company's existing solution.
 Using real trace-driven evaluation and microbanchmarking,
@@ -274,9 +274,9 @@ Our key contributions can be summarized as following:
 \begin{packeditemize}
 \item Characterizing the workload of inter-DC multicasts of bulk data
 to motivate the benefits and challenges of inter-DC multicast overlay
-networks (\Section2).
+networks (\Section\ref{sec:motivation}).
 \item Designing \name, which achieves near-optimal flow completion
-time with a centralized control scheme (\Section3, 4, 5).
+time with a centralized control scheme (\Section\ref{sec:overview},\ref{sec:logic},\ref{sec:system}).
 \item Demonstrating the practical benefits of \name by a real-world
- deployment in a large online service provider (\Section6).
+ deployment in a large online service provider (\Section\ref{sec:evaluation}).
 \end{packeditemize}
