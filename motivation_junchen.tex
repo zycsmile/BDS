@@ -237,28 +237,29 @@ to optimizing inter-DC bulk-data multicast.
 \vspace{-0.4cm}
 \end{figure}
 
-It is known that performance multicast traffic can 
-benefit from an application-level overlay~\cite{chu2000case}.
-Here, we present promising evidence that similar
+It is known that the performance of multicast traffic can 
+benefit from application-level overlays~\cite{chu2000case}.
+Here, we show promising evidence that similar
 performance benefits can be realized in inter-DC multicast 
 traffic\footnote{An application-level overlay is complementary to 
-prior work that focused on WAN optimization, and can be used
-on top of any techniques that optimizes WAN performance 
-between two DCs.}.
+prior work that focused on optimizing WAN.}.
 
 The basic idea of application-level overlay networks is 
 to leverage {\em bottleneck-disjoint} overlay paths, which do
 not have common bottleneck links~\cite{http://www.sciencedirect.com/science/article/pii/0020019095000317}. 
-In the context of inter-DC overlays, two different 
-overlay paths either traverse different sequences of DCs, or
-traverse the same sequence of DCs but different servers.
+In the context of inter-DC overlays, two  
+overlay paths either traverse different sequences of DCs ({\em Type I}), or
+traverse the same sequence of DCs but different sequences of 
+servers ({\em Type II}).
+Next, we use illustrative examples to show that
+bottleneck-disjoint overlay paths can arise in both types, and 
+can be used to improve inter-DC multicast performance.
 
 \mypara{Examples of bottleneck-disjoint overlay paths}
-Bottleneck-disjoint overlay paths could appear in both cases.
 Recall that Figure~\ref{fig:intro} illustrates the benefits of 
-using bottleneck-disjoint overlay paths going through
-different sequences of DCs 
-($A$$\rightarrow$$B$$\rightarrow$$C$ and
+using bottleneck-disjoint overlay paths of Type I 
+(going through different sequences of DCs 
+$A$$\rightarrow$$B$$\rightarrow$$C$ and
 $A$$\rightarrow$$C$$\rightarrow$$B$).
 %Here, we examine how bottleneck-disjoint overlay paths 
 %in the latter
@@ -268,31 +269,29 @@ $A$$\rightarrow$$C$$\rightarrow$$B$).
 %Note if two paths of the same sequence of DCs are disjoint,
 %at least one of them must not be bottlenecked WANs
 %(because they traverse the same sequence of WAN paths).
-Figure~\ref{fig:case:example} shows an illustrative example 
-of improving multicast performance
-by bottleneck-disjoint overlay paths of the latter case 
-(i.e., traversing same sequence of DCs but different servers). 
-Suppose we need to replicate a 36GB data file from DC $A$ 
-to DC $B$ and $C$ via two bottleneck-disjoint paths to reach $C$: 
-(a) from $A$ through $B$ to $C$ using IP-layer WAN routing, 
-which has 2GB/s path capacity,
-or 
+Figure~\ref{fig:case:example} shows an example 
+of bottleneck-disjoint overlay paths of Type II
+(traversing same sequence of DCs but different servers). 
+Suppose we need to replicate 36GB data from DC $A$ 
+to DC $B$ and $C$ via two bottleneck-disjoint paths: 
+(a) from $A$ through $B$ to $C$ using IP-layer WAN routing with 
+2GB/s capacity, or 
 (b) from $A$ to a server $b$ in $B$ with 
-a path capacity of 6BG/s, and then from $b$ to $C$ with a path 
-capacity of 3GB/s.
-(The transfer is completed as long as the data is fully received
+6GB/s capacity, and then from $b$ to $C$ with 3GB/s capacity.
+(The data transfer is completed as long as the data is fully 
+received
 by some servers in $B$ and $C$.)
 %<<<<<<< HEAD
 %Topologically, $A$ is directly connected with $B$ by a 2GB/s
 %link, and 
-Assume the data is split into six 6GB blocks.
+Assume the data is split into 6 6GB-blocks.
 Let us consider three strategies.
-First, if $A$ sends the data directly to $B$ and $C$,
-i.e., no application-level overlay,
-as in Figure~\ref{fig:case:example}(b),
-the completion time would be 18 seconds.
-Second, if we apply the idea of application-level overlay but with
-a simple DC-level chain
+(1) {\em No overlay}: 
+if $A$ sends the data directly to $B$ and $C$ via WAN paths
+(Figure~\ref{fig:case:example}(b)),
+the completion time is 18 seconds.
+(2) {\em Simple chain replication}: 
+a naive use of application-level overlay paths
 %=======
 %Topologically, $A$ is directly connected to $B$, and
 %$A$ has two paths to reach $C$: the WAN path
@@ -306,13 +305,18 @@ a simple DC-level chain
 %the the completion time would be 18 seconds.
 %If we use overlay routing but only with a simple DC-level chain
 %>>>>>>> 09029e454f71e5a5e01f13f554477705e665f4ec
-replication scheme, as shown in Figure~\ref{fig:case:example}(c),
-it would take 13 seconds
-to complete, already a 27\% decrease from 18 seconds.
-Finally, we can further reduce the completion time
-by the scheme illustrated in Figure~\ref{fig:case:example}(d),
-which completes in 9 seconds, another 30\% decrease from 13 
-seconds.
+is to send blocks through server $b$ acting as a 
+store-and-forward point
+(Figure~\ref{fig:case:example}(c)),
+and the completion time is 13 seconds (27\% less than without 
+the overlay).
+(3) {\em Intelligent multicast overlay}: 
+we can further improve the performance by
+selectively sending blocks along the two paths simultaneously,
+(Figure~\ref{fig:case:example}(d)),
+which completes in 9 seconds (30\% less than chain replication
+and 50\% less than without 
+the overlay).
 
 
 %In other words, such optimization can be achieved on the base 
@@ -341,26 +345,29 @@ across all possible $b$.}
 \vspace{-0.4cm}
 \end{figure}
 
-%<<<<<<< HEAD
 \mypara{Bottleneck-disjoint overlay paths in the wild}
-It is not practical to identify the bottlenecks 
-of all overlay paths in the dataset.
-Instead, we show that given two overlay
+While it is impractical to identify all bottleneck-disjoint overlay paths
+in our dataset, since of the dataset only has end-to-end throughput between
+servers, which is not sufficient to identify bottlenecks.
+Instead, we show that given a pair of overlay
 paths $A$$\rightarrow$$b\rightarrow$$C$ and $A$$\rightarrow$$C$,
 where the WAN routing from DC $A$ to DC $C$ goes through DC $B$,
-and $b$ is a server in DC $B$, how likely they are 
+and $b$ is a server in DC $B$, how likely the two paths are 
 bottleneck-disjoint.
-(This structure shares the same topology with
-Figure~\ref{fig:case:size}.)
-Note these two paths are bottleneck-disjoint, if and only if they 
-see different end-to-end bandwidth 
-(i.e., $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}\neq1$).
+(These two paths are topologically identical to 
+Figure~\ref{fig:case:example}.)
+While a special case of Type II bottleneck-disjoint paths, 
+such pair of paths are widely available since we can
+create a new bottleneck-disjoint paths by using any server $b$.
+Note that if these two paths have different end-to-end bandwidth
+(i.e., $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}\neq1$),
+they are bottleneck-disjoint (they could be bottleneck-disjoint 
+otherwise as well).
 Figure~\ref{fig:case:example} shows the distribution of
-$\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$,
-across all combinations of $A$, $b$, and $C$.
-We can see that for about 30\% of pairs, 
-$\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$ is either
-below 0.8 or over 1.3.
+$\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$ 
+among all possible values of $A$, $b$, and $C$.
+We can see that $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$ is
+below 0.8 or over 1.3 for about 30\% of overlay pairs.
 
 
 %The examples of Figure~\ref{fig:case:example} and~\ref{fig:intro}
