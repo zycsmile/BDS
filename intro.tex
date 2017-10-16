@@ -170,37 +170,48 @@ the scheduling and routing of bulk-data multicast}.
 Contrary to the intuition that, in order to scale out
 and be responsive, servers must retain the capability to make
 certain local decisions, \name's centralized design
-is built on the several empirical observations:
-\begin{packeditemize}
-\item First, while it is indeed impractical to update centralized
-decision-making in real-time, bulk-data transfers, which take
-at least tens of seconds, can tolerate a small update delay in
+is built on the following empirical observations: 
+First, bulk-data transfers can tolerate a small update delay in
 overlay routing decisions
 in the hope of getting closer-to-optimal decisions based on
 a global view of data delivery status.
-\item Second, centrally coordinated decision-making makes it easier
+Second, centrally coordinated decision-making makes it easier
 to enforce bandwidth allocation on all overlay paths,
 and thus eliminate interference of bulk-data
 transfers on latency-sensitive traffic.
-\item Finally, a centralized design is amenable to a simple
-implementation from an engineering perspective;
-e.g., the program running locally on the server side is
-only triggered by data arrivals or control messages, and
-thus can be largely stateless.
-\end{packeditemize}
+Finally, a centralized design is amenable to a simple
+implementation from an engineering perspective because server side can be largely stateless.
+
+%\begin{packeditemize}
+%\item First, while it is indeed impractical to update centralized
+%decision-making in real-time, bulk-data transfers, which take
+%at least tens of seconds, can tolerate a small update delay in
+%overlay routing decisions
+%in the hope of getting closer-to-optimal decisions based on
+%a global view of data delivery status.
+%\item Second, centrally coordinated decision-making makes it easier
+%to enforce bandwidth allocation on all overlay paths,
+%and thus eliminate interference of bulk-data
+%transfers on latency-sensitive traffic.
+%\item Finally, a centralized design is amenable to a simple
+%implementation from an engineering perspective;
+%e.g., the program running locally on the server side is
+%only triggered by data arrivals or control messages, and
+%thus can be largely stateless.
+%\end{packeditemize}
 
 
-The key challenge for \name to realize these benefits is how to
+The key for \name to realize these benefits is how to
 update the centralized decision-making in a near-optimal and
 efficient manner.
-\name addresses this challenge by a novel technique that
+\name addresses this problem by a novel technique that
 {\em decouples} the centralized decision-making process into a
 subprocess of scheduling data transfers and a subprocess of
 optimally routing each data transfer along overlay paths.
 Our technique achieves performance with proven gap to that of
 optimal decisions, and can be updated in several seconds at the
 scale of typical traffic demand of a large online service
-provider (10s of DCs, each with 1000s of servers).
+provider.
 
 
 %At the core of \name are two design choices.
