@@ -7,14 +7,14 @@
 %<<<<<<< HEAD
 To make a case for an
 application-level multicast overlay network,
-we first characterize the inter-DC multicast workload in 
+we first characterize the inter-DC multicast workload in
 \company, a global-scale online service provider
 (\Section\ref{subsec:motivation:multicast-traffic}).
 We then show the potential of improving multicast performance
 by leveraging disjoint application-level overlay paths
 widely available in geo-distributed DCs.
 (\Section\ref{subsec:motivation:case-for}).
-Finally, we examine \company's existing solution to 
+Finally, we examine \company's existing solution to
 inter-DC multicast, and draw suggestive lessons from real-world
 incidents (\Section\ref{subsec:motivation:baseline})
 to inform the design of \name.
@@ -22,7 +22,7 @@ The findings are based on a dataset collected from \company's
 inter-DC WANs over a duration of 7 days.
 The dataset comprises of about 200 data transfers
 between over 30 geo-distributed DCs.
-\jc{what? i thought your results (table 1, fig 2, 4, 5) are 
+\jc{what? i thought your results (table 1, fig 2, 4, 5) are
 based on much larger dataset?}
 
 
@@ -80,7 +80,7 @@ Other DB sync-ups & 99.1\%\\% ?? vs ??
 %}
 \end{center}
 \tightcaption{Inter-DC multicast (replicating data from
-one DC to many DCs) dominantes \company's inter-DC 
+one DC to many DCs) dominantes \company's inter-DC
 traffic.}
 \vspace{-0.2cm}
 \label{table:rate}
@@ -98,11 +98,11 @@ Table~\ref{table:rate} shows inter-DC multicast
 (replicating data from one DC to multiple DCs) as
 a fraction of inter-DC traffic.
 We see that multicast traffic dominates \company's
-overall inter-DC traffic (91.13\%), as well as 
+overall inter-DC traffic (91.13\%), as well as
 individual application types (89.2-99.1\%).
 {\em The fact that inter-DC multicast traffic
 amounts to a dominating share of inter-DC traffic
-highlights the importance of optimizing its 
+highlights the importance of optimizing its
 performance.}
 %=======
 %First, we use \company's WAN to examine whether
@@ -164,7 +164,7 @@ We can see that 90\% of multicasts are destined
 to over 60\% of DCs, and 70\% of them are destined
 to over 80\% of DCs.
 %<<<<<<< HEAD
-Moreover, we found a great diversity in 
+Moreover, we found a great diversity in
 source DCs and the sets of destination DCs (not shown here).
 These observations suggest that {\em it is untenable
 to pre-configure the data transfer for each possible multicast
@@ -194,7 +194,7 @@ seconds. (The timescale is similar after optimization, see \Section\ref{sec:eval
 Therefore, {\em any scheme that improves multicast traffic needs to
 adapt in response to dynamic network performance.}
 On the flip side, such temporal persistence
-also indicates that {\em multicast traffic could tolerate a 
+also indicates that {\em multicast traffic could tolerate a
 slight delay
 when adapting to changes in network conditions}, an observation
 that inspires
@@ -245,10 +245,10 @@ to optimizing inter-DC multicast performance.
 
 It is known that multicast performance can
 benefit from application-level overlays~\cite{chu2000case}.
-Next, we show promising evidence that inter-DC multicast 
+Next, we show promising evidence that inter-DC multicast
 completion time (defined as the duration of data transfers
 until each destination DC has a full copy of the data)
-can be similarly improved by an 
+can be similarly improved by an
 application-level overlay network.
 \footnote{An application-level overlay is complementary to
 prior work that focused on optimizing WAN.}
@@ -266,7 +266,7 @@ can be used to improve inter-DC multicast performance.
 
 \mypara{Examples of bottleneck-disjoint overlay paths}
 Recall that Figure~\ref{fig:intro} illustrates the benefits of
-using Type I bottleneck-disjoint overlay paths 
+using Type I bottleneck-disjoint overlay paths
 (i.e., going through different sequences of DCs),
 $A$$\rightarrow$$B$$\rightarrow$$C$ and
 $A$$\rightarrow$$C$$\rightarrow$$B$.
@@ -283,10 +283,10 @@ of Type II bottleneck-disjoint overlay paths
 (traversing same sequence of DCs but different servers).
 Suppose we need to replicate 36GB data from DC $A$
 to $B$ and $C$ via two bottleneck-disjoint paths:
-$A$$\rightarrow$$C$: 
+$A$$\rightarrow$$C$:
 from $A$ through $B$ to $C$ using IP-layer WAN routing with
-2GB/s capacity, or 
-$A$$\rightarrow$$b$$\rightarrow$$C$: from $A$ to a server 
+2GB/s capacity, or
+$A$$\rightarrow$$b$$\rightarrow$$C$: from $A$ to a server
 $b$ in $B$ with
 6GB/s capacity, and then from $b$ to $C$ with 3GB/s capacity.
 %<<<<<<< HEAD
@@ -352,7 +352,7 @@ across all possible $b$.}
 \end{figure}
 
 \mypara{Bottleneck-disjoint overlay paths in the wild}
-It is impractical to identify all bottleneck-disjoint overlay paths, 
+It is impractical to identify all bottleneck-disjoint overlay paths,
 since the dataset only has end-to-end throughput between
 servers.
 Instead, we show empirically that given two overlay
@@ -370,9 +370,9 @@ $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$
 among all possible values of $A$, $b$, and $C$ in the dataset.
 We can see that $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$ is
 below 0.8 or over 1.3 for about 30\% of overlay pairs.
-Note such overlay paths, while a special case of Type II 
+Note such overlay paths, while a special case of Type II
 bottleneck-disjoint paths, are widely available, since we can
-create a new bottleneck-disjoint path by using any server $b$ 
+create a new bottleneck-disjoint path by using any server $b$
 as an overlay point.
 
 
@@ -471,22 +471,22 @@ as an overlay point.
 \subsection{Limitations of existing solutions}
 \label{subsec:motivation:baseline}
 
-While inter-DC multicast could 
+While inter-DC multicast could
 substantially benefit from application-level overlay networks,
 realizing these benefits in practice
 is easier said than done.
 At a first glance, we can simply borrow existing techniques
 from multicast overlay networks in other contexts,
-but the operational experience of \company shows 
+but the operational experience of \company shows
 two limitations of this approach.
-%However, drawing on \company's experience of 
+%However, drawing on \company's experience of
 %deploying and evolving
-%its multicast overlay network, we found two limitations 
+%its multicast overlay network, we found two limitations
 %of this approach.
 
 \mypara{Existing solutions of \company}
 To meet the need of rapid growth of inter-DC data replication,
-\company has deployed an application-level 
+\company has deployed an application-level
 overlay network a few years ago.
 Despite years of refinement, the overlay network
 is still based on a receiver-driven decentralized
@@ -561,15 +561,15 @@ about the whole network, and thus cannot make optimal scheduling.
 To show this, we sent a 30GB file from one DC to two destination
 DCs in \company's network.
 Each DC had 640 servers, each with 20Mbps upload and download
-bandwidth. This 30GB file was evenly stored in all these 
-640 servers. 
+bandwidth. This 30GB file was evenly stored in all these
+640 servers.
 Ideally, if servers select
 the best source for all blocks, the ideal
 completion time will be
 $\frac{30\times 1024}{640\times 20Mbps \times 60s/min} = 41$
 minutes, but as shown in Figure~\ref{fig:motivation} shows
-servers in the destination DCs on average receive data in 
-195 minutes (4.75$\times$ the optimal completion 
+servers in the destination DCs on average receive data in
+195 minutes (4.75$\times$ the optimal completion
 time), and 5\% of them even take over 250 minutes.
 %There are two reasons that contributed to the suboptimal
 %completion time:
@@ -592,10 +592,10 @@ hotspots and congestion on overlay paths.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=45mm]{images/SEvsIdeal.eps}
+  \includegraphics[width=1.5in]{images/SEvsIdeal.eps}
   \vspace{-0.2cm}
-  \tightcaption{Distribution of the actual flow completion time at different servers in the destination DCs,
-compared with the ideal completion time. }
+  \tightcaption{CDF of the actual flow completion time at servers in the destination DCs,
+compared with the ideal solution. }
   \label{fig:motivation}
 \vspace{-0.4cm}
 \end{figure}
@@ -635,19 +635,19 @@ We continuously monitored the bandwidth utilization of an inter-DC
 link in two days where there was a bulk data transfer at 11:00 on the
 2nd day which lasted for 6 hours.
 Figure~\ref{fig:lesson2} shows the link utilization during the two
-days. The blue line denotes the outgoing (outbound) bandwidth and the green line denotes the ingoing (inbound) bandwidth. 
+days. The blue line denotes the outgoing (outbound) bandwidth and the green line denotes the ingoing (inbound) bandwidth.
 From this figure we can see that the bulk data transfer caused
-excessively high link utilization and congestion, and 
+excessively high link utilization and congestion, and
 as a result, the latency-sensitive online traffic experienced over
-30$\times$ longer delay. 
-The reason of such inefficiency is that although all the servers worked under the standard QoS requirements, the excessive bandwidth usage of the inter-DC link still cannot be prevented due 
+30$\times$ longer delay.
+The reason of such inefficiency is that although all the servers worked under the standard QoS requirements, the excessive bandwidth usage of the inter-DC link still cannot be prevented due
 to lack of global coordination.
 
 
 \begin{figure}[t!]
         \center
         \includegraphics[width=3in]{images/nj02-M2A_0212-0216_v2.eps}
-        \tightcaption{Bulk data transfer on the 2nd day caused obviously irregular traffic.}
+        \tightcaption{The utilization of the inter-DC link in two days. Bulk data transfer on the 2nd day caused obviously irregular outgoing traffic.}
         \label{fig:lesson2}
 \vspace{-0.1in}
 \end{figure}
@@ -661,7 +661,7 @@ have a great variability in source-destination, and typically last for at
 least tens of seconds.
 \item {\em Bottleneck-disjoint overlay paths} are widely available
 between geo-distributed DCs.
-\item Existing solutions that use local adaptation 
+\item Existing solutions that use local adaptation
 can have {\em suboptimal performance} and {\em negative impact on
 online traffic}, due to lack of a global view and coordination.
 \end{packeditemize}
