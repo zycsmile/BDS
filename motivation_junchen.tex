@@ -5,23 +5,23 @@
 %Please think each bullet point as a separate paragraph.}
 
 %<<<<<<< HEAD
-To make a case for an 
+To make a case for an
 application-level multicast overlay network,
-we first characterize the workload of bulk-data 
-inter-DC multicasts in \company, a global-scale 
+we first characterize the workload of bulk-data
+inter-DC multicasts in \company, a global-scale
 online service provider
 (\Section\ref{subsec:motivation:multicast-traffic}).
 We then show the potential of improving multicast performance
-by leveraging the disjoint application-level overlay paths 
+by leveraging the disjoint application-level overlay paths
 widely available in geo-distributed DCs.
 (\Section\ref{subsec:motivation:case-for}).
-Finally, we examine \company's existing multicast overlay 
-network, and draw suggestive lessons from real-world 
-incidents (\Section\ref{subsec:motivation:baseline}) 
+Finally, we examine \company's existing multicast overlay
+network, and draw suggestive lessons from real-world
+incidents (\Section\ref{subsec:motivation:baseline})
 to inform the design of \name.
-The findings are based on a dataset collected from \company's 
-inter-DC WANs over a duration of \fillme days. 
-The dataset comprises of \fillme data transfers
+The findings are based on a dataset collected from \company's
+inter-DC WANs over a duration of 7 days.
+The dataset comprises of about 200 data transfers
 between over 30 geo-distributed DCs.
 
 
@@ -53,7 +53,7 @@ between over 30 geo-distributed DCs.
 
 \mypara{Share of inter-DC multicast traffic}
 %<<<<<<< HEAD
-Table~\ref{table:rate} shows inter-DC multicast traffic 
+Table~\ref{table:rate} shows inter-DC multicast traffic
 (replicating data from one DC to multiple DCs) as
 a fraction of inter-DC traffic.
 We see that multicast traffic dominates \company's
@@ -145,7 +145,7 @@ fraction of DCs, and (b) have large data sizes.}
 \noindent{\bf Where are inter-DC multicasts destined?}
 %<<<<<<< HEAD
 Next, we want to know if these transfers are destined to
-a large fraction (or just a handful) of DCs, and whether 
+a large fraction (or just a handful) of DCs, and whether
 there are common destinations.
 Figure~\ref{fig:bulk:dest} sketches the distribution of the
 percentage of \company's 30+ DCs to which multicast
@@ -166,7 +166,7 @@ Moreover, we found a great diversity in terms of
 source DCs and the sets of destination DCs (not shown here).
 These observations suggest that {\em it is untenable
 to pre-configure the data transfer for each possible multicast
-request; instead, we need a scheme that automatically routes and 
+request; instead, we need a scheme that automatically routes and
 schedules data transfers for any given source and destination
 DCs.}
 %=======
@@ -179,23 +179,23 @@ DCs.}
 %In the premise that bulk data shares a large fraction of overall traffic, we check the number of destination DCs of the data. Fig. \ref{fig:bulk:dest} shows that there are over 60\% applications with bulk data multicast traffic are destined to at least 90\% DCs, and about 20\% applications with bulk data destined to over 50\% (but less than 90\%) DCs. These results show that a large fraction of the bulk data traffic is multicast to almost all DCs.
 
 \mypara{Sizes of inter-DC multicast transfers}
-Finally, Figure~\ref{fig:bulk:size} sketches the distribution of 
+Finally, Figure~\ref{fig:bulk:size} sketches the distribution of
 the size of data files be multicast.
 We see that over 60\% of multicast data files are larger than 1TB
 (and 90\% of them are larger than 50GB).
 %<<<<<<< HEAD
 Given that the total WAN bandwidth assigned to each multicast
-is typically several Gb/s, \jc{is it correct?}
+is typically several Gb/s,
 this suggests that the transfers are not transient; instead, they
-typically last for a duration on timescales of at least tens of 
-seconds. (The timescale is similar after optimization, see \Section\ref{sec:eval}). 
+typically last for a duration on timescales of at least tens of
+seconds. (The timescale is similar after optimization, see \Section\ref{sec:evaluation}).
 Therefore, {\em any scheme to improve multicast traffic needs to
 adapt in response to dynamic network performance.}
 On the flip side, its temporal persistence
-also indicates that {\em multicast traffic could tolerate a small 
-delay 
-when adapting to changes in network conditions}, which later 
-inspires 
+also indicates that {\em multicast traffic could tolerate a small
+delay
+when adapting to changes in network conditions}, which later
+inspires
 \name's centralized design (\Section\ref{sec:overview}).
 %=======
 %The large data volumes suggest that the transfers are usually
@@ -240,60 +240,60 @@ to optimizing inter-DC bulk-data multicast.
 \vspace{-0.4cm}
 \end{figure}
 
-It is known that the performance of multicast traffic can 
+It is known that the performance of multicast traffic can
 benefit from application-level overlays~\cite{chu2000case}.
 Here, we show promising evidence that similar
-performance benefits can be realized in inter-DC multicast 
-traffic\footnote{An application-level overlay is complementary to 
+performance benefits can be realized in inter-DC multicast
+traffic\footnote{An application-level overlay is complementary to
 prior work that focused on optimizing WAN.}.
-The performance metric is multicast completion time defined 
-as the duration of data transfers 
+The performance metric is multicast completion time defined
+as the duration of data transfers
 until each destination DC has a full copy of the data.
 
-The basic idea of application-level overlay networks is 
+The basic idea of application-level overlay networks is
 to leverage {\em bottleneck-disjoint} overlay paths, which do
-not have common bottleneck links~\cite{http://www.sciencedirect.com/science/article/pii/0020019095000317}. 
-In the context of inter-DC overlays, two  
+not have common bottleneck links~\cite{datta19951}.
+In the context of inter-DC overlays, two
 overlay paths either traverse different sequences of DCs ({\em Type I}), or
-traverse the same sequence of DCs but different sequences of 
+traverse the same sequence of DCs but different sequences of
 servers ({\em Type II}).
 Next, we use illustrative examples to show that
-bottleneck-disjoint overlay paths can arise in both types, and 
+bottleneck-disjoint overlay paths can arise in both types, and
 can be used to improve inter-DC multicast performance.
 
 \mypara{Examples of bottleneck-disjoint overlay paths}
-Recall that Figure~\ref{fig:intro} illustrates the benefits of 
-using bottleneck-disjoint overlay paths of Type I 
-(going through different sequences of DCs 
+Recall that Figure~\ref{fig:intro} illustrates the benefits of
+using bottleneck-disjoint overlay paths of Type I
+(going through different sequences of DCs
 $A$$\rightarrow$$B$$\rightarrow$$C$ and
 $A$$\rightarrow$$C$$\rightarrow$$B$).
-%Here, we examine how bottleneck-disjoint overlay paths 
+%Here, we examine how bottleneck-disjoint overlay paths
 %in the latter
-%case (i.e., same sequence of DCs but different servers) can 
-%be used to improve inter-DC multicast performance, and how 
+%case (i.e., same sequence of DCs but different servers) can
+%be used to improve inter-DC multicast performance, and how
 %prevalent they are in reality.
 %Note if two paths of the same sequence of DCs are disjoint,
 %at least one of them must not be bottlenecked WANs
 %(because they traverse the same sequence of WAN paths).
-Figure~\ref{fig:case:example} shows an example 
+Figure~\ref{fig:case:example} shows an example
 of bottleneck-disjoint overlay paths of Type II
-(traversing same sequence of DCs but different servers). 
-Suppose we need to replicate 36GB data from DC $A$ 
-to DC $B$ and $C$ via two bottleneck-disjoint paths: 
-(a) from $A$ through $B$ to $C$ using IP-layer WAN routing with 
-2GB/s capacity, or 
-(b) from $A$ to a server $b$ in $B$ with 
+(traversing same sequence of DCs but different servers).
+Suppose we need to replicate 36GB data from DC $A$
+to DC $B$ and $C$ via two bottleneck-disjoint paths:
+(a) from $A$ through $B$ to $C$ using IP-layer WAN routing with
+2GB/s capacity, or
+(b) from $A$ to a server $b$ in $B$ with
 6GB/s capacity, and then from $b$ to $C$ with 3GB/s capacity.
 %<<<<<<< HEAD
 %Topologically, $A$ is directly connected with $B$ by a 2GB/s
-%link, and 
+%link, and
 Assume the data is split into 6 6GB-blocks.
 Let us consider three strategies.
-(1) {\em No overlay}: 
+(1) {\em No overlay}:
 if $A$ sends the data directly to $B$ and $C$ via WAN paths
 (Figure~\ref{fig:case:example}(b)),
 the completion time is 18 seconds.
-(2) {\em Simple chain replication}: 
+(2) {\em Simple chain replication}:
 a naive use of application-level overlay paths
 %=======
 %Topologically, $A$ is directly connected to $B$, and
@@ -308,22 +308,22 @@ a naive use of application-level overlay paths
 %the the completion time would be 18 seconds.
 %If we use overlay routing but only with a simple DC-level chain
 %>>>>>>> 09029e454f71e5a5e01f13f554477705e665f4ec
-is to send blocks through server $b$ acting as a 
+is to send blocks through server $b$ acting as a
 store-and-forward point
 (Figure~\ref{fig:case:example}(c)),
-and the completion time is 13 seconds (27\% less than without 
+and the completion time is 13 seconds (27\% less than without
 the overlay).
-(3) {\em Intelligent multicast overlay}: 
+(3) {\em Intelligent multicast overlay}:
 we can further improve the performance by
 selectively sending blocks along the two paths simultaneously,
 (Figure~\ref{fig:case:example}(d)),
 which completes in 9 seconds (30\% less than chain replication
-and 50\% less than without 
+and 50\% less than without
 the overlay).
 
 
-%In other words, such optimization can be achieved on the base 
-%of existing solutions, with no conflicts while further 
+%In other words, such optimization can be achieved on the base
+%of existing solutions, with no conflicts while further
 %reducing the completion time.
 %\jc{need to stress that multicast overlay is orthogonal to
 %prior work's focus of WAN optimization}
@@ -355,31 +355,31 @@ servers, which is not sufficient to identify bottlenecks.
 Instead, we show that given a pair of overlay
 paths $A$$\rightarrow$$b\rightarrow$$C$ and $A$$\rightarrow$$C$,
 where the WAN routing from DC $A$ to DC $C$ goes through DC $B$,
-and $b$ is a server in DC $B$, how likely the two paths are 
+and $b$ is a server in DC $B$, how likely the two paths are
 bottleneck-disjoint.
-(These two paths are topologically identical to 
+(These two paths are topologically identical to
 Figure~\ref{fig:case:example}.)
-While a special case of Type II bottleneck-disjoint paths, 
+While a special case of Type II bottleneck-disjoint paths,
 such pair of paths are widely available since we can
 create a new bottleneck-disjoint paths by using any server $b$.
 Note that if these two paths have different end-to-end bandwidth
 (i.e., $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}\neq1$),
-they are bottleneck-disjoint (they could be bottleneck-disjoint 
+they are bottleneck-disjoint (they could be bottleneck-disjoint
 otherwise as well).
 Figure~\ref{fig:case:example} shows the distribution of
-$\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$ 
+$\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$
 among all possible values of $A$, $b$, and $C$.
 We can see that $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$ is
 below 0.8 or over 1.3 for about 30\% of overlay pairs.
 
 
 %The examples of Figure~\ref{fig:case:example} and~\ref{fig:intro}
-%show that the benefits of application-level overlay networks depend 
-%critically on if there exist {\em disjoint} paths between 
-%two DCs; e.g., 
-%$A$$\rightarrow$$B$$\rightarrow$$C$ and 
+%show that the benefits of application-level overlay networks depend
+%critically on if there exist {\em disjoint} paths between
+%two DCs; e.g.,
+%$A$$\rightarrow$$B$$\rightarrow$$C$ and
 %$A\rightarrow$$C$$\rightarrow$$B$ in Figure~\ref{fig:case:example}, and
-%$A$$\rightarrow$$B$$\rightarrow$$C$ and 
+%$A$$\rightarrow$$B$$\rightarrow$$C$ and
 %$A\rightarrow$$C$$\rightarrow$$B$ in Figure~\ref{fig:intro}.
 %Global-scale online service providers which have many geo-distributed
 %DCs, such as \company, have disjoint paths in abundance,
@@ -468,7 +468,7 @@ below 0.8 or over 1.3 for about 30\% of overlay pairs.
 \subsection{Limitations of existing solutions}
 \label{subsec:motivation:baseline}
 
-While inter-DC bulk-data multicast could 
+While inter-DC bulk-data multicast could
 substantially benefit from application-level overlay networks,
 realizing these benefits in practice
 is easier said than done.
@@ -476,24 +476,24 @@ At a first glance, it seems we can borrow existing techniques
 from other multicast overlay systems.
 However, drawing on \company's experience deploying and evolving
 its multicast overlay network, we found two limitations of
-applying existing multicast overlay protocols to optimizing 
+applying existing multicast overlay protocols to optimizing
 inter-DC multicasts.
 
 \mypara{Existing solutions of \company}
-To meet the need of rapid growth in multicast data, 
+To meet the need of rapid growth in multicast data,
 \company has deployed an application-level overlay network
-a few years ago. 
-Despite constant refinement since then, the overlay network 
-is still based on a standard receiver-driven decentralized 
-overlay multicast protocol, which 
+a few years ago.
+Despite constant refinement since then, the overlay network
+is still based on a standard receiver-driven decentralized
+overlay multicast protocol, which
 resembles what was used in other overlay networks
-(such as CDNs and overlay video 
+(such as CDNs and overlay video
 streaming~\cite{Andreev2013Designing,sripanidkulchai2004analysis,zhang2005coolstreaming}).
 %Since then \company has refined and improved the performance of
 %this solution, but the basic workflow of
 %data requests remains the same.
-When multiple DCs send the request of a data file 
-to the source DC, the requested data would flow back 
+When multiple DCs send the request of a data file
+to the source DC, the requested data would flow back
 through multiple stages of
 intermediate servers, where the selection of senders in each stage
 is driven by the receivers of the next stage in a decentralized
@@ -504,13 +504,13 @@ fashion.
 %For the intermediate DCs, there is a customized store-and-forward strategy that decides whether to store the data or not and when to delete the data.
 %The being used protocol in \company is a receiver-driven decentralized protocol. Once a receiver wants to download a data file, it announces the requirement to the source DC, then the required data will be forwarded to it through both the source DC and intermediate DCs. For the intermediate DCs, there is a customized store-and-forward strategy that decides whether to store the data or not and when to delete the data.
 %This solution has been running for more than five years and has been continuously improved over time.
-%At the same time, there are also some other solutions. 
-%For example, layered structures of DCs \cite{??} could simplify 
-%he scheduling and routing algorithm in the latency-sensitive systems 
-%but cannot explore more potential spaces and thus far from being 
-%optimal. 
-%Some pair-wise solutions like \cite{b4,bwe} improving inter-DC 
-%scheduling and routing are also not sufficient in the multicast 
+%At the same time, there are also some other solutions.
+%For example, layered structures of DCs \cite{??} could simplify
+%he scheduling and routing algorithm in the latency-sensitive systems
+%but cannot explore more potential spaces and thus far from being
+%optimal.
+%Some pair-wise solutions like \cite{b4,bwe} improving inter-DC
+%scheduling and routing are also not sufficient in the multicast
 %overlay networks, due to the ignorance of multiple overlay paths.
 
 %\mypara{Key limitations}
@@ -553,37 +553,34 @@ deployed, this protocol has begun to show two limitations.
 Inefficiency of local adaptation.}
 The existing decentralized protocol lacks the global information
 about the whole network, and thus cannot make optimal scheduling.
-To show this, we sent a 30GB file from one DC to two destination 
-DCs in \company's network. 
-Each DC has 64 servers, each with 20Mbps upload and download 
-bandwidth.
-Theoretically, if each DC select
-the best source for any block of the data file, and the ideal
-completion time
+To show this, we sent a 30GB file from one DC to two destination
+DCs in \company's network.
+Each DC has 640 servers, each with 20Mbps upload and download
+bandwidth. This 30GB file will be evenly spread across all these 640 servers in the form of blocks. 
+Theoretically, if servers select
+the best source for all blocks, the ideal
+completion time will be
 $\frac{30\times 1024}{640\times 20Mbps \times 60s/min} = 41$
-minutes.\jc{I'm lost. What's a block? Are you assuming 
-the file is evenly spread across all 64 servers? Is that what happened
-in reality?}
-Figure~\ref{fig:motivation} shows the results under the existing
+minutes. Figure~\ref{fig:motivation} shows the results under the existing
 protocol. We see that the average completion time is about
 195 minutes, 4.75$\times$ longer than the optimal completion time.
 Moreover, as we ran the experiment repeatedly,
-5\% of runs had over 200-minute completion time. 
-%There are two reasons that contributed to the suboptimal 
-%completion time: 
+5\% of runs had over 200-minute completion time.
+%There are two reasons that contributed to the suboptimal
+%completion time:
 %1.
-The key reason for the suboptimal performance is that 
-individual servers only see from a subset of possible data sources 
-(servers who have already downloaded part of a file), 
-and thus cannot leverage all available overlay path to 
-maximize the throughput~\footnote{Note such suboptimal performance 
-could occur even if the overlay 
-network is partially decentralized and each server does have a 
-global view (e.g.,~\cite{VdnAtSigcomm13}), 
+The key reason for the suboptimal performance is that
+individual servers only see from a subset of possible data sources
+(servers who have already downloaded part of a file),
+and thus cannot leverage all available overlay path to
+maximize the throughput~\footnote{Note such suboptimal performance
+could occur even if the overlay
+network is partially decentralized and each server does have a
+global view (e.g.,~\cite{Huang2014A}),
 since each server still makes local adaptations which creates potential
-hotspots and congestion on overlay paths.}. 
+hotspots and congestion on overlay paths.}.
 %2. Decisions are made based on local information and thus will be
-%local optimal, such decisions possibly lead to suboptimal results 
+%local optimal, such decisions possibly lead to suboptimal results
 %when taken as a whole.
 
 
@@ -598,7 +595,7 @@ compared with the ideal completion time. \jc{Change this graph to CDF}}
 
 % So for a particular server, it  the unreasonable selection of data source (probably with limited bandwidth or poor connections). Without a global view, the existing decentralized protocol in anarchy cannot explore the whole decision space to find the most efficient data source.
 
-%run an experiment in \company's DCs under a simple topology using 
+%run an experiment in \company's DCs under a simple topology using
 %real traffic trace and present the completion time.
 %There is 1 source DC and 2 destination DCs
 %(there are 640 servers in each DC), and the data need to be transferred is 30GB, with 20Mbps upload and download
@@ -649,13 +646,13 @@ from about $15ms$ to nearly $500ms$. The reason of such inefficiency is that in 
 \subsection{Key observations}
 The key observations from this section are:
 \begin{packeditemize}
-\item {\em Inter-DC multicasts} amount to a 
-great fraction of inter-DC traffic, 
+\item {\em Inter-DC multicasts} amount to a
+great fraction of inter-DC traffic,
 have a great variability in source-destination, and typically last for at
 least tens of seconds.
-\item {\em Bottleneck-disjoint overlay paths} are widely available 
+\item {\em Bottleneck-disjoint overlay paths} are widely available
 between geo-distributed DCs.
-\item Existing solutions have suboptimal performance and 
+\item Existing solutions have suboptimal performance and
 could impact latency-sensitive traffic as
 each server makes local adaptation without a global view or coordination.
 \end{packeditemize}

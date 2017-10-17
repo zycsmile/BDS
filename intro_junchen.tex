@@ -1,10 +1,10 @@
 \section{Introduction}
 
 For large-scale online services, such as Google, Facebook, and
-Baidu, an important inter-datacenter (DC) communication pattern is 
-{\em inter-DC bulk-data multicast}: replicating massive amounts of data 
-(e.g., user logs, search engine indexes, offline file sharing, 
-forum posts, and databases) 
+Baidu, an important inter-datacenter (DC) communication pattern is
+{\em inter-DC bulk-data multicast}: replicating massive amounts of data
+(e.g., user logs, search engine indexes, offline file sharing,
+forum posts, and databases)
 from one datacenter to multiple geo-distributed DCs.
 %A common inter-DC communication pattern {\em bulk-data inter-DC multicast},
 %which replicates data (e.g., user
@@ -13,9 +13,9 @@ from one datacenter to multiple geo-distributed DCs.
 Our study on inter-DC workload of \company\footnote{Anonymized for
 double-blind review}, a large search engine provider, reveals that
 91\% of inter-DC traffic is bulk-data multicasts
-(\Section\ref{sec:motivation}), which corroborates the findings of 
-other large-scale online service providers~\cite{??,??}.
-As data sizes continue to explode and more DCs are deployed 
+(\Section\ref{sec:motivation}), which corroborates the findings of
+other large-scale online service providers~\cite{kumar2015bwe,zhang2016piebridge}.
+As data sizes continue to explode and more DCs are deployed
 globally, inter-DC data transfers are expected
 to grow drastically, which has been a key driving force behind
 recent efforts to improve the performance of inter-DC
@@ -36,80 +36,80 @@ WANs~\cite{savage1999Theend,jain2013b4,kumar2015bwe,hong2013achieving,zhang2015g
 \begin{figure}[t!]
 \includegraphics[width=83mm]{images/intro-example.pdf}
 \vspace{-0.4cm}
-\tightcaption{Simple network topology illustrating the benefit of 
-leveraging inter-DC overlay paths. 
+\tightcaption{Simple network topology illustrating the benefit of
+leveraging inter-DC overlay paths.
 %Assume the bottleneck is the outgoing router of DC $A$.
-(a) It takes 3 rounds of transfers to directly replicate three 
-files from DC $A$ to $B$ and $C$, 
-(b) whereas if we leverage overlay paths 
-($A$$\rightarrow$$B$$\rightarrow$$C$ and $A\rightarrow$$C$$\rightarrow$$B$), 
+(a) It takes 3 rounds of transfers to directly replicate three
+files from DC $A$ to $B$ and $C$,
+(b) whereas if we leverage overlay paths
+($A$$\rightarrow$$B$$\rightarrow$$C$ and $A\rightarrow$$C$$\rightarrow$$B$),
 it takes only 2 rounds of transfers.
-The numbers in circles show the round of transfer in which the 
+The numbers in circles show the round of transfer in which the
 file is sent.
 }
 \label{fig:intro}
 \vspace{-0.4cm}
 \end{figure}
 
-Previous work focused on improving the WAN performance between any 
-two DCs. 
-However, such WAN-centric approach is insufficient to optimize the 
-performance of inter-DC multicasts, as it falls short of exploring 
-the overlay paths available in geo-distributed DCs, and 
+Previous work focused on improving the WAN performance between any
+two DCs.
+However, such WAN-centric approach is insufficient to optimize the
+performance of inter-DC multicasts, as it falls short of exploring
+the overlay paths available in geo-distributed DCs, and
 fails to harness servers' capability to store-and-forward data.
-As illustrated in Figure~\ref{fig:intro}, the performance of 
-inter-DC multicast traffic can be substantially improved by 
-delivering data in parallel via multiple overlay  servers 
-acting as intermediate points to circumvent slow WAN paths and 
-performance bottlenecks in DC networks. 
+As illustrated in Figure~\ref{fig:intro}, the performance of
+inter-DC multicast traffic can be substantially improved by
+delivering data in parallel via multiple overlay  servers
+acting as intermediate points to circumvent slow WAN paths and
+performance bottlenecks in DC networks.
 %(More examples can be found in \Section\ref{sec:motivation}.)
-These overlay paths must be {\em bottleneck-disjoint}, i.e., they do 
-not have common bottleneck links. 
-Such overlay paths are available in abundance in 
-geo-distribute DCs, both at the 
-DC level (e.g., $A$$\rightarrow$$B$$\rightarrow$$C$, 
-$A$$\rightarrow$$C$$\rightarrow$$B$ in Figure~\ref{fig:intro}) 
+These overlay paths must be {\em bottleneck-disjoint}, i.e., they do
+not have common bottleneck links.
+Such overlay paths are available in abundance in
+geo-distribute DCs, both at the
+DC level (e.g., $A$$\rightarrow$$B$$\rightarrow$$C$,
+$A$$\rightarrow$$C$$\rightarrow$$B$ in Figure~\ref{fig:intro})
 and server level (\Section\ref{sec:motivation}).
 
 
 
 
-This paper presents {\em \name}, an {\em application-level 
-multicast overlay network}, which 
-\name splits data into fine-grained 
-units, sends them in parallel on selectively picked 
-overlay paths, and dynamically adapts the overlay routes and 
-schedules in response to changes in network conditions and 
+This paper presents {\em \name}, an {\em application-level
+multicast overlay network}, which
+\name splits data into fine-grained
+units, sends them in parallel on selectively picked
+overlay paths, and dynamically adapts the overlay routes and
+schedules in response to changes in network conditions and
 workload churns.
 Note \name selects application-level overlay paths, and is thus
 complementary to network-layer techniques which
 improve WAN performance between two DCs.
-While application-level multicast overlays have been applied 
+While application-level multicast overlays have been applied
 in other settings
 (e.g.,~\cite{Liebeherr2002Application,Wang2007mTreebone,
 Andreev2013Designing,Mokhtarian2015Minimum}), building one
-for large online service providers poses two 
+for large online service providers poses two
 challenges to \name.
 %Building on the operational experience of
 %\company\footnote{Anonymized for double-blind reviewing},
 %a large online service providers, we summarize two challenges,
 %which to our best knowledge do not have direct solution.
-First, as each DC has tens of thousands of servers, the 
-resulting sheer amounts of overlay paths would make it 
-challenging to update overlay routing decisions in real time. 
-The performance could be suboptimal by simply borrowing techniques 
+First, as each DC has tens of thousands of servers, the
+resulting sheer amounts of overlay paths would make it
+challenging to update overlay routing decisions in real time.
+The performance could be suboptimal by simply borrowing techniques
 from prior work, such as servers making local reactive
-decisions~\cite{kostic2003bullet,Repantis2010Scaling,VdnAtSIGCOMM2014},
-or aggressively pruning the set of overlay paths by strictly 
+decisions~\cite{kostic2003bullet,Repantis2010Scaling,Huang2014A},
+or aggressively pruning the set of overlay paths by strictly
 structured (e.g., layered) topologies~\cite{Nygren2010The}.
-Second, even a small increase in delay of latency-sensitive traffic 
-can cause significant revenue losses, so the bandwidth usage 
-of bulk-data multicasts must be tightly controlled 
-to prevent any interference with the latency-sensitive 
-traffic\footnote{Despite priority-based queuing 
+Second, even a small increase in delay of latency-sensitive traffic
+can cause significant revenue losses, so the bandwidth usage
+of bulk-data multicasts must be tightly controlled
+to prevent any interference with the latency-sensitive
+traffic\footnote{Despite priority-based queuing
 at each DC border router, bulk-data multicasts compete
 inter-DC WAN (not managed by \company) with
-latency-sensitive traffic, leading to negative impacts on 
+latency-sensitive traffic, leading to negative impacts on
 latency-sensitive traffic.}.
 %, even at the expense of a slightly lower link utilization.
 
@@ -206,14 +206,14 @@ latency-sensitive traffic.}.
 To address these challenges, \name fully {\em centralizes}
 the scheduling and routing of bulk-data multicasts.
 Contrary to the intuition that servers should retain some
-local decision-making capability to ensure scalability and 
+local decision-making capability to ensure scalability and
 responsiveness, \name's centralized design
 is built on the several empirical observations on its workload
 (\Section\ref{sec:overview}).
-First, while it might be indeed impractical to make 
-centralized decisions in realtime, bulk-data transfers, which 
-often last for tens of seconds, 
-can tolerate a small delay in the overlay routing decisions 
+First, while it might be indeed impractical to make
+centralized decisions in realtime, bulk-data transfers, which
+often last for tens of seconds,
+can tolerate a small delay in the overlay routing decisions
 in the hope of getting closer-to-optimal decisions made by
 the centralized controller based on a global view.
 Second, centrally coordinated decision-making is amenable
@@ -262,18 +262,18 @@ multicasts and latency-sensitive traffic.
 
 
 The key to realizing \name's benefits in practice is a
-centralized control algorithm that can update the overlay network 
+centralized control algorithm that can update the overlay network
 on timescales of seconds in response to dynamic network conditions
 and failures.
-\name achieves this by {\em decoupling} its centralized control 
-into scheduling of data transfers and 
+\name achieves this by {\em decoupling} its centralized control
+into scheduling of data transfers and
 routing of individual data transfer along overlay paths.
 Such decoupling retains provable optimality, and allows
 \name to update overlay network routing and scheduling in a fraction
 of second (4 orders of magnitude faster than without decoupling
 routing and scheduling) at typical workload
-of a large online service provider (e.g., sending \fillme 3M-blocks 
-simultaneously along \fillme disjoint overlay paths, and updating 
+of a large online service provider (e.g., sending $10^5$s of blocks
+simultaneously along $10^4$s of disjoint overlay paths, and updating
 the routing every other second).
 
 
@@ -331,24 +331,24 @@ the routing every other second).
 
 
 We implemented a prototype of \name and integrated it in
-\company, one of the largest search services providers. 
-We deployed \name in 10 DCs, and ran a pilot study on 500 TB 
-data over 7 days. 
+\company, one of the largest search services providers.
+We deployed \name in 10 DCs, and ran a pilot study on 500 TB
+data over 7 days.
 Our real-world experiments show that \name achieves 3-5$\times$
-speedup over \company's existing solution, and can reduce 
+speedup over \company's existing solution, and can reduce
 incidents of excessive bandwidth consumption by bulk-data
-transfers by \fillme\%.
+transfers.
 Using real trace-driven evaluation and microbanchmarking,
 we also show that \name outperforms many techniques used in
-today's CDNs, and \name can handle the workload of \company's 
-inter-DC multicast traffic with one general-purpose server, 
+today's CDNs, and \name can handle the workload of \company's
+inter-DC multicast traffic with one general-purpose server,
 and tolerate various failure scenarios.
 
 
 Our contributions are summarized as following:
 \begin{packeditemize}
-\item Using the real-world workload of inter-DC bulk-data 
-replication to motivate the need of an application-level 
+\item Using the real-world workload of inter-DC bulk-data
+replication to motivate the need of an application-level
 multicast overlay networks (\Section\ref{sec:motivation}).
 \item Designing \name, which achieves near-optimal flow completion
 time with a centralized control scheme (\Section\ref{sec:overview},\ref{sec:logic},\ref{sec:system}).

@@ -1,77 +1,77 @@
 \begin{abstract}
 
 Many important cloud services require multicasting massive
-amounts of data from one datacenter (DC) to multiple 
+amounts of data from one datacenter (DC) to multiple
 DCs.
 While recent work focused on improving the WAN performance
-between a pair of DCs, it is necessarily incomplete, 
-as it falls short of 
-harness servers' capability to store-and-forward data, as 
+between a pair of DCs, it is necessarily incomplete,
+as it falls short of
+harness servers' capability to store-and-forward data, as
 well as inter-DC overlay paths available in abundance
 in globally deployed DCs.
 To explore these unexplored opportunities, we present {\em \name},
 an application-level multicast overlay network that
 near-optimally routes inter-DC bulk-data multicasts via
 inter-DC overlay paths.
-\name's key design choice is to {\em fully centralize} the 
-control of the overlay network, which allows \name to maintain 
-an up-to-date global view of data delivery status in order 
+\name's key design choice is to {\em fully centralize} the
+control of the overlay network, which allows \name to maintain
+an up-to-date global view of data delivery status in order
 to route multicast traffic near-optimally.
 To handle dynamic network conditions and workload churns,
-\name uses an efficient decoupling of overlay routing and 
-transfer scheduling to enable frequent updates (e.g., 
-every other second) on overlay routing 
-decisions at scales of multicasting \fillme TB 
-data over \fillme potential overlay paths.
+\name uses an efficient decoupling of overlay routing and
+transfer scheduling to enable frequent updates (e.g.,
+every other second) on overlay routing
+decisions at scales of multicasting hundreds of TB
+data over $10^4$s of potential overlay paths.
 A pilot deployment in one of the largest online
 service providers shows that \name achieves 3-5$\times$
 speedup over the provider's existing systems, as well
 as several widely used overlay routing systems.
 
-%For large-scale online service providers, one of the most 
+%For large-scale online service providers, one of the most
 %common communication patterns of inter-datacenter (DC)
-%workload is {\em bulk-data inter-DC multicast}: 
-%replicating bulk data from one DC to multiple DCs. 
-%While recent work has sought to improve bulk-data 
-%transfers by optimizing WAN performance, it is necessarily 
-%incomplete, as it falls short of fully exploring servers' 
-%capability to store-and-forward data, as well as 
+%workload is {\em bulk-data inter-DC multicast}:
+%replicating bulk data from one DC to multiple DCs.
+%While recent work has sought to improve bulk-data
+%transfers by optimizing WAN performance, it is necessarily
+%incomplete, as it falls short of fully exploring servers'
+%capability to store-and-forward data, as well as
 %the disjoint inter-DC paths existing in abundance.
-%%Inspired by the early success of multicast overlay networks, 
-%Instead, we argue that an optimal application-level multicast 
-%overlay network is needed to utilize these unexplored 
-%opportunities by dynamically scheduling and routing inter-DC 
+%%Inspired by the early success of multicast overlay networks,
+%Instead, we argue that an optimal application-level multicast
+%overlay network is needed to utilize these unexplored
+%opportunities by dynamically scheduling and routing inter-DC
 %data transfers via overlay paths.
-%Despite these promises, building an optimal overlay network 
+%Despite these promises, building an optimal overlay network
 %for inter-DC multicast poses two challenges:
-%(1) the sheer amounts of servers and overlay paths 
-%render it untenable to select optimal overlay paths 
-%in real-time, and (2) it must prevent delay of 
+%(1) the sheer amounts of servers and overlay paths
+%render it untenable to select optimal overlay paths
+%in real-time, and (2) it must prevent delay of
 %latency-sensitive traffic caused by bulk-data multicasts on
-%any multicast overlay paths. 
+%any multicast overlay paths.
 %We present {\em \name}, a simple yet near-optimal overlay network
-%for bulk-data inter-DC multicasts. 
-%Contrary to the intuition that servers must retain the capability 
-%to adapt locally (and thus suboptimally) 
-%in order to scale out, \name demonstrates the 
+%for bulk-data inter-DC multicasts.
+%Contrary to the intuition that servers must retain the capability
+%to adapt locally (and thus suboptimally)
+%in order to scale out, \name demonstrates the
 %feasibility and practical benefits of fully centralizing the
 %control of the overlay network.
-%The key insight underlying this centralized design is the 
-%observation that bulk-data transfers tend to last on coarse 
-%timescales so they can 
-%tolerate a slight delay of centralized decision-making 
+%The key insight underlying this centralized design is the
+%observation that bulk-data transfers tend to last on coarse
+%timescales so they can
+%tolerate a slight delay of centralized decision-making
 %in the hope of getting
 %a closer-to-optimal overlay routing.
 %Moreover, centralized bandwidth allocation on the granularity
-%of each data transfer proves efficient in eliminating 
+%of each data transfer proves efficient in eliminating
 %interference of bulk-data transfers on latency-sensitive traffic.
 %%\name is built on design choices:
-%%(a) fully centralized decision-making in near real-time, and 
+%%(a) fully centralized decision-making in near real-time, and
 %%(b) enforcing a clean, dynamic separation of bandwidth.
-%%While both design choices introduce costs on performance 
-%%(\name is unable to update decisions in real time or achieve 
-%%full link utilization), we believe these costs are outweighed by 
-%%the benefits, such as centralized optimization driven by a global 
+%%While both design choices introduce costs on performance
+%%(\name is unable to update decisions in real time or achieve
+%%full link utilization), we believe these costs are outweighed by
+%%the benefits, such as centralized optimization driven by a global
 %%view.
 %A pilot deployment of \name in one of the largest online
 %service providers shows that \name achieves 3-5$\times$
