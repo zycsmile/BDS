@@ -37,17 +37,18 @@ performance~\cite{savage1999Theend,jain2013b4,kumar2015bwe,hong2013achieving,zha
 \begin{figure}[t!]
 \includegraphics[width=83mm]{images/intro-example.pdf}
 \vspace{-0.4cm}
-\tightcaption{Simple network topology illustrating the benefit of
-leveraging inter-DC overlay paths.
+\tightcaption{A simple network topology illustrating how
+overlay paths reduce inter-DC multicast completion time.
 %Assume the bottleneck is the outgoing router of DC $A$.
-(a) It takes 3 rounds of transfers to directly replicate three
-files from DC $A$ to $B$ and $C$,
-(b) whereas if we leverage overlay paths
-($A$$\rightarrow$$B$$\rightarrow$$C$ and $A\rightarrow$$C$$\rightarrow$$B$),
-it takes only 2 rounds of transfers.
-The numbers in circles show the round of transfer in which the
-file is sent.
-}
+Assume each DC has 1GB/s one-directional WAN link to any other 
+DC, and $A$ sends 3GB data to $B$ and $C$.
+Sending data from $A$ to $B$ and $C$ separately 
+takes 3 seconds (a),
+but using overlay paths $A$$\rightarrow$$B$$\rightarrow$$C$
+and $A\rightarrow$$C$$\rightarrow$$B$
+simultaneously takes only 2 seconds.
+The circled numbers show the ordering in which each data piece
+ is sent. }
 \label{fig:intro}
 \vspace{-0.4cm}
 \end{figure}

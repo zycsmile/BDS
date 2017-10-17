@@ -236,7 +236,8 @@ to optimizing inter-DC multicast performance.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=80mm]{images/example-junchen.pdf}
+\includegraphics[width=84mm]{images/example-junchen.pdf}
+\vspace{-0.4cm}
 \tightcaption{An illustrative example showing the benefit from inter-DC multicast overlay.}
 \label{fig:case:example}
 \vspace{-0.4cm}
@@ -660,9 +661,9 @@ have a great variability in source-destination, and typically last for at
 least tens of seconds.
 \item {\em Bottleneck-disjoint overlay paths} are widely available
 between geo-distributed DCs.
-\item Existing solutions have suboptimal performance and
-could impact latency-sensitive traffic as
-each server makes local adaptation without a global view or coordination.
+\item Existing solutions that use local adaptation 
+can have {\em suboptimal performance} and {\em negative impact on
+online traffic}, due to lack of a global view and coordination.
 \end{packeditemize}
 
 %\jc{can you say something like: such inefficiency is due to the inability
