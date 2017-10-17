@@ -1,27 +1,29 @@
 \begin{abstract}
 
-Many important cloud services require multicasting massive
-amounts of data from one datacenter (DC) to multiple
-DCs.
-While recent work focused on improving the WAN performance
-between a pair of DCs, it is necessarily incomplete,
+Many important cloud services require replicating massive
+amounts of data from one datacenter (DC) to many DCs.
+While recent work has focused on improving the WAN performance
+between any pair of DCs, it is necessarily incomplete,
 as it falls short of
 harness servers' capability to store-and-forward data, as
 well as inter-DC overlay paths available in abundance
 in globally deployed DCs.
 To explore these unexplored opportunities, we present {\em \name},
 an application-level multicast overlay network that
-near-optimally routes inter-DC bulk-data multicasts via
+near-optimally sends inter-DC multicast traffic via
 inter-DC overlay paths.
-\name's key design choice is to {\em fully centralize} the
-control of the overlay network, which allows \name to maintain
+At its core, \name {} {\em fully centralizes} the
+control of the overlay network, allowing \name to maintain
 an up-to-date global view of data delivery status in order
-to route multicast traffic near-optimally.
+to fully utilize the available overlay paths.
 To handle dynamic network conditions and workload churns,
-\name uses an efficient decoupling of overlay routing and
-transfer scheduling to enable frequent updates (e.g.,
-every other second) on overlay routing
-decisions at scales of multicasting hundreds of TB
+\name decouples the centralized control algorithm 
+into overlay routing and transfer scheduling, each of which
+could be solved efficiently. 
+This enables \name to  update overlay routing
+decisions frequently  (e.g.,
+every other second) 
+at scales of multicasting hundreds of TB
 data over $10^4$s of potential overlay paths.
 A pilot deployment in one of the largest online
 service providers shows that \name achieves 3-5$\times$
