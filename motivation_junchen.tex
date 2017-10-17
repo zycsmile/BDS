@@ -60,7 +60,7 @@ between over 30 geo-distributed DCs.
  \rowcolor[gray]{0.9}
 \textbf{Type of application} & \textbf{\% of multicast traffic} \\
 \hline\hline
-All applications & 91.13\%~\footnotemark[2]\\
+All applications & 91.13\%~\myfootnotemark\\
 \hline
 Blog posts & 91.0\% \\% 4648.92 vs 41372.56 in GB
 \hline
@@ -85,7 +85,7 @@ traffic.}
 \vspace{-0.2cm}
 \label{table:rate}
 \end{table}
-\footnotetext[2]{The overall multicast traffic
+\myfootnotetext{The overall multicast traffic
 share is estimated by that of the traffic goes through one
 randomly sampled DC, because we do not have access to
 information of all inter-DC traffic, but this number is
@@ -250,7 +250,7 @@ completion time (defined as the duration of data transfers
 until each destination DC has a full copy of the data)
 can be similarly improved by an
 application-level overlay network.
-\footnote{An application-level overlay is complementary to
+\myfootnote{An application-level overlay is complementary to
 prior work that focused on optimizing WAN.}
 
 The basic idea of application-level overlay networks is

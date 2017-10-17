@@ -96,6 +96,19 @@
 
 \newenvironment{packedtrivlist}{\begin{list}{\setlength{\itemsep}{0.2pt}\addtolength{\labelwidth}{-4pt}\setlength{\leftmargin}{\labelwidth}\setlength{\listparindent}{\parindent}\setlength{\parsep}{1pt}\setlength{\topsep}{0pt}}}{\end{list}}
 
+\newcounter{myfootnotecounter}
+\newcommand\myfootnotemark{%
+\addtocounter{footnote}{1}
+\footnotemark[\thefootnote]
+}
+\newcommand\myfootnotetext[1]{%
+\addtocounter{myfootnotecounter}{1}
+\footnotetext[\value{myfootnotecounter}]{#1}
+}
+\newcommand\myfootnote[1]{%
+\addtocounter{myfootnotecounter}{1}
+\footnote{#1}
+}
 
 \begin{document}
 
