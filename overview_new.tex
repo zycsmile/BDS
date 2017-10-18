@@ -27,12 +27,12 @@ choice and the challenge to make it practical.
 %\subsection{Why a fully centralized design}
 
 \mypara{Conventional wisdom}
-The limitations of many prior approaches~\cite{??,??}, including \company's
+The limitations of many prior approaches~\cite{Andreev2013Designing,Repantis2010Scaling,Huang2014A}, including \company's
 system, as highlighted in \Section\ref{subsec:motivation:baseline},
 stem from suboptimal local adaptation decisions made by individual servers
 in lack of global view and coordination.
 These limitations remain, though to a lesser extent, in hybrid
-control schemes (e.g.,~\cite{yin2009design, cite Vdn at sigcomm2013}) 
+control schemes (e.g.,~\cite{yin2009design,mukerjee2014enabling})
 which combines real-time local adaptation with a centralized logic
 operating on coarser timescales.
 Despite these limitations, the
@@ -53,7 +53,7 @@ performance is deemed necessary.
 However, we believe that in the setting of inter-DC
 multicasts, near-optimal performance can be achieved
 through a fully centralized design.
-As illustrated in Figure~\ref{fig:framework}, 
+As illustrated in Figure~\ref{fig:framework},
 \name uses a centralized controller to update decisions,
 including scheduling of data transfers, and the path selection and
 bandwidth allocation of each transfer, on timescales of
@@ -72,18 +72,18 @@ considerations:
 \begin{packedenumerate}
 \item {\em Large data sizes:}
 Sizes of inter-DC multicast are much larger
-than those of online inter-DC traffic of interactive applications 
-(e.g., online partition-aggregation) and 
+than those of online inter-DC traffic of interactive applications
+(e.g., online partition-aggregation) and
 traditional overlay networks (e.g., live streaming).
-As a result, inter-DC multicast typically 
-last much longer than changes in 
-network conditions, so being highly responsive 
+As a result, inter-DC multicast typically
+last much longer than changes in
+network conditions, so being highly responsive
 to transient network dynamics is a secondary concern.
-Instead, we can tolerate a small delay (of a few seconds) 
-to query a centralized controller. 
+Instead, we can tolerate a small delay (of a few seconds)
+to query a centralized controller.
 The tradeoff between a centralized design and a decentralized one
-in this context is that centralized control essentially trades 
-real-time responsiveness to network dynamics for 
+in this context is that centralized control essentially trades
+real-time responsiveness to network dynamics for
 closer-to-optimal control decisions driven by
 a global view of data delivery at each server.
 \item {\em Large decision space:}
@@ -91,9 +91,9 @@ The sheer numbers of inter-DC overlay paths,
 which grow exponentially with more servers acting as overlay nodes,
 make it hard for individual servers to explore all possible overlay
 paths based only on its local measurements.
-Instead, there is a great room for improving overlay multicast 
-performance by maintaining a global view of data delivery states at 
-different servers in order to balance the availability across 
+Instead, there is a great room for improving overlay multicast
+performance by maintaining a global view of data delivery states at
+different servers in order to balance the availability across
 different data blocks.
 This turns out to be critical to achieving near-optimal performance
 (\Section~\ref{sec:logic}).
@@ -107,7 +107,7 @@ to determine the bandwidth allocation and periodically update it
 to all servers in a centralized fashion (\Section~\ref{sec:system}).
 \item {\em Engineeringly simpler:}
 In some sense, the resulting centralized system is conceptually
-less complex than a decentralized/hybrid design 
+less complex than a decentralized/hybrid design
 and amenable to a simple implementation.
 The control logic running locally in each server
 is only triggered on arrivals of new data units or control messages,
