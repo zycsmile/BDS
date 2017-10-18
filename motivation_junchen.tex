@@ -361,16 +361,16 @@ Note if two overlay paths have different end-to-end bandwidth
 (i.e., $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}\neq1$)
 in the same time,
 they should be bottleneck-disjoint.
-The reason we examine such overlay path pair is that 
+The reason we examine such overlay path pair is that
 if these pairs are widely available, we can
 create a new bottleneck-disjoint path by using any server $b$
 as an overlay point.
-Figure~\ref{fig:case:example} shows the distribution of
+Figure~\ref{fig:case:size} shows the distribution of
 $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$
 among all possible values of $A$, $b$, and $C$ in the dataset.
 We can see that $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$ is
 below 0.8 or over 1.3 for about 30\% of overlay pairs.
-\jc{these measurements were collected at the same time? could this variance be simply noise?}
+%\jc{these measurements were collected at the same time? could this variance be simply noise?} Yes, they were collected at the same time. Just as the network monitor does.
 
 
 
