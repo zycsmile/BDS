@@ -29,7 +29,7 @@ The evaluation results of the pilot deployment, together with trace-driven simul
                 \caption{Comparison by timeseris.}
                 \label{fig:BDSvsAnon:time}
         \end{subfigure}
-        \caption{[\name vs. \company] Results from pilot deployments.}
+        \tightcaption{[\name vs. \company] Results from pilot deployments.}
         \label{fig:BDSvsAnon}
 \vspace{-0.4cm}
 \end{figure*}
@@ -129,10 +129,10 @@ Akamai & $25m$ & $87m$ & $138m$\\
 \end{tabular}
 }
 \end{center}
-\vspace{-0.4cm}
-\caption{[\name vs. Bullet \cite{kostic2003bullet}, Akamai \cite{Andreev2013Designing}] Results from trace-driven simulations.}
+\tightcaption{[\name vs. Bullet \cite{kostic2003bullet}, Akamai \cite{Andreev2013Designing}] Results from trace-driven simulations.}
 %\caption{Average completion time of Bullet \cite{kostic2003bullet}, Akamai \cite{Andreev2013Designing} and \name.}
 \label{table:versusAkamai}
+\vspace{-0.4cm}
 \end{table}
 
 %\begin{itemize}
@@ -149,10 +149,10 @@ Akamai & $25m$ & $87m$ & $138m$\\
 \begin{figure}[t]
   \centering
   \includegraphics[width=45mm]{images/Quota.eps}
-  \caption{The effectiveness of bandwidth separation.}
+  \tightcaption{The effectiveness of bandwidth separation.}
   \label{fig:quota}
+\vspace{-0.4cm}
 \end{figure}
-%\vspace{-0.4cm}
 
 To test the effectiveness of bandwidth separation and check whether the bulk data transfer will reserve bandwidth for latency-sensitive traffic according to the separation quota, we set the upper bound of available bandwidth for bulk data transfer to 10~GBps, and then monitor the real usage of one inter-DC link. The results are shown in Figure \ref{fig:quota}, from which we can see the real bandwidth usage stays below the upper bound (10~GBps) throughout the whole transmission process, verifying that the separation does take effects on link bandwidth usage and thus is able to reduce the incidents of delay on latency-sensitive traffic caused by bulk data transfers.
 
@@ -172,7 +172,7 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
 \end{tabular}
 }
 \end{center}
-\caption{Average link utilizations under \company and \name.}
+\tightcaption{Average link utilizations under \company and \name.}
 \label{table:usage}
 \vspace{-0.4cm}
 \end{table}
@@ -197,7 +197,7 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
                 \caption{Feedback loop delay.}
                 \label{fig:scale:feedback}
         \end{subfigure}
-        \caption{[System scalability] Measurements on (a) controller running time, (b) network delay, (c) Feedback loop delay.}
+        \tightcaption{[System scalability] Measurements on (a) controller running time, (b) network delay, (c) Feedback loop delay.}
         \label{fig:scale}
 \vspace{-0.4cm}
 \end{figure*}
@@ -234,7 +234,7 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
 %                \caption{The proportion of blocks downloaded from the original source.}
 %                \label{fig:analysis:overlay}
 %        \end{subfigure}
-        \caption{[Algorithm adaptability] Measurements on (a) fault tolerance, (b) different block size, and (c) different cycle length.}
+        \tightcaption{[Algorithm adaptability] Measurements on (a) fault tolerance, (b) different block size, and (c) different cycle length.}
         \label{fig:analysis}
 \vspace{-0.4cm}
 \end{figure*}
@@ -281,7 +281,7 @@ This section focuses on some benchmarks of \name. 1. Scalability of the centrali
                 \caption{The proportion of blocks downloaded from the original source.}
                 \label{fig:further:overlay}
         \end{subfigure}
-        \caption{[In-depth analysis] on (a) reduction on algorithm running time, (b) near-optimality, and (c) effects of overlay transmission.}
+        \tightcaption{[In-depth analysis] on (a) reduction on algorithm running time, (b) near-optimality, and (c) effects of overlay transmission.}
         \label{fig:further}
 \vspace{-0.4cm}
 \end{figure*}
