@@ -12,9 +12,9 @@
 
 We have deployed \name on \company's DCs, which consist of 67 geo-distributed servers in 10 DCs. Evaluations in the next section are based on this deployment. %The topology is shown as Fig. \ref{fig:topology}.
 
-\name is implemented with 3621 lines of golang code \cite{golang}, and can be fully integrated in \company's DCs. The three duplications of the controller are implemented on three different geo-located servers. The data plane (bulk data transmissions) between controller and agents adopts TCP, and the control plane (control messages) adopts HTTP. For the specific transmissions, \name uses \emph{wget} to make data transfer and sets particular \emph{wget options} to enforce bandwidth.
+\name is implemented with 3621 lines of golang code \cite{golang}, and can be fully integrated in \company's DCs. The three duplications of the controller are implemented on three different geo-located servers. The data plane (bulk data transmissions) between controller and agents adopts TCP, and the control plane (decision messages) adopts HTTP. For the specific transmissions, \name uses \emph{wget} to make data transfer and sets particular \emph{wget options} to enforce bandwidth.
 
-This implementation makes no specific requirements on applications, and any application wants to distribute bulk data just needs to follow three steps: 1. register on \name, initiate the basic information about source DC, destination DCs, all end servers and the bulk data. 2. install agents on the involved end servers, 3. assign the start time of bulk data transmission. Then \name will start the data distribution at the specified time. Such simple implementation also makes \name applicable to other companies' DCs. 	
+This implementation makes no specific requirements on applications, and any application that wants to distribute bulk data just needs to follow three steps: 1. register on \name, initiate the basic information about source DC, destination DCs, all end servers and the bulk data. 2. install agents on the involved end servers, 3. assign the start time of bulk data transmission. Then \name will start the data distribution at the specified time. Such simple implementation also makes \name applicable to other companies' DCs. 	
 
 %\jc{this is oversimplistic. did you make any assumption about the agent? what if a hadoop application wants to use your stuff?}
 
