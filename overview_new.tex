@@ -41,6 +41,7 @@ Stemming from suboptimal local adaptation decisions made by individual servers i
 However, we believe that in the setting of inter-DC multicasts, near-optimal performance can be achieved through a fully centralized design. As illustrated in Figure~\ref{fig:framework}, \name uses a centralized controller to update decisions. At a high level, \name controller periodically pulls information from all servers, updates the decisions, and pushes them to agents running locally on servers. Further, when the controller fails or is not reachable, \name will fallback to a decentralized overlay protocol to ensure graceful degradation on performance.
 %Specifically, the controller schedules data transfers, make the path selection and bandwidth allocation for each transfer in each scheduling period.
 %\mypara{Design philosophy}
+
 Our centralized design is driven by four considerations:
 \begin{packedenumerate}
 \item {\em Large data size:}

@@ -1,16 +1,16 @@
 \subsection{Implementation and Deployment}
 \label{sec:deployment}
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=3in]{images/Testbed_v2.eps}
-  \tightcaption{The abstract topology of our intra-net WAN.}
-  \label{fig:topology}
-\vspace{-0.1in}
-\end{figure}
+%\begin{figure}[t]
+%  \centering
+%  \includegraphics[width=3in]{images/Testbed_v2.eps}
+%  \tightcaption{The abstract topology of our intra-net WAN.}
+%  \label{fig:topology}
+%\vspace{-0.1in}
+%\end{figure}
 %\vspace{-15pt}
 
-We have deployed \name on \company's DCs, which consist of 67 geo-distributed servers in 10 DCs. The topology is shown as Fig. \ref{fig:topology}. Evaluations in the next section are based on this deployment.
+We have deployed \name on \company's DCs, which consist of 67 geo-distributed servers in 10 DCs. Evaluations in the next section are based on this deployment. %The topology is shown as Fig. \ref{fig:topology}.
 
 \name is implemented with 3621 lines of golang code \cite{golang}, and can be fully integrated in \company's DCs. The three duplications of the controller are implemented on three different geo-located servers. The data plane (bulk data transmissions) between controller and agents adopts TCP, and the control plane (control messages) adopts HTTP. For the specific transmissions, \name uses \emph{wget} to make data transfer and sets particular \emph{wget options} to enforce bandwidth.
 
