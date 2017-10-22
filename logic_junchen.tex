@@ -4,7 +4,7 @@
 The key challenge of \name is how to update the overlay routing
 in near real-time by finding an optimal solution of an overlay
 routing problem at scales of
-10,000 overlay paths and 100,000s objects.
+$10^4$s of overlay paths and $10^5$s of objects.
 %At a high level, to optimize inter-DC data multicast, \name fully
 %exploits application-level overlay paths by splitting data into
 %small blocks and periodically selecting the overlay paths to send
@@ -59,7 +59,7 @@ Thus, \name can solve both problems efficiently and near-optimally with proved g
 %\label{table:para}
 %\end{table}
 
-We start with the basic formulation of the overlay routing problem with fixed network capacity and multicast transfers, and then extending it to handle dynamic changes in network performance and request arrivals.
+We start with the basic formulation of the overlay routing problem with fixed network capacity and multicast transfers, before extending it to handle dynamic changes in network performance and request arrivals.
 
 \mypara{Under fixed network capacity}
 Suppose the network capacity is fixed, the problem of multicast
@@ -79,7 +79,7 @@ many smaller fixed-sized {\em blocks}, and the $i$th block of the $j$th task is 
 \noindent(2) {\em Output.} A four tuple for each server: $\langle \overrightarrow{o_B}, s_{B}^*, p_{B}^*, f^*_{B,p_{B}^*} \rangle$, which denotes the block transmission sequence, the optimal source and overlay path for each block, and the optimal allocated bandwidth on this path, respectively.
 
 \noindent(3) {\em Constraints.}
-There are four constraints on link capacity, file size, bandwidth allocation and path selection:
+There are four constraints on link capacity, data size, bandwidth allocation and path selection:
 
 %The mentioned three constraints can then be formulated as follows:
 \begin{packeditemize}
@@ -91,7 +91,7 @@ c(p_\lambda) \geq  \displaystyle{\sum_{(s,d)\in \mathbb{A}}} \displaystyle{\sum_
 %\end{split}
 \end{equation}
 
-\item Data size constraint. The sum of allocated bandwidth should be no less than its size $\mathbb{S}(B_{i,j})$.
+\item Data size. The sum of allocated bandwidth should be no less than its size $\mathbb{S}(B_{i,j})$.
 \begin{equation}
 %\begin{split}
 \mathbb{S}(B_{i,j}) \leq  \displaystyle{\sum_{(s,d)\in \mathbb{A}}} \displaystyle{\sum_{p_{\lambda}\in Path(s,d)}} f_{B_{i,j},p_\lambda} \cdot I_{B_{i,j},p_\lambda} \cdot \Delta T\\
@@ -99,7 +99,7 @@ c(p_\lambda) \geq  \displaystyle{\sum_{(s,d)\in \mathbb{A}}} \displaystyle{\sum_
 %\end{split}
 \end{equation}
 
-\item Bandwidth constraint. The allocated bandwidth on path $p_\lambda$ should be the minimum of three parameters: the capacity $c(p_\lambda)$, source server upload rate $R_{up}(s)$, destination server download rate $R_{down}(d)$.
+\item Bandwidth allocation. The allocated bandwidth on path $p_\lambda$ should be the minimum of three parameters: the capacity $c(p_\lambda)$, source server upload rate $R_{up}(s)$, and destination server download rate $R_{down}(d)$.
 \begin{equation}
 %\begin{split}
 f_{B_{i,j},p_\lambda} \leq  min \{c(p_\lambda),R_{up}(s),R_{down}(d)\}\\
@@ -107,7 +107,7 @@ f_{B_{i,j},p_\lambda} \leq  min \{c(p_\lambda),R_{up}(s),R_{down}(d)\}\\
 %\end{split}
 \end{equation}
 
-\item Path selection constraint: Only one path will be chosen for a particular block.
+\item Path selection. Only one path will be chosen for a particular block.
 $\displaystyle{\sum_{p_\lambda \in Path(s,d)}} I_{B_{i,j},p_\lambda} = 1$
 \end{packeditemize}
 %\jc{maybe it's better in math after all. please write
@@ -137,7 +137,7 @@ Since any change in network performance or arrival of
 new requests may potentially alter the optimal overlay
 routing decisions,
 %The problem can be formulated precisely according to the above definitions only when the network is static and all the conditions stay unchanged during the whole transmission period. However, it is impractical to make such assumptions because bulk data transfer and constantly changing online traffic co-exists in the network and the design choice of \name is to make dynamic bandwidth separation. Therefore,
-\name should be able to react to the changing network conditions by re-configuring the above formulation (by default, \name updates network information and resolves the problem every 3 seconds, and the cycle length is evaluated in \Section\ref{subsubsec:evaluation:depth}). Unfortunately, the origin problem becomes considerably complex and hard to solve when making re-formulation, because the number of potential sources and paths grow exponentially with the duplication status, and it becomes impossible to find out the optimal transmission in such searching space. To make it solvable, \name decouples the problem into two steps and tries to find the optimal solution for each step.
+\name should be able to react to the changing network conditions by re-configuring the above formulation (by default, \name updates network information and resolves the problem every 3 seconds, and the cycle length is evaluated in \Section\ref{subsubsec:evaluation:depth}). Unfortunately, the origin problem becomes considerably complex and hard to solve during re-formulation. This is because the number of potential sources and paths grow exponentially with the duplication status and becomes impossible to find out the optimal transmission in such searching space. To make it solvable, \name decouples the problem into two steps and tries to find the optimal solution for each step.
 
 %\jc{a missing piece is how large each block is, and why. }
 
@@ -146,11 +146,11 @@ routing decisions,
 
 The key insight underlying the above re-formulated problem is the
 separation of data scheduling and overlay routing: the scheduling procedure selects a subset of blocks to be transferred first
-($\overrightarrow{o_B}$), and the subsequent routing procedure determines the routing paths ($p_{B}^*$) and allocated bandwidth ($f^*_{B,p_{B}^*}$) to these blocks.
+($\overrightarrow{o_B}$), and the subsequent routing procedure determines the routing paths ($p_{B}^*$) and the allocated bandwidth ($f^*_{B,p_{B}^*}$) to these blocks.
 
-This decoupling reduces the computational complexity on the centralized controller side. As the scheduling stage selects a subset of blocks, and only these selected blocks will be routed and transferred in the following routing stage, the searching spaces are thus significantly reduced for the subsequent routing procedure, speeding up the execution of the centralized algorithm.
+This decoupling reduces the computational complexity on the centralized controller side. As the scheduling stage selects a subset of blocks and only these selected blocks will be routed and transferred in the following routing stage, the searching spaces are thus significantly reduced for the subsequent routing procedure, speeding up the execution of the centralized algorithm.
 
-What worth mentioning is that such decoupling is near-optimal. For the origin bulk data transfer problem, the optimal solution is to decide the optimal block transmission order $\overrightarrow{o_B}$ for all servers, while such decoupling converts this optimal solution into an equivalent one: to decide the optimal order to transmit the selected blocks in each scheduling cycle (so as to enforce network dynamic updates). Thus, the decoupling introduces no degradation as long as \name finds the optimal solutions for both of the scheduling and routing procedures in each cycle.
+What worths mentioning is that such decoupling is near-optimal. For the origin bulk data transfer problem, the optimal solution is to decide the optimal block transmission order $\overrightarrow{o_B}$ for all servers, while such decoupling converts this optimal solution into an equivalent one, i.e., to decide the optimal order to transmit the selected blocks in each scheduling cycle (so as to enforce network dynamic updates). Thus, the decoupling introduces no degradation as long as \name finds the optimal solutions for both scheduling and routing procedures in each cycle.
 
 %In the existing hybrid CDN and P2P architecture \cite{yin2009design} or centralized P2P scheme \cite{lee2003centralized}, there are also centralized servers with global information, but those servers are used for specific tasks (like system bootstrapping and maintaining global index) \cite{androutsellis2004survey}. While the centralized controller of \name faces more challenges in terms of real-time computing. The above mentioned decoupling could not only sense the changing network conditions, but also reduce the calculation scale of the centralized algorithm running on the controller.
 %uses the global information to decouple scheduling and routing without introducing degradation.\jc{put the last sentence after the benefits. also, i don't get the point of this sentence.}
@@ -178,10 +178,10 @@ What worth mentioning is that such decoupling is near-optimal. For the origin bu
 
 The scheduling step tries to reduce searching space by selecting a subset of blocks to be transferred first, i.e., outputing the transmission order $\overrightarrow{o_B}$ for all blocks.
 
-The key to avoid introducing degradation in this procedure is to make sure that the optimal result is still retained in the reduced searching space, in other words, the optimal result is not in the space that is pruned by scheduling procedure. We claim that the optimal scheduling result is yield from the situation that all the blocks are balanced duplicated, thus the key concern is to balance the duplication of all blocks. So here \name prunes the searching space that will not result in balanced duplications and selects the least duplicated blocks to transmit first. In this way, the optimal result will thus be retained in the reduced searching space.
+The key to avoid introducing degradation in this procedure is to make sure that the optimal result is still retained in the reduced searching space. In other words, the optimal result is not in the space that is pruned by scheduling procedure. We claim that the optimal scheduling result is yielded from the situation that all the blocks are balanced duplicated, thus the key concern is to balance the duplication of all blocks. So here \name prunes the searching space that will not result in balanced duplications and selects the least duplicated blocks to transmit first. In this way, the optimal result will be retained in the reduced searching space.
 %\jc{this is a key statement! please make it more precisely}
 
-To be specific, assume the origin bulk data in the source DC is split into $n$ blocks, and there are $2m$ DCs in the WAN. Different scheduling strategies output different block subsets and lead to different intermediate transmission states, finally resulting in different completion time. Take two intermediate states as examples: 1) All of the $n$ blocks has $k$ duplicates; 2) Some of these $n$ blocks have $k1$ $(k1<k)$ duplicates and other blocks have $k2$ $(k2>k)$ duplicates. Let $t_1$ denote the completion time of case 1 and $t_2$ denote that of case 2, we have: $t_2 > t_1$ (See Appendix for the proof). So in the data scheduling step, \name will firstly pick out the subset of blocks with the least downloaded duplicates, to balance the block duplications.
+To be specific, assume the origin bulk data in the source DC is split into $n$ blocks, and there are $2m$ DCs in the WAN. Different scheduling strategies output different block subsets and lead to different intermediate transmission states, finally resulting in different completion time. Take two intermediate states as examples: 1) All of the $n$ blocks have $k$ duplicates; 2) Some of these $n$ blocks have $k1$ $(k1<k)$ duplicates and other blocks have $k2$ $(k2>k)$ duplicates. Let $t_1$ denote the completion time of case 1 and $t_2$ denote that of case 2, we have: $t_2 > t_1$ (See Appendix for the proof). So in the data scheduling step, \name will firstly pick out the subset of blocks with the least downloaded duplicates, to balance the block duplications.
 
 %\jc{isn't it trivial to maintain the counters?}
 %For efficient selection, \name keeps a counter $c_i$ in the controller for each block and updates it once receiving finish notifications from receivers. The scheduling stage always gives priority to the smallest $c_i$. For efficient processing, \name keeps all the counters $c_i$ in a doubly linked list in an ascending order of their values. For each download, the controller selects the top item in the list (the smallest value) to be downloaded. The controller listens and serves an HTTP port, once receiving a transmission completion signal from receivers, it updates the corresponding block's counter value and adjusts its position in the linked list for further processing.
@@ -189,9 +189,9 @@ To be specific, assume the origin bulk data in the source DC is split into $n$ b
 \subsection{Routing}
 \label{subsec:logic:routing}
 
-In the overlay routing step, \name routes and transfers blocks according to $\overrightarrow{o_B}$, the output of data scheduling step, and then tries to make optimal routing strategy (assign $s_{B}^*$, $p_{B}^*$ and $f^*_{B,p_{B}^*}$) for each block $B$. Note that there are multiple potential data sources for each block in the multicast overlay network, so the objective of routing is to pick the most efficient data source and paths, and then allocate the bandwidth on these selected paths.
+In the overlay routing step, \name routes and transfers blocks according to $\overrightarrow{o_B}$, the output of data scheduling step, and then tries to make optimal routing strategy (assign $s_{B}^*$, $p_{B}^*$ and $f^*_{B,p_{B}^*}$) for each block $B$. Note that there are multiple potential data sources for each block in the multicast overlay network, so the objective of routing is to pick the most efficient data source and paths before allocating the bandwidths on these selected paths.
 
-With the constraints described in \Section\ref{subsec:logic:formulation}, this formulation in Equation \ref{equation:objective} is an integer multi-commodity flow algorithm which is known to be NP-complete \cite{garg1997primal}, and there is no known algorithm to find an optimal solution. To make this problem solvable, we look into it from a different perspective. As the size of a task is dozens of TBs to PBs, while each block is just about several MBs, we can approximate tasks as they are infinitesimally split and can be transferred on a set of possible paths between the source DC and the destination DC. So it is possible to solve this problem by a linear programming (LP) relaxation which can be transformed to a maximum concurrent flow (MCF) problem \cite{garg2007faster,reed2012traffic}, and the relaxed problem aims at transferring at least a fraction $\alpha$ of each transmission. Such MCF problem provides a solution to the original NP-complete problem, although with fractional flows. Specifically, the optimum value $F^*$ in the MCF problem is equivalent to that of the original problem $f^*$ with a relationship given by $F^* / \alpha = f^*$. Thus, the original problem is converted to maximize $\alpha$ and can be solved within polynomial time.
+With the constraints described in \Section\ref{subsec:logic:formulation}, this formulation in Equation \ref{equation:objective} is an integer multi-commodity flow algorithm which is known to be NP-complete \cite{garg1997primal}, and there is no known algorithm to find an optimal solution. To make this problem solvable, we look into it from a different perspective. As the size of a task is dozens of TBs to PBs, while each block is just about several MBs, we can approximate tasks as they are infinitesimally split and can be transferred on a set of possible paths between the source DC and the destination DC. So it is possible to solve this problem by a linear programming (LP) relaxation which can be transformed to a maximum concurrent flow (MCF) problem \cite{garg2007faster,reed2012traffic}, and the relaxed problem aims at transferring at least a fraction $\alpha$ of each transmission. Such MCF problem provides a solution to the original NP-complete problem, although with fractional flows. Specifically, the optimal value $F^*$ in the MCF problem is equivalent to that of the original problem $f^*$ with a relationship given by $F^* / \alpha = f^*$. Thus, the original problem is converted to maximize $\alpha$ and can be solved within polynomial time.
 
-However, when splitting tasks infinitesimally, the number of blocks will grow considerably large and the computing time will be intolerable. \name adopts two coping strategies: on one hand, it merges the blocks with the same source and destination pair into one subtask so as to reduce the calculation scale; on the other hand, it adopts the improved fully polynomial-time approximation schemes (FPTAS) (\cite{fleischer2000approximating}) to optimize the dual problem of the origin problem and works out an $\epsilon$-optimal solution (see Appendix II for the proof of near optimality of \name).% with $\alpha' \geq \alpha_\epsilon \geq \alpha'(1-\epsilon)^{-3}$. This algorithm optimizes the dual problem of the relaxed LP problem by proceeding in phases and iterations
+However, when splitting tasks infinitesimally, the number of blocks will grow considerably large and the computing time will be intolerable. \name adopts two coping strategies: on one hand, it merges the blocks with the same source and destination pair into one subtask so as to reduce the calculation scale; on the other hand, it adopts the improved fully polynomial-time approximation schemes (FPTAS) (\cite{fleischer2000approximating}) to optimize the dual problem of the origin problem and works out an $\epsilon$-optimal solution (see Appendix II for the proof of near-optimality of \name).% with $\alpha' \geq \alpha_\epsilon \geq \alpha'(1-\epsilon)^{-3}$. This algorithm optimizes the dual problem of the relaxed LP problem by proceeding in phases and iterations
 %\jc{sorry, but i'm totally lost. what's the key idea? is it just a standard LP relaxation?}
