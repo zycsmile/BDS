@@ -3,29 +3,27 @@
 Many important cloud services require replicating massive data from one datacenter (DC) to many DCs.
 While recent efforts have greatly improved data transfers
 between any pair of DCs, they are insufficient for bulk-data multicast,
-as they do not harness servers' capability to store-and-forward data, as
+because they do not harness server's capability to store-and-forward data as
 well as abundant inter-DC overlay paths across geo-distributed DCs.
 To exploit these opportunities, we present {\em \name},
 an application-level multicast overlay network that
 near-optimally sends inter-DC multicast traffic via
 inter-DC overlay paths.
-At its core, \name {} {\em fully centralizes} the
-control of the overlay network, allowing \name to maintain
+At its core, \name {} {\em fully centralizes} the overlay network control, allowing \name to maintain
 an up-to-date global view of data delivery status in order
-to fully utilize the available overlay paths.
+to fully utilize available overlay paths.
 To handle network dynamics and workload churns,
-\name decouples the centralized control algorithm 
+\name decouples the centralized control algorithm
 into overlay routing and transfer scheduling, each of which
-can be solved efficiently. 
+can be solved efficiently.
 This enables \name to  update overlay routing
 decisions frequently  (e.g.,
-every other second) 
+every other second)
 at the scale of multicasting hundreds of TB
 data over tens of thousands overlay paths.
 A pilot deployment in one of the largest online
 service providers shows that \name achieves 3-5$\times$
-speedup over the provider's existing systems, as well
-as several widely used overlay routing systems.
+speedup over the provider's existing system and several widely used overlay routing systems.
 
 %Many important cloud services require replicating massive
 %amounts of data from one datacenter (DC) to many DCs.
@@ -44,12 +42,12 @@ as several widely used overlay routing systems.
 %an up-to-date global view of data delivery status in order
 %to fully utilize the available overlay paths.
 %To handle dynamic network conditions and workload churns,
-%\name decouples the centralized control algorithm 
+%\name decouples the centralized control algorithm
 %into overlay routing and transfer scheduling, each of which
-%could be solved efficiently. 
+%could be solved efficiently.
 %This enables \name to  update overlay routing
 %decisions frequently  (e.g.,
-%every other second) 
+%every other second)
 %at scales of multicasting hundreds of TB
 %data over $10^4$s of potential overlay paths.
 %A pilot deployment in one of the largest online
