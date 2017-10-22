@@ -291,7 +291,7 @@ This section focuses on some benchmarks of \name. (1). Scalability of the centra
 
 \mypara{Different block sizes} In \name, the bulk data file is split into blocks and can be transferred on disjoint paths. But this introduces a tradeoff between scheduling efficiency and calculation overhead. We therefore conduct two series of experiments using different block sizes (2MB and 64MB). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2MB/block scenario is 1.5 to 2 times shorter than that in the 64MB/block scenario. This is because smaller block size results in less degradation on the theoretical optimum (see Appendix for the proof). However, this optimization introduces longer controller running time, as shown in Figure \ref{fig:scale:cpu}. Overall, block size decisions depend on: (1) requirements on the completion time, and (2) controller's operation overhead.
 
-\mypara{Different cycle lengths} Since any change in network environment may potentially alter the optimal overlay routing decisions, \name reacts to the changing network conditions by adjusting the routing scheme periodically. To testify the adjustment frequency, we set different cycle lengths from $0.5s$ to $95s$ to the same bulk data transfer and Figure \ref{fig:analysis:cycleDiff} shows the completion time. Overall, smaller cycle lengths result in shorter completion time but the benefit is not so obvious when the cycle length is less than $3s$. This is because over-frequent adjustment will introduce more overhead in the following processes: (1). the information collection from agents to the controller, (2). the execution of the centralized algorithm, and (3). the re-establishment of new TCP connection. Thus, considering adjustment granularity and the corresponding overhead, we finally choose $3s$ as the default cycle length.
+\mypara{Different cycle lengths} Since any change in network environment may potentially alter the optimal overlay routing decisions, \name reacts to the changing network conditions by adjusting the routing scheme periodically. To testify the adjustment frequency, we set different cycle lengths from $0.5s$ to $95s$ to the same bulk data transfer, and Figure \ref{fig:analysis:cycleDiff} shows the completion time. Overall, smaller cycle lengths result in shorter completion time but the benefit is not so obvious when the cycle length is less than $3s$. This is because over-frequent adjustments introduce more overhead on: (1). the information collection from agents to the controller, (2). the execution of the centralized algorithm, and (3). the re-establishment of new TCP connection. Thus, considering adjustment granularity and the corresponding overhead, we finally choose $3s$ as the default cycle length.
 
 
 \tightsubsubsection{In-depth analysis.}\label{subsubsec:evaluation:depth}
@@ -333,7 +333,7 @@ This section focuses on some benchmarks of \name. (1). Scalability of the centra
 
 
 
-In summary, both the prototype pilot deployed on \company network and the trace-driven simulations of \name achieve 3 to 5 times speedup over existing solutions, with good scalability, strong adaptability and near-optimal scheduling results.
+In summary, both the prototype pilot deployed on \company network and the trace-driven simulations of \name achieve 3-5$\times$ speedup over existing solutions, with good scalability, strong adaptability and near-optimal scheduling results.
 
 
 %\begin{itemize}
