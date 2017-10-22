@@ -1,7 +1,7 @@
 \section{Introduction}
 
 For large-scale online services, such as Google, Facebook, and
-Baidu, an important inter-datacenter (DC) communication pattern is
+Baidu, an important inter-datacenter (inter-DC) communication pattern is
 {\em inter-DC bulk-data multicast}--replicating massive amounts of data
 (e.g., user logs, search engine indexes, offline file sharing,
 forum posts, and databases)
@@ -12,14 +12,14 @@ from one DC to many geo-distributed DCs.
 %databases) from one DC to any set of destination DCs.
 Our study on the workload of
 \company\myfootnote{A large search engine provider, anonymized for
-double-blind review}'s DCs reveals that
+double-blind review.}'s DCs reveals that
 inter-DC multicast amounts to 91\% of inter-DC traffic
 (\Section\ref{sec:motivation}), which corroborates the findings of
 other large-scale online service providers~\cite{kumar2015bwe,zhang2016piebridge}.
 As data sizes continue to explode and more DCs are deployed
 globally, inter-DC data transfer is expected
 to grow significantly, which is a key driving force behind
-recent efforts towards improving inter-DC WAN
+recent efforts towards improving inter-DC Wide Area Network (WAN)
 performance~\cite{savage1999Theend,jain2013b4,kumar2015bwe,hong2013achieving,zhang2015guarantee}.
 
 
@@ -40,24 +40,24 @@ performance~\cite{savage1999Theend,jain2013b4,kumar2015bwe,hong2013achieving,zha
 \tightcaption{A simple network topology illustrating how
 overlay paths reduce inter-DC multicast completion time.
 %Assume the bottleneck is the outgoing router of DC $A$.
-Assume each DC has 1GB/s one-directional WAN link to any other
+Assume each DC has 1GB/s one-directional WAN links to any other
 DC, and $A$ sends 3GB data to $B$ and $C$.
 Sending data from $A$ to $B$ and $C$ separately
 takes 3 seconds (a),
 but using overlay paths $A$$\rightarrow$$B$$\rightarrow$$C$
 and $A\rightarrow$$C$$\rightarrow$$B$
 simultaneously takes only 2 seconds.
-The circled numbers show the ordering in which each data piece
+The circled numbers show the order for each data piece
  is sent. }
 \label{fig:intro}
 \vspace{-0.4cm}
 \end{figure}
 
-Prior works has focused on improving the WAN performance
+Prior work has focused on improving the WAN performance
 between any two DCs. These WAN-centric approaches, however, are insufficient to
 optimize inter-DC multicast, as they fail to leverage
 the application-level overlay paths available in
-geo-distributed DCs, and harness servers' capability to
+geo-distributed DCs or harness server's capability to
 store-and-forward data.
 As illustrated in Figure~\ref{fig:intro}, the performance of
 inter-DC multicast can be substantially improved by
@@ -68,16 +68,15 @@ performance bottlenecks in DC networks.
 Note that these overlay paths must be {\em bottleneck-disjoint} (they do
 not share common bottlenecks), and
 such overlay paths are available in abundance in
-geo-distribute DCs (e.g., $A$$\rightarrow$$B$$\rightarrow$$C$,
+geo-distributed DCs (e.g., $A$$\rightarrow$$B$$\rightarrow$$C$,
 $A$$\rightarrow$$C$$\rightarrow$$B$ in Figure~\ref{fig:intro}).
 
 
 
 
 This paper presents {\em \name}, an {\em application-level
-multicast overlay network}.
-\name splits data into fine-grained
-units, and sends them in parallel via bottleneck-disjoint
+multicast overlay network}, which splits data into fine-grained
+units and sends them in parallel via bottleneck-disjoint
 overlay paths. These paths are selected dynamically in response to changes in
 network conditions and an up-to-date view
 of data delivery status on each server.
@@ -85,9 +84,9 @@ of data delivery status on each server.
 %overlay paths, and dynamically adapts the overlay routes and
 %schedules in response to changes in network conditions and
 %workload churns.
-Note \name selects application-level overlay paths, and is
+Note that \name selects application-level overlay paths and is
 complementary to network-layer techniques that
-improve WAN performance.
+improve the WAN performance.
 While application-level multicast overlays have been applied
 in other contexts
 (e.g.,~\cite{Liebeherr2002Application,Wang2007mTreebone,
@@ -107,7 +106,7 @@ decisions~\cite{kostic2003bullet,Repantis2010Scaling,Huang2014A},
 or pruning the set of overlay paths by strictly
 structured (e.g., layered) topologies~\cite{Nygren2010The}.
 Second, a small increase in the delay of latency-sensitive traffic
-can cause significant revenue losses, so the bandwidth usage
+can cause significant revenue loss, so the bandwidth usage
 of bulk-data multicasts must be tightly controlled
 to avoid interference with latency-sensitive
 traffic\myfootnote{Despite priority-based queuing
@@ -215,7 +214,7 @@ responsiveness, \name's centralized design
 is built on two observations (\Section\ref{sec:overview}):
 (1) While it is less likely to make
 centralized decisions in real time, most multicast data transfers
-last for tens of seconds, and thus can tolerate certain delay incurred by
+last for tens of seconds and thus can tolerate certain delay incurred by
 the central controller over a global view.
 (b) Centrally coordinated decision-making is amenable
 to minimize interference between inter-DC multicast
@@ -266,8 +265,8 @@ The key to realizing \name's benefits in practice is to update
 the overlay network on the timescale of seconds in response to dynamic network conditions
 and failures. \name achieves this by {\em decoupling} its centralized control
 into scheduling data transfers and
-routing individual data transfer along overlay paths.
-This decoupling attains provable optimality, and at the same time
+routing individual data transfers along overlay paths.
+This decoupling attains provable optimality and at the same time
 allows \name to update overlay network routing and scheduling in
 a fraction of second (4 orders of magnitude faster than without decoupling
 routing and scheduling) on production workloads
@@ -330,18 +329,18 @@ the routing every other second).
 
 
 We have implemented a prototype of \name and integrated it in
-\company, one of the largest search services providers.
-We deployed \name in 10 DCs, and ran a pilot study on 500 TB
+\company, one of the largest search service providers.
+We deployed \name in 10 DCs and ran a pilot study on 500 TB
 data over 7 days.
 Our real-world experiments show that \name achieves 3-5$\times$
-speedup over \company's existing solution, and can reduce
+speedup over \company's existing solution, and it can reduce
 incidents of excessive bandwidth consumption by bulk-data
 transfers.
 Using real trace-driven evaluation and microbanchmarking,
 we also show that \name outperforms techniques widely used in
-CDNs, can handle the workload of \company's
-inter-DC multicast traffic with one general-purpose server,
-and can tolerate various failure scenarios.
+CDNs, handling the workload of \company's
+inter-DC multicast traffic with one general-purpose server
+and tolerating various failure scenarios.
 
 
 Our contributions are summarized as following:
