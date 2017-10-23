@@ -1,24 +1,24 @@
 \section{Near-Optimal and Efficient Decision-Making Logic}
 \label{sec:logic}
 
-The key challenge of \name is how to update the overlay routing
-in near real-time by finding an optimal solution of an overlay
-routing problem at scales of
-$10^4$s of overlay paths and $10^5$s of objects.
+At the core of \name is a centralized decision-making 
+algorithm that periodically update near-optimal overlay 
+routing decisions in near real-time at scale (e.g.,
+$10^4$s of overlay paths and $10^5$s of data blocks).
 %At a high level, to optimize inter-DC data multicast, \name fully
 %exploits application-level overlay paths by splitting data into
 %small blocks and periodically selecting the overlay paths to send
 %each data block.
-While achieving optimal overlay routing may
-indeed be intractable due to the
-sheer number of available overlay paths and data blocks,
+While achieving this may be indeed intractable due to the
+sheer numbers of available overlay paths and data blocks,
 \name strikes a favorable tradeoff between solution optimality
-and time to solve the problem.
-The key idea is to {\em decouple} the problem into two steps,
-scheduling (i.e., which data blocks to be sent)
-and routing (i.e., to which destination through which path)
- (\Section\ref{subsec:logic:separation}).
-Thus, \name can solve both problems efficiently and near-optimally with proved guarantees
+and fast update by
+{\em decoupling} the problem into two steps (\Section\ref{subsec:logic:separation}):
+overlay scheduling, i.e., which data blocks to be sent 
+(\Section\ref{subsec:logic:scheduling});
+and routing, i.e., which path to send each data block 
+(\Section\ref{subsec:logic:routing}), each of which
+can be solved efficiently and near-optimally with proved guarantees
 (\Section\ref{subsec:logic:scheduling},~\ref{subsec:logic:routing}).
 
 %At a high level, \name optimizes the data distribution performance by splitting data into fine-grained blocks so as to exploiting all available server-level overlay paths, and possible reordering of blocks to speed up the process.
@@ -26,7 +26,7 @@ Thus, \name can solve both problems efficiently and near-optimally with proved g
 
 %\jc{In general, please avoid use of big formulations (like eq 5-10 on p6). May strike a negative impression in nsdi submissions}
 
-\subsection{Basic formulation}
+\subsection{Basic formulation of overlay control}
 \label{subsec:logic:formulation}
 
 %\begin{table}[t]
@@ -59,27 +59,39 @@ Thus, \name can solve both problems efficiently and near-optimally with proved g
 %\label{table:para}
 %\end{table}
 
-We start with the basic formulation of the overlay routing problem with fixed network capacity and multicast transfers, before extending it to handle dynamic changes in network performance and request arrivals.
 
 \mypara{Under fixed network capacity}
-Suppose the network capacity is fixed, the problem of multicast
-overlay routing can be formulated as following:
+We start with the basic formulation of the overlay control under the assumption of fixed network capacity and fixed demand of multicast requests. We will later extend it to dynamic network performance and traffic demand.
+The problem of multicast overlay routing can be formulated as following:
 %The data distribution problem over inter-DC WANs is defined as follows: We are given one data source DC $S$ and sets of destinations DC $D=\{d_i\}$ in an overlay network, what's the optimal transmission strategy with shortest completion time under a serious of constraints. To formulate this problem and design the decision-making logic for the centralized controller, we should first clarify the following aspects (Table \ref{table:para} summarizes some key variables used in \name):
 
 %\jc{Notions are too complicated. Please simplify. 4.1 should be at most 1/3 pg.}
 
-\noindent(1) {\em Input.}
-One source DC, sets of destination DCs,
-network topology,
+\noindent(1) {\em Input.} \jc{the formulation only consider one multicast request?}
+%One source DC, sets of destination DCs,
+%network topology,
+%server upload (and download) rate limit,
+%link capacity.
+Each multicast transmission, referred to as a {\em task} $T$, is defined 
+by a source DC, a set of destination DCs, and a data file chopped into 
+a list of fixed-sized data 
+{\em blocks}\footnote{Splitting data into fine-grained blocks enables 
+parallel transfer along 
+multiple overlay paths to increase throughput, though too small data blocks
+increases computational overhead of the routing algorithm. 
+In practice, we found 2MB is a good tradeoff 
+(\Section\ref{the subsection of this number})}.
+%the block size is 2MB, for efficient transmission and acceptable calculation overhead)
+The $i$th block of the $j$th task is denoted as $B_{i,j}$. 
+Besides traffic demand, the input also includes network topology,
 server upload (and download) rate limit,
-link capacity.
-We name a data transmission a {\em task} $T$, which is split into
-many smaller fixed-sized {\em blocks}, and the $i$th block of the $j$th task is denoted as $B_{i,j}$ (By default, the block size is 2M, for efficient transmission and acceptable calculation overhead).
+link capacity. \jc{what're the notions of toplogy, bandwidth? aren't link capacity and rate limit the same?}
 
-\noindent(2) {\em Output.} A four tuple for each server: $\langle \overrightarrow{o_B}, s_{B}^*, p_{B}^*, f^*_{B,p_{B}^*} \rangle$, which denotes the block transmission sequence, the optimal source and overlay path for each block, and the optimal allocated bandwidth on this path, respectively.
+\noindent(2) {\em Output.} A four tuple for each server: $\langle \overrightarrow{o_B}, s_{B}^*, p_{B}^*, f^*_{B,p_{B}^*} \rangle$, which denotes the block transmission sequence, the optimal source and overlay path for each block, and the optimal allocated bandwidth on this path, respectively. \jc{what the hell is B?!, and where's the server notation?}
 
 \noindent(3) {\em Constraints.}
-There are four constraints on link capacity, data size, bandwidth allocation and path selection:
+The formulation is subject to constraints similar to those of multi-commodity flow problem~\cite{??}.
+%There are four constraints on link capacity, data size, bandwidth allocation and path selection:
 
 %The mentioned three constraints can then be formulated as follows:
 \begin{packeditemize}
@@ -123,7 +135,7 @@ $\displaystyle{\sum_{p_\lambda \in Path(s,d)}} I_{B_{i,j},p_\lambda} = 1$
 %%The path capacity constraint takes effect on path $p_\lambda$: the available capacity $c(p_\lambda)$ should be no more than the minimum capacity of the consisting links.
 %The data size constraint takes effect on blocks: the sum of allocated bandwidth should be no less than its size. The bandwidth constraint defines the allocated bandwidth for $B_{i,j}$ on $p_\lambda$: $f^*_{B_{i,j},p_{B_{i,j}}}$ should be no more than the minimum of the following three parameters: path capacity $c(p_\lambda)$, the upload rate of source node $R_{up}(s)$ and the download rate of destination node $R_{down}(d)$.
 
-\noindent(4) {\em Objective function.} To speed up the bulk data distribution, \name aims at maximizing the sum of allocated bandwidth for all the blocks over all the paths.
+\noindent(4) {\em Objective.} To speed up the bulk data distribution, \name aims at maximizing the sum of allocated bandwidth for all the blocks over all the paths.
 
 \begin{equation}
 \centering
@@ -134,23 +146,27 @@ where $w(B_{i,j}) = \frac{pr_j}{2^{D_j-t}}$ is the weight of $B_{i,j}$, similar 
 
 \mypara{Dynamic updates}
 Since any change in network performance or arrival of
-new requests may potentially alter the optimal overlay
+new requests may alter the optimal overlay
 routing decisions,
 %The problem can be formulated precisely according to the above definitions only when the network is static and all the conditions stay unchanged during the whole transmission period. However, it is impractical to make such assumptions because bulk data transfer and constantly changing online traffic co-exists in the network and the design choice of \name is to make dynamic bandwidth separation. Therefore,
-\name should be able to react to the changing network conditions by re-configuring the above formulation (by default, \name updates network information and resolves the problem every 3 seconds, and the cycle length is evaluated in \Section\ref{subsubsec:evaluation:depth}). Unfortunately, the origin problem becomes considerably complex and hard to solve during re-formulation. This is because the number of potential sources and paths grow exponentially with the duplication status and becomes impossible to find out the optimal transmission in such searching space. To make it solvable, \name decouples the problem into two steps and tries to find the optimal solution for each step.
+\name needs to react to the changing network conditions by updating the solutions to the above formulation periodically, by default, every 3 seconds which is empirically sufficient to achieve near-optimal performance (\Section\ref{subsubsec:evaluation:depth}). Unfortunately, the origin formulation is intractable in practice, because the computational overhead grows grow exponentially with more potential sources, paths, and data blocks. 
+
+%To make it tractable, \name decouples the problem into two steps and tries to find the optimal solution for each step.
 
 %\jc{a missing piece is how large each block is, and why. }
 
 \subsection{Decoupling scheduling and routing}
 \label{subsec:logic:separation}
 
-The key insight underlying the above re-formulated problem is the
-separation of data scheduling and overlay routing: the scheduling procedure selects a subset of blocks to be transferred first
-($\overrightarrow{o_B}$), and the subsequent routing procedure determines the routing paths ($p_{B}^*$) and the allocated bandwidth ($f^*_{B,p_{B}^*}$) to these blocks.
+The key insight of \name to update the overlay control problem tractable is
+to decouple the aforementioned formulation into two steps: 
+a {\em scheduling} procedure which selects a subset of blocks to be transferred
+($\overrightarrow{o_B}$), followed by a subsequent {\em routing} 
+procedure which determines the routing paths ($p_{B}^*$) and the allocated bandwidth ($f^*_{B,p_{B}^*}$) of these blocks.
 
-This decoupling reduces the computational complexity on the centralized controller side. As the scheduling stage selects a subset of blocks and only these selected blocks will be routed and transferred in the following routing stage, the searching spaces are thus significantly reduced for the subsequent routing procedure, speeding up the execution of the centralized algorithm.
+This decoupling significantly reduces the computational overhead of the centralized controller. As the scheduling stage selects a subset of blocks and only these selected blocks will be routed and transferred in the following routing stage, the searching spaces are thus significantly reduced for the subsequent routing procedure, speeding up the execution of the centralized algorithm.
 
-What worths mentioning is that such decoupling is near-optimal. For the origin bulk data transfer problem, the optimal solution is to decide the optimal block transmission order $\overrightarrow{o_B}$ for all servers, while such decoupling converts this optimal solution into an equivalent one, i.e., to decide the optimal order to transmit the selected blocks in each scheduling cycle (so as to enforce network dynamic updates). Thus, the decoupling introduces no degradation as long as \name finds the optimal solutions for both scheduling and routing procedures in each cycle.
+Note that such decoupling is also near-optimal. In the origin formulation, the optimal solution is to decide the optimal block transmission order $\overrightarrow{o_B}$ for all servers, while such decoupling converts this optimal solution into an equivalent one, i.e., to decide the optimal order to transmit the selected blocks in each scheduling cycle (so as to enforce network dynamic updates). Thus, the decoupling introduces little degradation as long as \name finds the optimal solutions for both scheduling and routing procedures in each cycle.
 
 %In the existing hybrid CDN and P2P architecture \cite{yin2009design} or centralized P2P scheme \cite{lee2003centralized}, there are also centralized servers with global information, but those servers are used for specific tasks (like system bootstrapping and maintaining global index) \cite{androutsellis2004survey}. While the centralized controller of \name faces more challenges in terms of real-time computing. The above mentioned decoupling could not only sense the changing network conditions, but also reduce the calculation scale of the centralized algorithm running on the controller.
 %uses the global information to decouple scheduling and routing without introducing degradation.\jc{put the last sentence after the benefits. also, i don't get the point of this sentence.}
