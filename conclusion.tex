@@ -1,17 +1,20 @@
 \section{Conclusion}
-Bulk-data multicast is critical and challenging to global-scale
-online service providers.
-We argue that the prior work focusing on optimizing WAN performance
-is incomplete, and that an intelligent application-level multicast
-overlay network is needed.
-This paper presents \name, which demonstrates the feasibility
+Inter-DC multicast is critical to global-scale online service 
+providers.
+We argue that prior work that focuses on optimizing WAN performance
+is insufficient, and this paper presents \name, 
+an application-level multicast overlay network that substantially
+improve bulk-data inter-DC multicast performance.
+%This paper presents \name, which 
+\name demonstrates the feasibility
 and practical benefits of a fully centralized multicast overlay
 network that selects overlay paths and schedules data transfer in
 a near-optimal yet efficient manner.
 The key insight underlying \name's centralized design is that the
-benefits of decision-making informed by a global view
-outweigh its cost, such as coarse-grained updates.
-We believe our insight that informs our centralized design can be
+benefits of making decisions based on a global view
+outweigh the cost of centralization, such as gathering information
+to the controller.
+We believe our insight that informs our design choice can be
 generalized to inspire centralized control platforms in other
-settings where centralized decision-making strikes a favorable
+settings where centralized decision-making could strike a favorable
 balance between costs and benefits.
