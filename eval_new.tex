@@ -2,11 +2,11 @@
 \label{sec:evaluation}
 
 To evaluate \name, we integrated our end-to-end prototype in \company, and ran a pilot deployment across the above network.
-The evaluation results of the pilot deployment, together with trace-driven simulations and microbenchmarks, show that:
+Using a combination of pilot deployment, trace-driven simulations, and microbenchmarks, we show that:
 \begin{packedenumerate}
-\item \name completes bulk-data multicast 3-5$\times$ faster than \company's existing solution, as well as other industry-standard solutions (\Section\ref{subsec:evaluation:centralized}).
-\item \name eliminates interferences with latency-sensitive data using a clean bandwidth separation (\Section\ref{subsec:evaluation:separation}).
-\item \name is well scalable (being lightweight in terms of CPU, bandwidth consumed, \Section\ref{subsec:evaluation:benchmarks:scalability}), fault tolerant and adaptable to the changing network environments (\Section\ref{subsubsec:evaluation:adaptability}), and near-optimal to the theoretical results (\Section\ref{subsubsec:evaluation:depth}).
+\item \name completes inter-DC multicast 3-5$\times$ faster than \company's existing solution and solutions used in industry (\Section\ref{subsec:evaluation:centralized}).
+\item \name significantly reduces the incidents of interferences between bulk-data multicast trafic and latency-sensitive traffic (\Section\ref{subsec:evaluation:separation}).
+\item \name can scale to the traffic demand of a large online service provider, tolerate various failure scenarios, and is close to the theoretically optimal performance (\Section\ref{subsec:evaluation:benchmarks}).
 \end{packedenumerate}
 
 \begin{figure*}[t]
@@ -59,20 +59,25 @@ The evaluation results of the pilot deployment, together with trace-driven simul
 %\end{figure*}
 
 
-\subsection{Overall performance versus existing solutions}
+\subsection{Performance improvement over existing solutions}
 \label{subsec:evaluation:centralized}
 
-We compare \name against three baselines:
+We compare \name against three existing solutions:
 \company's existing solution (a decentralized strategy),
 Bullet~\cite{kostic2003bullet} (a centralized strategy), and
 Akamai's overlay network~\cite{Andreev2013Designing} for live video streaming
 multicast.
 
+
 \tightsubsubsection{Methodology}
+We start with the evaluation methodology.
 
-Pilot deployment. We choose several services with different daily bulk data sizes. In general, such bulk data is transferred using \company's existing solution (that has already run for more than 5 years), while we randomly choose several days using \name instead of the current solution. To make sure the two solutions work in the same environment, we conduct the following experiments at the same time of a day.
+\mypara{Pilot deployment} We choose several services with different daily bulk data sizes. In general, such bulk data is transferred using \company's existing solution (that has already run for more than 5 years), while we randomly choose several days using \name instead of the current solution. To make sure the two solutions work in the same environment, we conduct the following experiments at the same time of a day.
 
-Trace-driven simulation. For safety reasons, we cannot implement other solutions on \company's real network. Instead, we simulate the other two overlay multicast techniques by setting topology, DC scale and configuring servers the same as real network, and evaluate their performance with real data traces.
+\mypara{Trace-driven simulation} While the pilot deployment on real traffic is realistic, we also use trace-driven simulation to evaluate \name on a larger scale.
+%than the pilot deployment cannot implement other solutions on \company's real network. Instead, 
+We simulate the other two overlay multicast techniques by setting topology, DC scale and configuring servers with the same scale as \name's DCs, and replay inter-DC multicast data requests in the same chronological
+order as in the real trace.
 
 
 %To evaluate the benefits of centralized control, we conduct two series of experiments: the comparisons with \company's existing solution based on the pilot deployments, and the comparisons with other overlay multicast techniques using trace-driven simulations.
@@ -144,7 +149,7 @@ Akamai & $25m$ & $87m$ & $138m$\\
 %\end{itemize}
 %\end{itemize}
 
-\subsection{Benefits of bandwidth separation}
+\subsection{Benefits of coordinated bandwidth allocation}
 \label{subsec:evaluation:separation}
 \begin{figure}[t]
   \centering
@@ -234,7 +239,7 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
 %                \caption{The proportion of blocks downloaded from the original source.}
 %                \label{fig:analysis:overlay}
 %        \end{subfigure}
-        \tightcaption{[Algorithm adaptability] Measurements on (a) fault tolerance, (b) different block size, and (c) different cycle length.}
+        \tightcaption{\name's fault tolerance (a), and sensitivity to different block sizes (b), and different cycle lengths (c).}
         \label{fig:analysis}
 \vspace{-0.4cm}
 \end{figure*}
@@ -252,9 +257,9 @@ As \name implements strict bandwidth separation between latency-sensitive traffi
 
 This section focuses on some benchmarks of \name. (1). Scalability of the centralized control. As \name adopts centralized control, the running time and scalability of the controller are key indicators of algorithm efficiency. (2). Algorithm adaptability. \name runs together with online latency-sensitive traffic, so high fault tolerance and strong robustness are essential requirements especially in rapidly changing networks. (3). In-depth analysis. The near-optimality of \name and the effects of exploring overlay networks also need to be clarified.
 
-\tightsubsubsection{System scalability.}\label{subsec:evaluation:benchmarks:scalability}
+\tightsubsubsection{Scalability}\label{subsec:evaluation:benchmarks:scalability}
 
-\mypara{Controller Running Time} As the controller needs to assign specific transmissions for all blocks, the algorithm running time is naturally related to the number of blocks. We show the relationship of block number and algorithm running time in Figure \ref{fig:scale:cpu}, from which we can see that the controller running time is still lower than $300ms$ even when there are $3\times 10^5$ blocks. This is the instantaneous peak value of block number when the bulk data size is $10TB$, and the block merging scheme described in \Section\ref{subsec:system:centralized} will further reduce the block number and reduce the algorithm running time.
+\mypara{Controller running time} As the controller needs to assign specific transmissions for all blocks, the algorithm running time is naturally related to the number of blocks. We show the relationship of block number and algorithm running time in Figure \ref{fig:scale:cpu}, from which we can see that the controller running time is still lower than $300ms$ even when there are $3\times 10^5$ blocks. This is the instantaneous peak value of block number when the bulk data size is $10TB$, and the block merging scheme described in \Section\ref{subsec:system:centralized} will further reduce the block number and reduce the algorithm running time.
 
 \mypara{Network delay} \name works in inter-DC networks, so the network delay among DCs is a key factor in the algorithm updating process. We record the network delay of 5000 requests and present the CDF in Figure \ref{fig:scale:network}. We can see that 90\% of the network delay is below $50ms$ and the average value is about $25ms$, which is less than 1\% of the decision updating cycle (3 seconds).
 
@@ -285,13 +290,17 @@ This section focuses on some benchmarks of \name. (1). Scalability of the centra
 \vspace{-0.4cm}
 \end{figure*}
 
-\tightsubsubsection{Algorithm adaptability.}\label{subsubsec:evaluation:adaptability}
+%\tightsubsubsection{Algorithm adaptability.}\label{subsubsec:evaluation:adaptability}
+\tightsubsubsection{Fault tolerance}
 
-\mypara{Fault tolerance} \Section\ref{subsec:system:fault} introduces the working principles under failures. Here we design the following scenario to verify the fault tolerance of \name. We use the number of downloaded blocks per cycle as reference. During cycles 0 to 9, \name works as usual, and one agent fails in the 10th cycle. The controller fails in the 20th cycle and recovers in the 30th cycle. Figure \ref{fig:analysis:failure} shows the average number of downloaded blocks per cycle. We find that the failure of one agent affects the algorithm efficiency for only one cycle and the system recovers in the 11th cycle, and the influence is not even notable. When the controller is unavailable, \name falls back to a default decentralized overlay protocol, resulting in performance degradation. With the recovery of the controller, the performance recovers in the 36th cycle.
+%\mypara{Fault tolerance}
+\Section\ref{subsec:system:fault} introduces the working principles under failures. Here we design the following scenario to verify the fault tolerance of \name. We use the number of downloaded blocks per cycle as reference. During cycles 0 to 9, \name works as usual, and one agent fails in the 10th cycle. The controller fails in the 20th cycle and recovers in the 30th cycle. Figure \ref{fig:analysis:failure} shows the average number of downloaded blocks per cycle. We find that the failure of one agent affects the algorithm efficiency for only one cycle and the system recovers in the 11th cycle, and the influence is not even notable. When the controller is unavailable, \name falls back to a default decentralized overlay protocol, resulting in performance degradation. With the recovery of the controller, the performance recovers in the 36th cycle.
 
-\mypara{Different block sizes} In \name, the bulk data file is split into blocks and can be transferred on disjoint paths. But this introduces a tradeoff between scheduling efficiency and calculation overhead. We therefore conduct two series of experiments using different block sizes (2MB and 64MB). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2MB/block scenario is 1.5 to 2 times shorter than that in the 64MB/block scenario. This is because smaller block size results in less degradation on the theoretical optimum (see Appendix for the proof). However, this optimization introduces longer controller running time, as shown in Figure \ref{fig:scale:cpu}. Overall, block size decisions depend on: (1) requirements on the completion time, and (2) controller's operation overhead.
+\tightsubsubsection{Choosing the values of key parameters}
 
-\mypara{Different cycle lengths} Since any change in network environment may potentially alter the optimal overlay routing decisions, \name reacts to the changing network conditions by adjusting the routing scheme periodically. To testify the adjustment frequency, we set different cycle lengths from $0.5s$ to $95s$ to the same bulk data transfer, and Figure \ref{fig:analysis:cycleDiff} shows the completion time. Overall, smaller cycle lengths result in shorter completion time but the benefit is not so obvious when the cycle length is less than $3s$. This is because over-frequent adjustments introduce more overhead on: (1). the information collection from agents to the controller, (2). the execution of the centralized algorithm, and (3). the re-establishment of new TCP connection. Thus, considering adjustment granularity and the corresponding overhead, we finally choose $3s$ as the default cycle length.
+\mypara{Block size} In \name, the bulk data file is split into blocks and can be transferred on disjoint paths. But this introduces a tradeoff between scheduling efficiency and calculation overhead. We therefore conduct two series of experiments using different block sizes (2MB and 64MB). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2MB/block scenario is 1.5 to 2 times shorter than that in the 64MB/block scenario. This is because smaller block size results in less degradation on the theoretical optimum (see Appendix for the proof). However, this optimization introduces longer controller running time, as shown in Figure \ref{fig:scale:cpu}. Overall, block size decisions depend on: (1) requirements on the completion time, and (2) controller's operation overhead.
+
+\mypara{Update cycle lengths} Since any change in network environment may potentially alter the optimal overlay routing decisions, \name reacts to the changing network conditions by adjusting the routing scheme periodically. To testify the adjustment frequency, we set different cycle lengths from $0.5s$ to $95s$ to the same bulk data transfer, and Figure \ref{fig:analysis:cycleDiff} shows the completion time. Overall, smaller cycle lengths result in shorter completion time but the benefit is not so obvious when the cycle length is less than $3s$. This is because over-frequent adjustments introduce more overhead on: (1). the information collection from agents to the controller, (2). the execution of the centralized algorithm, and (3). the re-establishment of new TCP connection. Thus, considering adjustment granularity and the corresponding overhead, we finally choose $3s$ as the default cycle length.
 
 
 \tightsubsubsection{In-depth analysis.}\label{subsubsec:evaluation:depth}
