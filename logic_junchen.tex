@@ -87,7 +87,7 @@ Besides traffic demand, the input also includes network topology,
 server upload (and download) rate limit,
 link capacity. \jc{what're the notions of toplogy, bandwidth? aren't link capacity and rate limit the same?}
 
-\noindent(2) {\em Output.} A four tuple for each server: $\langle \overrightarrow{o_B}, s_{B}^*, p_{B}^*, f^*_{B,p_{B}^*} \rangle$, which denotes the block transmission sequence, the optimal source and overlay path for each block, and the optimal allocated bandwidth on this path, respectively. \jc{what the hell is B?!, and where's the server notation?}
+\noindent(2) {\em Output.} A four tuple for each server: $\langle \overrightarrow{o_B}, s_{B}^*, p_{B}^*, f^*_{B,p_{B}^*} \rangle$, which denotes the block transmission sequence, the optimal source, overlay path for each block, and the optimal allocated bandwidth on this path, respectively. \jc{what the hell is B?!, and where's the server notation?}
 
 \noindent(3) {\em Constraints.}
 The formulation is subject to constraints similar to those of multi-commodity flow problem~\cite{??}.
@@ -149,7 +149,7 @@ Since any change in network performance or arrival of
 new requests may alter the optimal overlay
 routing decisions,
 %The problem can be formulated precisely according to the above definitions only when the network is static and all the conditions stay unchanged during the whole transmission period. However, it is impractical to make such assumptions because bulk data transfer and constantly changing online traffic co-exists in the network and the design choice of \name is to make dynamic bandwidth separation. Therefore,
-\name needs to react to the changing network conditions by updating the solutions to the above formulation periodically, by default, every 3 seconds which is empirically sufficient to achieve near-optimal performance (\Section\ref{subsubsec:evaluation:depth}). Unfortunately, the origin formulation is intractable in practice, because the computational overhead grows grow exponentially with more potential sources, paths, and data blocks. 
+\name updates the solutions to the above formulation every cycle of 3 seconds, which is empirically sufficient to achieve near-optimal performance (\Section\ref{subsubsec:evaluation:depth}). Unfortunately, the origin formulation is intractable in practice, because the computational overhead grows exponentially with more potential sources, paths, and data blocks. 
 
 %To make it tractable, \name decouples the problem into two steps and tries to find the optimal solution for each step.
 
@@ -158,15 +158,15 @@ routing decisions,
 \subsection{Decoupling scheduling and routing}
 \label{subsec:logic:separation}
 
-The key insight of \name to update the overlay control problem tractable is
+At a high level, the key insight of \name to update the overlay control problem tractable is
 to decouple the aforementioned formulation into two steps: 
 a {\em scheduling} procedure which selects a subset of blocks to be transferred
 ($\overrightarrow{o_B}$), followed by a subsequent {\em routing} 
 procedure which determines the routing paths ($p_{B}^*$) and the allocated bandwidth ($f^*_{B,p_{B}^*}$) of these blocks.
 
-This decoupling significantly reduces the computational overhead of the centralized controller. As the scheduling stage selects a subset of blocks and only these selected blocks will be routed and transferred in the following routing stage, the searching spaces are thus significantly reduced for the subsequent routing procedure, speeding up the execution of the centralized algorithm.
+On one hand, this decoupling significantly reduces the computational overhead of the centralized controller. As the scheduling stage selects a subset of blocks and only these selected blocks will be routed and transferred in the following routing stage, the searching spaces are thus significantly reduced for the subsequent routing procedure, speeding up the execution of the centralized algorithm.
 
-Note that such decoupling is also near-optimal. In the origin formulation, the optimal solution is to decide the optimal block transmission order $\overrightarrow{o_B}$ for all servers, while such decoupling converts this optimal solution into an equivalent one, i.e., to decide the optimal order to transmit the selected blocks in each scheduling cycle (so as to enforce network dynamic updates). Thus, the decoupling introduces little degradation as long as \name finds the optimal solutions for both scheduling and routing procedures in each cycle.
+On the other hand, such decoupling is near-optimal. In the origin formulation, the optimal solution is to decide the optimal block transmission order $\overrightarrow{o_B}$ for all servers, while such decoupling converts this optimal solution into an equivalent one, i.e., to decide the optimal order to transmit the selected blocks in each scheduling cycle (so as to enforce network dynamic updates). Thus, the decoupling introduces little degradation as long as \name finds the optimal solutions for both scheduling and routing procedures in each cycle.
 
 %In the existing hybrid CDN and P2P architecture \cite{yin2009design} or centralized P2P scheme \cite{lee2003centralized}, there are also centralized servers with global information, but those servers are used for specific tasks (like system bootstrapping and maintaining global index) \cite{androutsellis2004survey}. While the centralized controller of \name faces more challenges in terms of real-time computing. The above mentioned decoupling could not only sense the changing network conditions, but also reduce the calculation scale of the centralized algorithm running on the controller.
 %uses the global information to decouple scheduling and routing without introducing degradation.\jc{put the last sentence after the benefits. also, i don't get the point of this sentence.}
@@ -189,15 +189,26 @@ Note that such decoupling is also near-optimal. In the origin formulation, the o
 
 %\jc{still unclear why this decoupling is efficient and near optimal}
 
+\jc{you had a table to describe all the math notations. why it's missing? it's important! im also confused what's difference between source and copy?}
+
 \subsection{Scheduling}
 \label{subsec:logic:scheduling}
 
-The scheduling step tries to reduce searching space by selecting a subset of blocks to be transferred first, i.e., outputing the transmission order $\overrightarrow{o_B}$ for all blocks.
+The scheduling step 
+%tries to reduce searching space by selecting 
+selects a subset of blocks to be transferred in each cycle and 
+outputs the transmission order $\overrightarrow{o_B}$ for all blocks.
+\jc{reducing what search space? and why we need to reduce it?}
 
-The key to avoid introducing degradation in this procedure is to make sure that the optimal result is still retained in the reduced searching space. In other words, the optimal result is not in the space that is pruned by scheduling procedure. We claim that the optimal scheduling result is yielded from the situation that all the blocks are balanced duplicated, thus the key concern is to balance the duplication of all blocks. So here \name prunes the searching space that will not result in balanced duplications and selects the least duplicated blocks to transmit first. In this way, the optimal result will be retained in the reduced searching space.
+The key to avoid introducing degradation in this procedure is to make sure that the optimal result is still retained in the reduced searching space. 
+%In other words, the optimal result is not in the space that is pruned by scheduling procedure. 
+We show that the a simple-yet-efficient way of achieving optimal scheduling result is to maintain same amount of copies of each data block. We will give a full proof of the above statement in Appendix~\ref{??}, but let us  intuitively explain it here.
+%thus the key concern is to balance the duplication of all blocks. So here \name prunes the searching space that will not result in balanced duplications and selects the least duplicated blocks to transmit first. 
+%In this way, the optimal result will be retained in the reduced searching space.
 %\jc{this is a key statement! please make it more precisely}
-
-To be specific, assume the origin bulk data in the source DC is split into $n$ blocks, and there are $2m$ DCs in the WAN. Different scheduling strategies output different block subsets and lead to different intermediate transmission states, finally resulting in different completion time. Take two intermediate states as examples: 1) All of the $n$ blocks have $k$ duplicates; 2) Some of these $n$ blocks have $k1$ $(k1<k)$ duplicates and other blocks have $k2$ $(k2>k)$ duplicates. Let $t_1$ denote the completion time of case 1 and $t_2$ denote that of case 2, we have: $t_2 > t_1$ (See Appendix for the proof). So in the data scheduling step, \name will firstly pick out the subset of blocks with the least downloaded duplicates, to balance the block duplications.
+%To be specific, 
+Assume the origin data in the source DC is split into $n$ blocks, and there are $2m$ DCs in the WAN. Different scheduling strategies output different block subsets and lead to different intermediate transmission states, finally resulting in different completion time. Take two intermediate states as examples: 1) All of the $n$ blocks have $k$ duplicates; 2) Some of these $n$ blocks have $k1$ $(k1<k)$ duplicates and other blocks have $k2$ $(k2>k)$ duplicates. Let $t_1$ denote the completion time of case 1 and $t_2$ denote that of case 2, we have: $t_2 > t_1$ (See Appendix for the proof). So in the data scheduling step, \name will firstly pick out the subset of blocks with the least downloaded duplicates, to balance the block duplications.
+\jc{wtf... this example says nothing. what's the intuition behind balancing duplicates? }
 
 %\jc{isn't it trivial to maintain the counters?}
 %For efficient selection, \name keeps a counter $c_i$ in the controller for each block and updates it once receiving finish notifications from receivers. The scheduling stage always gives priority to the smallest $c_i$. For efficient processing, \name keeps all the counters $c_i$ in a doubly linked list in an ascending order of their values. For each download, the controller selects the top item in the list (the smallest value) to be downloaded. The controller listens and serves an HTTP port, once receiving a transmission completion signal from receivers, it updates the corresponding block's counter value and adjusts its position in the linked list for further processing.
@@ -205,9 +216,20 @@ To be specific, assume the origin bulk data in the source DC is split into $n$ b
 \subsection{Routing}
 \label{subsec:logic:routing}
 
-In the overlay routing step, \name routes and transfers blocks according to $\overrightarrow{o_B}$, the output of data scheduling step, and then tries to make optimal routing strategy (assign $s_{B}^*$, $p_{B}^*$ and $f^*_{B,p_{B}^*}$) for each block $B$. Note that there are multiple potential data sources for each block in the multicast overlay network, so the objective of routing is to pick the most efficient data source and paths before allocating the bandwidths on these selected paths.
+Given the objects that the scheduling step selects to transfer
+($\overrightarrow{o_B}$), the routing step then decides for each data block $B$, the source $s_{B}^*$, the path $p_{B}^*$, and bandwidth allocation of the path $f^*_{B,p_{B}^*}$.
+%In the overlay routing step, \name routes and transfers blocks according to the output of data scheduling step ($\overrightarrow{o_B}$), and then tries to make optimal routing strategy (assign $s_{B}^*$, $p_{B}^*$ and $f^*_{B,p_{B}^*}$) for each block $B$. 
+%Note that there are multiple potential data sources for each block in the multicast overlay network, so the objective of routing is to pick the most efficient data source and paths before allocating the bandwidths on these selected paths.
 
-With the constraints described in \Section\ref{subsec:logic:formulation}, this formulation in Equation \ref{equation:objective} is an integer multi-commodity flow algorithm which is known to be NP-complete \cite{garg1997primal}, and there is no known algorithm to find an optimal solution. To make this problem solvable, we look into it from a different perspective. As the size of a task is dozens of TBs to PBs, while each block is just about several MBs, we can approximate tasks as they are infinitesimally split and can be transferred on a set of possible paths between the source DC and the destination DC. So it is possible to solve this problem by a linear programming (LP) relaxation which can be transformed to a maximum concurrent flow (MCF) problem \cite{garg2007faster,reed2012traffic}, and the relaxed problem aims at transferring at least a fraction $\alpha$ of each transmission. Such MCF problem provides a solution to the original NP-complete problem, although with fractional flows. Specifically, the optimal value $F^*$ in the MCF problem is equivalent to that of the original problem $f^*$ with a relationship given by $F^* / \alpha = f^*$. Thus, the original problem is converted to maximize $\alpha$ and can be solved within polynomial time.
+With the constraints described in \Section\ref{subsec:logic:formulation}, this formulation in Equation \ref{equation:objective} is an integer multi-commodity flow algorithm which is known to be NP-complete \cite{garg1997primal}, and there is no known algorithm to find an optimal solution. To make this problem tractable, 
+%we look into it from a different perspective. As the size of a task is 10s of TBs to PBs, while each block is just about several MBs, 
+we assume each data file can be infinitesimally split and can be transferred on a set of possible paths between the source DC and the destination DC. 
+This approximation closely resembles \name's routing step as \name also splits data into tens of thousands of fine-grained data blocks (though not infinitesimally), and it is possible to solve this problem efficiently by a linear programming (LP) relaxation commonly used in the maximum concurrent flow (MCF) problem~\cite{garg2007faster,reed2012traffic}. 
+The key idea of this relaxation is to transfer at least a fraction $\alpha$ of each transmission\jc{what's a transmission},
+%Such MCF problem provides a solution to the original NP-complete problem, although with fractional flows. 
+and the optimal value  \jc{what the hell is F?} of the relaxed problem $F^*=\alpha\dot f^*$, where $f^*$ is the optimal solution of the original routing problem.
+Therefore, finding the optimal solution to the original problem becomes simply maximing $\alpha$ instead, and this can be solved in polynomial time.
+%equivalent to that of the original problem $f^*$ with a relationship given by $F^* / \alpha = f^*$. Thus, the original problem is converted to maximize $\alpha$ and can be solved within polynomial time.
 
 However, when splitting tasks infinitesimally, the number of blocks will grow considerably large and the computing time will be intolerable. \name adopts two coping strategies: on one hand, it merges the blocks with the same source and destination pair into one subtask so as to reduce the calculation scale; on the other hand, it adopts the improved fully polynomial-time approximation schemes (FPTAS) (\cite{fleischer2000approximating}) to optimize the dual problem of the origin problem and works out an $\epsilon$-optimal solution (see Appendix II for the proof of near-optimality of \name).% with $\alpha' \geq \alpha_\epsilon \geq \alpha'(1-\epsilon)^{-3}$. This algorithm optimizes the dual problem of the relaxed LP problem by proceeding in phases and iterations
 %\jc{sorry, but i'm totally lost. what's the key idea? is it just a standard LP relaxation?}
