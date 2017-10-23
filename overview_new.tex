@@ -4,13 +4,13 @@
 To optimize inter-DC multicasts while minimizing
 interference with latency-sensitive traffic, we present {\em \name},
 a near-optimal inter-DC multicast overlay network.
-Unlike previous designs which always, to some extent, keep
-some local control capability at individual servers,
-\name {\em fully centralizes} the
-control of the multicast overlay network.
-Before presenting \name in more details,
-we first highlight the intuitions behind its design
-choice and the challenges to make it practical.
+%Unlike previous designs where individual servers always retain 
+%some local control capability,
+%\name {} {\em fully centralizes} the
+%control of the multicast overlay network.
+Before presenting \name in details,
+we first highlight the intuitions behind its 
+key design choice, and the challenge to make it practical.
 
 
 %\name is built on a couple of design choices, which
@@ -26,8 +26,31 @@ choice and the challenges to make it practical.
 
 %\subsection{Why a fully centralized design}
 
-\mypara{Conventional wisdom}
-Stemming from suboptimal local adaptation decisions made by individual servers in lack of global view and coordination, many prior approaches~\cite{Andreev2013Designing,Repantis2010Scaling,Huang2014A}, including \company's system suffer from the limitations highlighted in \Section\ref{subsec:motivation:baseline}. These limitations remain in hybrid control schemes (e.g.,~\cite{yin2009design,mukerjee2014enabling}) which combines real-time local adaptation with a centralized logic operating on coarser timescales. In other words, the conventional wisdom prefer local adaptation for desirable scalability and responsiveness, thus unavoidably resulting in performance suboptimality.
+\mypara{Centralized control}
+Conventional wisdom has been that wide-area overlay networks 
+should rely on local adaptation of individual 
+nodes to achieve desirable scalability
+and responsiveness to network dynamics (e.g.,~\cite{Andreev2013Designing,Repantis2010Scaling,Huang2014A}), 
+despite the suboptimal performance due to 
+a lack of global view and coordination. 
+Recent work (e.g.,~\cite{mukerjee2014enabling}), however,
+shows the feasibility of combining real-time 
+local adaptation with a centralized logic operating 
+on coarser timescales.
+In contrast, \name takes an explicit stance that 
+fully centralized control is practical,
+and shows that it can achieve near-optimal performance in
+the setting of inter-DC multicasts.
+%, near-optimal performance can be achieved through a fully centralized design. 
+As illustrated in Figure~\ref{fig:framework}, 
+\name uses a centralized controller that periodically pulls 
+information from all servers, updates the decisions regarding overlay
+routing, and pushes them to agents running locally on servers. 
+Note that when the controller fails or is unreachable, 
+\name will fallback to a decentralized scheme 
+to ensure graceful performance degradation.
+
+%Stemming from suboptimal local adaptation decisions made by individual servers in lack of global view and coordination, many prior approaches~\cite{Andreev2013Designing,Repantis2010Scaling,Huang2014A}, including \company's system suffer from the limitations highlighted in \Section\ref{subsec:motivation:baseline}. These limitations remain in hybrid control schemes (e.g.,~\cite{yin2009design,mukerjee2014enabling}) which combines real-time local adaptation with a centralized logic operating on coarser timescales. In other words, the conventional wisdom prefer local adaptation for desirable scalability and responsiveness, thus unavoidably resulting in performance suboptimality.
 
 \begin{figure}[t]
   \centering
@@ -37,39 +60,58 @@ Stemming from suboptimal local adaptation decisions made by individual servers i
 \vspace{-0.4cm}
 \end{figure}
 
-\mypara{Centralized design}
-However, we believe that in the setting of inter-DC multicasts, near-optimal performance can be achieved through a fully centralized design. As illustrated in Figure~\ref{fig:framework}, \name uses a centralized controller to update decisions. At a high level, \name controller periodically pulls information from all servers, updates the decisions, and pushes them to agents running locally on servers. Further, when the controller fails or is unreachable, \name will fallback to a decentralized overlay protocol to ensure graceful performance degradation.
+%\mypara{Centralized design}
 %Specifically, the controller schedules data transfers, make the path selection and bandwidth allocation for each transfer in each scheduling period.
 %\mypara{Design philosophy}
 
 Our centralized design is driven by four considerations:
 \begin{packedenumerate}
-\item {\em Large data size:}
-Size of inter-DC multicast traffic is much larger than that of online traffic (e.g., online partition aggregation), making inter-DC multicasts last even longer than network condition changes. Thus, being highly responsive to transient network dynamics is a necessary concern. In this context, the tradeoff between a centralized design and a decentralized one is that centralized control essentially trades real-time responsiveness to network dynamics for closer-to-optimal control decisions driven by a global view of data delivery. Here, \name tolerates a small delay (of a few seconds) to query a centralized controller.
 
 \item {\em Large decision space:}
 The sheer numbers of inter-DC overlay paths,
 which grow exponentially with more servers acting as overlay nodes,
-making it hard for individual servers to explore all possible overlay
-paths based only on its local measurements.
-Instead, there is a great room for improving overlay multicast
-performance by maintaining a global view of data delivery states at
-different servers in order to balance the availability across
-different data blocks. This turns out to be critical to achieving near-optimal performance (\Section\ref{sec:logic}).
+make it hard for servers to explore all possible overlay
+paths based only on local measurements.
+Instead, we could significantly improve overlay multicast
+performance by maintaining a global view of data delivery 
+statues of all servers and dynamically balance 
+the availability of
+various data blocks, which 
+is critical to achieving near-optimal performance 
+(\Section\ref{subsec:logic:scheduling}).
+
+\item {\em Large data size:}
+Inter-DC multicasts are large in volume, and 
+unlike latency-sensitive traffic
+(e.g., online partition aggregation) which lasts on timescales 
+of 10s-100s of milliseconds, 
+last on a much coarser timescale.
+Thus, being highly responsive to transient network dynamics is a necessary concern,
+%In this context, the tradeoff between a centralized design and a decentralized one is that centralized control essentially trades real-time responsiveness to network dynamics for closer-to-optimal control decisions driven by a global view of data delivery. Here, 
+and \name can tolerate a short delay (of a few seconds) and query a centralized controller 
+which could make closer-to-optimal decisions based on a global view of data delivery.
+
 \item {\em Strict traffic isolation:}
-As observed in \Section\ref{subsec:motivation:baseline}, it is vital that inter-DC
+As observed in \Section\ref{subsec:motivation:baseline}, 
+it is vital that inter-DC
 multicast avoids hotspots and excessive use of
-bandwidth, which could increase the latency of delay-sensitive traffic.
-While it is difficult to enforce a limit on outgoing traffic
-without any coordination across overlay servers, we found it is practical
+bandwidth that can increase the latency of delay-sensitive traffic,
+but it is difficult to prevent it
+without any coordination across overlay servers. 
+In contrast, it is practical
 to determine the bandwidth allocation and periodically update it
 to all servers in a centralized fashion (\Section\ref{sec:system}).
+
 \item {\em Simple engineering:}
-The centralized system should be conceptually less complex than a decentralized/hybrid design and amenable to a simple implementation, so the control logic running locally in each server can be only triggered on arrivals of new data units or control messages and thus can be stateless and lightweight.
+Conceptually, the centralized architecture moves the complexity to
+the centralized controller, so \name is amenable to a simple implementation,
+where the control logic running locally in each server can be stateless, 
+triggered only on arrivals of new data units or control messages.
 
 \end{packedenumerate}
 
-\mypara{Fast and near-optimal decision-making}
+%\mypara{Fast and near-optimal decision-making}
+\mypara{The key to realizing centralized control}
 In essence, \name trades updating decisions on coarse timescales
 for the potential of making optimal decisions in a centralized
 fashion.
