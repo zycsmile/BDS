@@ -75,7 +75,7 @@ We start with the evaluation methodology.
 \mypara{Pilot deployment} We choose several services with different daily bulk data sizes. In general, such bulk data is transferred using \company's existing solution (that has already run for more than 5 years), while we randomly choose several days using \name instead of the current solution. To make sure the two solutions work in the same environment, we conduct the following experiments at the same time of a day.
 
 \mypara{Trace-driven simulation} While the pilot deployment on real traffic is realistic, we also use trace-driven simulation to evaluate \name on a larger scale.
-%than the pilot deployment cannot implement other solutions on \company's real network. Instead, 
+%than the pilot deployment cannot implement other solutions on \company's real network. Instead,
 We simulate the other two overlay multicast techniques by setting topology, DC scale and configuring servers with the same scale as \name's DCs, and replay inter-DC multicast data requests in the same chronological
 order as in the real trace.
 
@@ -296,7 +296,7 @@ This section focuses on some benchmarks of \name. (1). Scalability of the centra
 %\mypara{Fault tolerance}
 \Section\ref{subsec:system:fault} introduces the working principles under failures. Here we design the following scenario to verify the fault tolerance of \name. We use the number of downloaded blocks per cycle as reference. During cycles 0 to 9, \name works as usual, and one agent fails in the 10th cycle. The controller fails in the 20th cycle and recovers in the 30th cycle. Figure \ref{fig:analysis:failure} shows the average number of downloaded blocks per cycle. We find that the failure of one agent affects the algorithm efficiency for only one cycle and the system recovers in the 11th cycle, and the influence is not even notable. When the controller is unavailable, \name falls back to a default decentralized overlay protocol, resulting in performance degradation. With the recovery of the controller, the performance recovers in the 36th cycle.
 
-\tightsubsubsection{Choosing the values of key parameters}
+\tightsubsubsection{Choosing the values of key parameters}\label{subsec:evaluation:benchmarks:parameters}
 
 \mypara{Block size} In \name, the bulk data file is split into blocks and can be transferred on disjoint paths. But this introduces a tradeoff between scheduling efficiency and calculation overhead. We therefore conduct two series of experiments using different block sizes (2MB and 64MB). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2MB/block scenario is 1.5 to 2 times shorter than that in the 64MB/block scenario. This is because smaller block size results in less degradation on the theoretical optimum (see Appendix for the proof). However, this optimization introduces longer controller running time, as shown in Figure \ref{fig:scale:cpu}. Overall, block size decisions depend on: (1) requirements on the completion time, and (2) controller's operation overhead.
 
