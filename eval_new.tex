@@ -134,7 +134,7 @@ Akamai & $25m$ & $87m$ & $138m$\\
 \end{tabular}
 }
 \end{center}
-\tightcaption{[\name vs. Bullet \cite{kostic2003bullet}, Akamai \cite{Andreev2013Designing}] Results from trace-driven simulations.}
+\tightcaption{[\name vs. Bullet \cite{kostic2003bullet}, Akamai \cite{Andreev2013Designing}] Completion time of the three solutions in  trace-driven simulations.}
 %\caption{Average completion time of Bullet \cite{kostic2003bullet}, Akamai \cite{Andreev2013Designing} and \name.}
 \label{table:versusAkamai}
 \vspace{-0.4cm}
@@ -163,12 +163,12 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
 
 \begin{table}[t]
 \begin{center}
-\resizebox{.5\textwidth}{!}{%
+\resizebox{3in}{!}{%
 %\begin{tabular}{p{2cm}<{\centering}|p{2cm}<{\centering}}
 \begin{tabular}{| c | c | c | c | c |}
 \hline
  \rowcolor[gray]{0.9}
-\textbf{System} & \textbf{Link from the source DC} & \textbf{$l_1$} & \textbf{$l_2$} & \textbf{$l_3$}\\
+\textbf{System} & \textbf{Source DC egress link} & \textbf{$l_1$} & \textbf{$l_2$} & \textbf{$l_3$}\\
 \hline \hline
 \company & 69.82\% & 53.09\% & 57.98\% & 63.01\% \\
 \hline
@@ -177,7 +177,7 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
 \end{tabular}
 }
 \end{center}
-\tightcaption{Average link utilizations under \company and \name.}
+\tightcaption{Average link utilizations of the source DC egress link and 3 inter-DC links ($l_1$, $l_2$ and $l_3$) under \company and \name.}
 \label{table:usage}
 \vspace{-0.4cm}
 \end{table}
@@ -186,7 +186,7 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
         \centering
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
-                \includegraphics[width=50mm]{images/CPUvsBlk.eps}%CDFofComputationDelay -> Calculation.m
+                \includegraphics[width=50mm]{images/CPUvsBlk_v2.eps}% cpu.m
                 \caption{The controller running time.}
                 \label{fig:scale:cpu}
         \end{subfigure}
@@ -217,7 +217,7 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
         \end{subfigure}
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
-                \includegraphics[width=50mm]{images/blkSize.eps} % cpu.m
+                \includegraphics[width=50mm]{images/blkSize.eps} % 
                 \caption{Completion time under different block sizes.}
                 \label{fig:analysis:blksize}
         \end{subfigure}
@@ -269,7 +269,7 @@ This section focuses on some benchmarks of \name. (1). Scalability of the centra
         \centering
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
-                \includegraphics[width=50mm]{images/BDSvsLP.eps} % BDSvsLP.m
+                \includegraphics[width=50mm]{images/BDSvsLP_v2.eps} % BDSvsLP.m
                 \caption{The reduction on algorithm running time of \name over standard LP.}
                 \label{fig:further:BDSvsLP}
         \end{subfigure}
