@@ -54,11 +54,11 @@ This has two advantages: (1) it significantly reduces the number of pending bloc
 \subsection{Dynamic bandwidth separation}
 \label{subsec:system:separation}
 
-\jc{please mention 80\% utilization upper bound and why the conservative use of bandwidth can protect transient online flows}
+%\jc{please mention 80\% utilization upper bound and why the conservative use of bandwidth can protect transient online flows}
 
 To guarantee dynamic bandwidth separation between bulk data and delay-sensitive user data, \name monitors all the latency-sensitive traffic classified by source IPs and aggregates traffic of all the inter-/intra-DC links in real time.
 
-With the known link capacity and the aggregated size of latency-sensitive traffic, the residual bandwidth for background data can then be calculated by the difference. So the upper bound of the available bandwidth for bulk-data transfer can then be confirmed. In the server end, each agent enforces the bandwidth limits by Linux Traffic Control (\texttt{tc}). Thus, \name achieves the bandwidth separation dynamically and in real-time.
+With the known link capacity and the aggregated size of latency-sensitive traffic, the residual bandwidth for background data can then be calculated by the difference. To protect online flows under transient traffic bursty, we reserve 20\% link capacity for them, i.e., the upper bound of the available bandwidth for bulk-data transfer is set to the difference of 80\% link capacity and the aggregated size of latency-sensitive traffic. So that the reserved 20\% link capacity can absorb the traffic jitters, mask the network degradation and ensure the online-server performance. In the server end, each agent enforces the bandwidth limits by Linux Traffic Control (\texttt{tc}). Thus, \name achieves the bandwidth separation dynamically and in real-time.
 
 Such dynamic bandwidth separation scheme is different from the traditional priority-based techniques (such as \cite{kumar2015bwe}), which sets higher priority to online latency-sensitive traffic than background traffic. When traffic bursts, such priority-based techniques work as usual and allocate bandwidth according to traffic priorities, no matter whether the online traffic is suffering from high latency. As such situation can be avoided in \name, which dynamically monitors the aggregated bandwidth occupied by delay-sensitive applications and reserves enough bandwidth for them, \name guarantees the performance of latency-sensitive applications by leveraging dynamic bandwidth separation.
 
