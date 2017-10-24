@@ -4,13 +4,13 @@
 To optimize inter-DC multicasts while minimizing
 interference with latency-sensitive traffic, we present {\em \name},
 a near-optimal inter-DC multicast overlay network.
-%Unlike previous designs where individual servers always retain 
+%Unlike previous designs where individual servers always retain
 %some local control capability,
 %\name {} {\em fully centralizes} the
 %control of the multicast overlay network.
 Before presenting \name in details,
-we first highlight the intuitions behind its 
-key design choice, and the challenge to make it practical.
+we first highlight the intuitions behind its
+key design choice, and the challenges to make it practical.
 
 
 %\name is built on a couple of design choices, which
@@ -27,27 +27,27 @@ key design choice, and the challenge to make it practical.
 %\subsection{Why a fully centralized design}
 
 \mypara{Centralized control}
-Conventional wisdom has been that wide-area overlay networks 
-should rely on local adaptation of individual 
+Conventional wisdom on wide-area overlay networks
+always rely on local adaptation of individual
 nodes to achieve desirable scalability
-and responsiveness to network dynamics (e.g.,~\cite{Andreev2013Designing,Repantis2010Scaling,Huang2014A}), 
-despite the suboptimal performance due to 
-a lack of global view and coordination. 
+and responsiveness to network dynamics (e.g.,~\cite{Andreev2013Designing,Repantis2010Scaling,Huang2014A}),
+despising the suboptimal performance due to
+the lack of global view and coordination.
 Recent work (e.g.,~\cite{mukerjee2014enabling}), however,
-shows the feasibility of combining real-time 
-local adaptation with a centralized logic operating 
+shows the feasibility of combining real-time
+local adaptation with a centralized logic operating
 on coarser timescales.
-In contrast, \name takes an explicit stance that 
+In contrast, \name takes an explicit stance that
 fully centralized control is practical,
 and shows that it can achieve near-optimal performance in
 the setting of inter-DC multicasts.
-%, near-optimal performance can be achieved through a fully centralized design. 
-As illustrated in Figure~\ref{fig:framework}, 
-\name uses a centralized controller that periodically pulls 
+%, near-optimal performance can be achieved through a fully centralized design.
+As illustrated in Figure~\ref{fig:framework},
+\name uses a centralized controller that periodically pulls
 information from all servers, updates the decisions regarding overlay
-routing, and pushes them to agents running locally on servers. 
-Note that when the controller fails or is unreachable, 
-\name will fallback to a decentralized scheme 
+routing, and pushes them to agents running locally on servers.
+Note that when the controller fails or is unreachable,
+\name will fall back to a decentralized scheme
 to ensure graceful performance degradation.
 
 %Stemming from suboptimal local adaptation decisions made by individual servers in lack of global view and coordination, many prior approaches~\cite{Andreev2013Designing,Repantis2010Scaling,Huang2014A}, including \company's system suffer from the limitations highlighted in \Section\ref{subsec:motivation:baseline}. These limitations remain in hybrid control schemes (e.g.,~\cite{yin2009design,mukerjee2014enabling}) which combines real-time local adaptation with a centralized logic operating on coarser timescales. In other words, the conventional wisdom prefer local adaptation for desirable scalability and responsiveness, thus unavoidably resulting in performance suboptimality.
@@ -74,39 +74,37 @@ which grow exponentially with more servers acting as overlay nodes,
 make it hard for servers to explore all possible overlay
 paths based only on local measurements.
 Instead, we could significantly improve overlay multicast
-performance by maintaining a global view of data delivery 
-statues of all servers and dynamically balance 
+performance by maintaining a global view of data delivery
+status of all servers and dynamically balance
 the availability of
-various data blocks, which 
-is critical to achieving near-optimal performance 
+various data blocks, which
+is critical to achieving near-optimal performance
 (\Section\ref{subsec:logic:scheduling}).
 
 \item {\em Large data size:}
-Inter-DC multicasts are large in volume, and 
-unlike latency-sensitive traffic
-(e.g., online partition aggregation) which lasts on timescales 
-of 10s-100s of milliseconds, 
+Unlike latency-sensitive traffic
+(e.g., online partition and aggregation) which lasts on timescales
+of 10s to 100s of milliseconds, inter-DC multicasts are large in volume and
 last on a much coarser timescale.
-Thus, being highly responsive to transient network dynamics is a necessary concern,
-%In this context, the tradeoff between a centralized design and a decentralized one is that centralized control essentially trades real-time responsiveness to network dynamics for closer-to-optimal control decisions driven by a global view of data delivery. Here, 
-and \name can tolerate a short delay (of a few seconds) and query a centralized controller 
+Thus, being highly responsive to transient network dynamics is a necessary concern. 
+%In this context, the tradeoff between a centralized design and a decentralized one is that centralized control essentially trades real-time responsiveness to network dynamics for closer-to-optimal control decisions driven by a global view of data delivery. Here,
+\name tolerates a short delay (of a few seconds) to query a centralized controller
 which could make closer-to-optimal decisions based on a global view of data delivery.
 
 \item {\em Strict traffic isolation:}
-As observed in \Section\ref{subsec:motivation:baseline}, 
+As observed in \Section\ref{subsec:motivation:baseline},
 it is vital that inter-DC
-multicast avoids hotspots and excessive use of
-bandwidth that can increase the latency of delay-sensitive traffic,
-but it is difficult to prevent it
-without any coordination across overlay servers. 
+multicasts avoid hotspots and excessive bandwidth usage that can increase the latency of delay-sensitive traffic,
+but it is difficult to prevent such situations
+without any coordinations across overlay servers.
 In contrast, it is practical
 to determine the bandwidth allocation and periodically update it
 to all servers in a centralized fashion (\Section\ref{sec:system}).
 
 \item {\em Simple engineering:}
 Conceptually, the centralized architecture moves the complexity to
-the centralized controller, so \name is amenable to a simple implementation,
-where the control logic running locally in each server can be stateless, 
+the centralized controller, making \name amenable to a simple implementation,
+where the control logic running locally in each server can be stateless and
 triggered only on arrivals of new data units or control messages.
 
 \end{packedenumerate}
@@ -122,10 +120,10 @@ algorithm that can be updated on near-realtime timescales.
 At a first glance, this is indeed intractable:
 the centralized overlay routing algorithm must pick the next hops
 from $10^4$s of servers for $10^5$s of blocks, a scale that could
-grow exponentially as we consider all possible
+grow exponentially when we consider all possible
 overlay paths that go through these servers and more fine-grained block partitions.
 %It is unclear how this problem can be solved even with limited approximation, which was partly why \company has been lukewarm about a centralized control architecture, despite its potential benefits.
-The next section  will present how \name addresses this challenge.
+The next section will present how \name addresses this challenge.
 
 %The key technical challenge here is how to make optimal overlay scheduling and routing decisions at the scale tens of thousands of objects and tens of thousands of servers in near real time. To achieve desirable performance in a multicast overlay network, fully exploiting all the available overlay paths is essential, but it is untenable to go through all the potential servers and exponentially more paths by traditional approaches.
 
