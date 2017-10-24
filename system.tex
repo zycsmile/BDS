@@ -9,16 +9,16 @@ This section presents the detailed system design of \name.% to realize the two d
 \begin{figure}[t]
   \centering
   \includegraphics[width=3in]{images/implementation_v2.eps}
-  \tightcaption{The system design of \name. \jc{where are servers? avoid notions never defined before like "task announcement"}}
+  \tightcaption{The system design of \name.}% \jc{where are servers? avoid notions never defined before like "task announcement"}
   \label{fig:implementation}
 \vspace{-0.4cm}
 \end{figure}
 %\vspace{-15pt}
 
 \name takes advantages of the underlying multicast system and the detailed architecture is shown in Figure \ref{fig:implementation}. It consists of four components: Controller, Agent Monitor, Agent, and Network Monitor.
-(1) \emph{Controller} runs the centralized scheduling and routing algorithm described in \Section\ref{sec:logic}. 
-(2) \emph{Agent Monitor} is a messaging layer between \emph{Controller} and \emph{Agents}. 
-(3) \emph{Agent} is a module running on each server, announces the data download requirements to the agent monitor, and mains the list of data blocks stored locally. 
+(1) \emph{Controller} runs the centralized scheduling and routing algorithm described in \Section\ref{sec:logic}.
+(2) \emph{Agent Monitor} is a messaging layer between \emph{Controller} and \emph{Agents}.
+(3) \emph{Agent} is a module running on each server, report local status to the agent monitor, and handles the specific data transfers according to the control messages.
 (4) \emph{Network Monitor} monitors the bandwidth used by latency-sensitive traffic and link utilization.
 
 \subsection{Centralized control}
@@ -29,9 +29,9 @@ The centralized controller of \name sets a 3-second scheduling cycle and updates
 
 There are two optimizations in our implementation.
 \begin{itemize}
-\item \emph{Blocks merging}. 
-To reduce the computational scale and achieve higher-efficient transmissions, \name merges the blocks with the same source and destination pair into one subtask. 
-This has two advantages: (1) it significantly reduces the number of pending blocks in each scheduling cycle, making calculation on the centralized control algorithm computationally more manageable. 
+\item \emph{Blocks merging}.
+To reduce the computational scale and achieve higher-efficient transmissions, \name merges the blocks with the same source and destination pair into one subtask.
+This has two advantages: (1) it significantly reduces the number of pending blocks in each scheduling cycle, making calculation on the centralized control algorithm computationally more manageable.
 (2) it avoids establishing multiple TCP connections between two servers which could cause performance instability and  performance degradation.
 %There are two advantages: reducing the computation scale and achieving higher-efficient transmissions. To be specific: 1) there will be a large number of pending blocks in each scheduling cycle, making calculation on the controller computationally hard to finish within an acceptable time, while block merging can significantly reduce the block number and thus reduce the calculation scale; 2) concurrent transmission will make all blocks establish connections at the same time, sharing the limited bandwidth and thus cannot possibly be finished in one cycle. This will result in connection hanging and inefficient transmissions.
 \item \emph{Non-blocking update}. While \name centralized algorithm runs several orders of magnitudes faster than traditional technique, it still takes non-negligible amount of time to recalculate the scheduling and routing solutions. To avoid being blocked by the controller decision-making, \name continues the transmissions according to the configurations in the last cycle while waiting for the new configurations. To ensure consistency, the controller will estimate the task status at algorithm ending time and use that predicted future status as inputs of the scheduling algorithm.
@@ -74,7 +74,7 @@ To make \name fault tolerant, the following scenarios are considered.% and the c
 \item \emph{Controller failure:} The controller is replicated for fault tolerance. If the master controller fails, another replica will be elected as the new controller ~\cite{lamport1998part}. If the network partition happens between DCs and the controller, the Agents running in servers will fall back to a default decentralized overlay protocol to ensure graceful performance degradation.
 \item \emph{Server failure:} If the agent on this server is still able to work, it will report the abnormal state to the agent monitor. Otherwise, those servers that selected this server as data source would report the unavailability to the agent monitor. In both cases, the controller would remove that server from the potential data sources in the next scheduling cycle.
 %\item \emph{What if there is network partition between DCs or between DCs and the controller?} If network partition happens between DCs and the controller, the whole network will fall back to a default decentralized overlay protocol to ensure graceful performance degradation. If network partition happens between DCs, the DCs located in the same partition with the controller will work the same as before, while the separated DCs will fall back to the decentralized overlay network.
-\item \emph{Network partition between DCs:} 
+\item \emph{Network partition between DCs:}
 If network partition happens between DCs, the DCs located in the same partition with the controller will work the same as before, while the separated DCs will fall back to the decentralized overlay network.
 \end{packedenumerate}
 %
