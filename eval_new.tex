@@ -211,13 +211,13 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
         \centering
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
-                \includegraphics[width=50mm]{images/failure.eps}%fail.m
+                \includegraphics[width=50mm]{images/failure_v2.eps}%fail.m
                 \caption{Average number of downloaded blocks per cycle under failures.}
                 \label{fig:analysis:failure}
         \end{subfigure}
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
-                \includegraphics[width=50mm]{images/blkSize.eps} % 
+                \includegraphics[width=50mm]{images/blkSize.eps} %
                 \caption{Completion time under different block sizes.}
                 \label{fig:analysis:blksize}
         \end{subfigure}
@@ -294,7 +294,7 @@ This section focuses on some benchmarks of \name. (1). Scalability of the centra
 \tightsubsubsection{Fault tolerance}
 
 %\mypara{Fault tolerance}
-\Section\ref{subsec:system:fault} introduces the working principles under failures. Here we design the following scenario to verify the fault tolerance of \name. We use the number of downloaded blocks per cycle as reference. During cycles 0 to 9, \name works as usual, and one agent fails in the 10th cycle. The controller fails in the 20th cycle and recovers in the 30th cycle. Figure \ref{fig:analysis:failure} shows the average number of downloaded blocks per cycle. We find that the failure of one agent affects the algorithm efficiency for only one cycle and the system recovers in the 11th cycle, and the influence is not even notable. When the controller is unavailable, \name falls back to a default decentralized overlay protocol, resulting in performance degradation. With the recovery of the controller, the performance recovers in the 36th cycle.
+\Section\ref{subsec:system:fault} introduces the working principles under failures. Here we design the following scenario to verify the fault tolerance of \name. We use the number of downloaded blocks per cycle as reference. During cycles 0 to 9, \name works as usual, and one agent fails in the 10th cycle. The controller fails in the 20th cycle and recovers in the 30th cycle. Figure \ref{fig:analysis:failure} shows the average number of downloaded blocks per cycle. We find that the failure of one agent affects the algorithm efficiency for only one cycle and the system recovers in the 11th cycle, and the influence is not even notable. When the controller is unavailable, \name falls back to a default decentralized overlay protocol, resulting in graceful performance degradation. With the recovery of the controller, the performance recovers in the 30th cycle.
 
 \tightsubsubsection{Choosing the values of key parameters}\label{subsec:evaluation:benchmarks:parameters}
 
