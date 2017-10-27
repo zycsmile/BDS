@@ -1,20 +1,11 @@
 \section{Evaluation}
 \label{sec:evaluation}
-
-To evaluate \name, we integrated our end-to-end prototype in \company, and ran a pilot deployment across the above network.
-Using a combination of pilot deployment, trace-driven simulations, and microbenchmarks, we show that:
-\begin{packedenumerate}
-\item \name completes inter-DC multicast 3-5$\times$ faster than \company's existing solution and solutions used in industry (\Section\ref{subsec:evaluation:centralized}).
-\item \name significantly reduces the incidents of interferences between bulk-data multicast trafic and latency-sensitive traffic (\Section\ref{subsec:evaluation:separation}).
-\item \name can scale to the traffic demand of a large online service provider, tolerate various failure scenarios, and is close to the theoretically optimal performance (\Section\ref{subsec:evaluation:benchmarks}).
-\end{packedenumerate}
-
 \begin{figure*}[t]
         \centering
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{images/BDSvsAnon_overall.eps}
-                \caption{The completion time.}
+                \caption{Distribution of completion time.}
                 \label{fig:BDSvsAnon:overall}
         \end{subfigure}
         \begin{subfigure}[b]{0.3\textwidth}%@X:\6 PieBridge\simulation\beijing\3 Applications\plot
@@ -33,6 +24,15 @@ Using a combination of pilot deployment, trace-driven simulations, and microbenc
         \label{fig:BDSvsAnon}
 \vspace{-0.4cm}
 \end{figure*}
+
+To evaluate \name, we integrated our end-to-end prototype in \company, and ran a pilot deployment across the above network.
+Using a combination of pilot deployment, trace-driven simulations, and microbenchmarks, we show that:
+\begin{packedenumerate}
+\item \name completes inter-DC multicast 3-5$\times$ faster than \company's existing solution and solutions used in industry (\Section\ref{subsec:evaluation:centralized}).
+\item \name significantly reduces the incidents of interferences between bulk-data multicast trafic and latency-sensitive traffic (\Section\ref{subsec:evaluation:separation}).
+\item \name can scale to the traffic demand of a large online service provider, tolerate various failure scenarios, and is close to the theoretically optimal performance (\Section\ref{subsec:evaluation:benchmarks}).
+\end{packedenumerate}
+
 %\begin{figure*}[t] %@X:\6 PieBridge\simulation\DrawFig
 %        \centering
 %        \begin{subfigure}[b]{0.3\textwidth}
@@ -104,9 +104,9 @@ To prove that this is not a special case, we repeat the experiments during 7 day
 
 %As we cannot implement other experimental systems in our real online network just as comparisons, we conduct a series of simulations using trace-driven simulations in this section, and compare \name's performance versus Bullet \cite{kostic2003bullet} and a CDN-based solution \cite{Andreev2013Designing} adopted by Akamai.
 
-In the trace-driven simulations, we use a topology with 13 DCs (one of which acts as the source DC) and set all the parameters the same as the real network, including data file size, data source and destination, paths, link capacities and server upload/download rates.
+In the trace-driven simulations, we use a topology with 13 DCs (one of which acts as the source DC) and set all the parameters the same as the real network, including data file size, data source and destination, paths, link capacities and server upload/download rates. As to the comparison systems, we choose two commercial-off-the-shelf systems. Bullet \cite{kostic2003bullet} is a data dissemination system using an overlay mesh and Akamai's video streaming system \cite{Andreev2013Designing} in overlay multicast networks.
 
-Bullet \cite{kostic2003bullet} is a distributed algorithm that works on an overlay mesh network, which enables geo-distributed nodes to self-organize into a overlay mesh. Specifically, each node uses RanSub \cite{Rodriguez2003Using} to distribute summary ticket information to other nodes and receive disjoint data from its sending peers. The main difference between \name and Bullet lies in the control scheme, i.e., \name is a centralized method that has a global view of data delivery states, while Bullet is a decentralized scheme and each node makes decision locally.
+As a distributed algorithm working on an overlay mesh network, Bullet \cite{kostic2003bullet} enables geo-distributed nodes to self-organize into a overlay mesh. Specifically, each node uses RanSub \cite{Rodriguez2003Using} to distribute summary ticket information to other nodes and receive disjoint data from its sending peers. The main difference between \name and Bullet lies in the control scheme, i.e., \name is a centralized method that has a global view of data delivery states, while Bullet is a decentralized scheme and each node makes decision locally.
 
 Akamai designs a 3-layer overlay network for delivering live streams \cite{Andreev2013Designing}, where a source forwards its streams to reflectors, and reflectors send outgoing streams to stage sinks. There are two main differences between Akamai and \name: (1) Akamai adopts a 3-layer topology where edge servers receive data from their parent reflectors, while \name explores bigger searching space without layer limitation. (2) The receiving sequence of data must be sequential in Akamai because it serves for the live streaming application. But there is no such requirements in \name, and the side effect is that \name has to calculate the optimal order $\overrightarrow{o_B}$ as additional work.
 
@@ -134,7 +134,7 @@ Akamai & $25m$ & $87m$ & $138m$\\
 \end{tabular}
 }
 \end{center}
-\tightcaption{[\name vs. Bullet \cite{kostic2003bullet}, Akamai \cite{Andreev2013Designing}] Completion time of the three solutions in  trace-driven simulations.}
+\tightcaption{[\name vs. Bullet \cite{kostic2003bullet}, Akamai \cite{Andreev2013Designing}] Completion time of the three solutions in  trace-driven simulation.}
 %\caption{Average completion time of Bullet \cite{kostic2003bullet}, Akamai \cite{Andreev2013Designing} and \name.}
 \label{table:versusAkamai}
 \vspace{-0.4cm}
