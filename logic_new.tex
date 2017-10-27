@@ -233,7 +233,7 @@ On the other hand, such decoupling is near-optimal. In the origin formulation, t
 The scheduling step
 %tries to reduce searching space by selecting
 selects the subset of blocks to be transferred in each cycle and
-outputs the transmission order $\overrightarrow{o_\mathbb{B}}$. As analyzed before, the centralized overlay routing algorithm should pick the data source from $10^4$s of servers for $10^5$s of blocks, and this scale could even grow exponentially when we consider more fine-grained block partitions. Such computational complexity makes it intractable for the controller to explore all the possible paths to make optimal decisions on near-realtime timescales. Therefore, the scheduling step aims at reducing the sheer numbers of potential overlay paths, and thus reduces the searching space of the centralized algorithm.
+outputs the transmission order $\overrightarrow{o_\mathbb{B}}$. As analyzed before, the centralized overlay routing algorithm should pick the data source from $10^4$s of servers for $10^5$s of blocks, and this scale even grows exponentially when we consider more fine-grained block partitions. Such computational complexity makes it intractable for the controller to explore all the possible paths to make optimal decisions on near-realtime timescales. So the scheduling step aims at reducing the sheer numbers of potential overlay paths and reducing the searching space of the centralized algorithm.
 %\jc{reducing what search space? and why we need to reduce it?}
 
 The key to avoid introducing degradation in this process is to make sure that the optimal result is still retained in the reduced searching space.

@@ -12,15 +12,24 @@
 
 We have deployed \name on \company's DCs, which consist of 67 geo-distributed servers in 10 DCs. Evaluations in the next section are based on this deployment. %The topology is shown as Fig. \ref{fig:topology}.
 
-\name is implemented with 3621 lines of golang code \cite{golang}, and it can be fully integrated in \company's DCs. The three duplications of the controller are implemented on three different geo-located servers. 
+\name is implemented with 3621 lines of golang code \cite{golang}, and it can be fully integrated in \company's DCs. The three duplications of the controller are implemented on three different geo-located servers.
 The data plane (bulk data transmissions) between controller and agents adopts TCP, and the control plane (decision messages) adopts HTTP. For specific transmissions, \name uses \texttt{wget} to make data transfer and sets particular \texttt{--limit-rate} to enforce bandwidth.
-\jc{add linux tc stuff here}
+Because \name updates routing decision every few seconds,
+we reserve 20\% of link capacity to protect online flows
+under transient traffic bursts,
+%To protect online flows under transient traffic bursty,
+%we reserve 20\% link capacity
+i.e., the upper bound of the available bandwidth for bulk-data
+transfers is set to the difference between 80\% of
+link capacity and the aggregated bandwidth usage of
+latency-sensitive traffic.
+%\jc{add linux tc stuff here}
 
-\jc{explain the application-facing api}
+%\jc{explain the application-facing api}
 
  %\jc{which option?}
 
-This implementation makes no specific requirements on applications, and any application prepares to distribute bulk data just needs to follow three steps: first, register on \name, initiate the basic information about source DC, destination DCs, all end servers and the bulk data; second, install agents on the involved end servers; third, assign the start time of bulk data transmission. Then \name will start the data distribution at the specified time. Such simple implementation also makes \name applicable to other companies' DCs. 	
+The application-facing API is also very simple because \name's implementation makes no specific requirements on applications. Any application prepares to distribute bulk data just call the public functions provided by \name and follow three steps: first, register on \name, initiate the basic information about source DC, destination DCs, all end servers and the bulk data; second, install agents on the involved end servers; third, assign the start time of bulk data transmission. Then \name will start the data distribution at the specified time. Such simple implementation also makes \name applicable to other companies' DCs. 	
 
 %\jc{this is oversimplistic. did you make any assumption about the agent? what if a hadoop application wants to use your stuff?}
 
