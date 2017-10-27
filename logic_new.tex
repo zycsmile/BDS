@@ -82,6 +82,8 @@ can be solved efficiently and near-optimally with proved guarantees
 \hline
 \textit{$s_{B_{i,j}}$} & Data source of $B_{i,j}$\\
 \hline
+\textit{$p_{\lambda}$} & One particular path in $Path(s,d)$\\
+\hline
 \textit{$f_{B_{i,j},p_\lambda}$} & Transmission rate of $B_{i,j}$ on path $p_\lambda$\\
 \hline
 \textit{$I_{B_{i,j},p_\lambda}$} & 0 or 1: whether $p_\lambda$ is selected for $B_{i,j}$\\
@@ -92,7 +94,7 @@ can be solved efficiently and near-optimally with proved guarantees
 }
 \end{center}
 \vspace{-0.4cm}
-\tightcaption{Notations in \name.}
+\tightcaption{Notations used in \name's design-making logic.}
 \label{table:para}
 \end{table}
 
@@ -112,7 +114,7 @@ by a source DC, a set of destination DCs, and a data file chopped into
 a list of fixed-sized data
 {\em blocks}\footnote{Splitting data into fine-grained blocks enables
 parallel transfer along
-multiple overlay paths to increase throughput, though too small data blocks
+multiple overlay paths to increase throughput. Too small data blocks
 increases computational overhead of the routing algorithm.
 In practice, we found 2MB is a good tradeoff
 (\Section\ref{subsec:evaluation:benchmarks:parameters})}.
@@ -124,12 +126,12 @@ server upload (and download) rate limit $R_{up}(n)/R_{down}(n)$. %\jc{what're th
 \noindent(2) {\em Output.} A four tuple for each server: $\langle \overrightarrow{o_\mathbb{B}}, s_{\mathbb{B}}^*, p_{\lambda}^*, f^*_{\mathbb{B},p_{\lambda}^*} \rangle$, which denotes the block transmission sequence, the optimal source, overlay path for each block, and the optimal allocated bandwidth on this path, respectively. %\jc{what the hell is B?!, and where's the server notation?}
 
 \noindent(3) {\em Constraints.}
-The formulation is subject to constraints similar to those of maximum concurrent flow (MCF) problem~\cite{garg2007faster,reed2012traffic}.%\jc{you can tighten the space between equations and texts, if you need space}
+The formulation is subject to constraints similar to those of maximum concurrent flow (MCF) problem~\cite{garg2007faster}.%\jc{you can tighten the space between equations and texts, if you need space}
 %There are four constraints on link capacity, data size, bandwidth allocation and path selection:
 
 %The mentioned three constraints can then be formulated as follows:
 \begin{packeditemize}
-\item Link capacity. The summed allocated bandwidth on this path should be no more than its capacity $c(p_\lambda)$, where $f_{B_{i,j},p_\lambda}$ is the allocated bandwidth for $B_{i,j}$ on path $p_\lambda$ and $I_{B_{i,j},p_\lambda}$ denotes whether $p_\lambda$ is selected for $B_{i,j}$.
+\item The summed allocated bandwidth on this path should be no more than its capacity $c(p_\lambda)$, where $f_{B_{i,j},p_\lambda}$ is the allocated bandwidth for $B_{i,j}$ on path $p_\lambda$ and $I_{B_{i,j},p_\lambda}$ denotes whether $p_\lambda$ is selected for $B_{i,j}$.
 \begin{equation}
 %\begin{split}
 c(p_\lambda) \geq  \displaystyle{\sum_{(s,d)\in \mathbb{A}}} \displaystyle{\sum_{B_{i,j} \in \mathbb{B}}} f_{B_{i,j},p_\lambda} \cdot I_{B_{i,j},p_\lambda}\\
@@ -137,7 +139,7 @@ c(p_\lambda) \geq  \displaystyle{\sum_{(s,d)\in \mathbb{A}}} \displaystyle{\sum_
 %\end{split}
 \end{equation}
 
-\item Data size. The sum of allocated bandwidth should be no less than its size $\mathbb{S}(B_{i,j})$.
+\item The sum of allocated bandwidth should be no less than its size $\mathbb{S}(B_{i,j})$.
 \begin{equation}
 %\begin{split}
 \mathbb{S}(B_{i,j}) \leq  \displaystyle{\sum_{(s,d)\in \mathbb{A}}} \displaystyle{\sum_{p_{\lambda}\in Path(s,d)}} f_{B_{i,j},p_\lambda} \cdot I_{B_{i,j},p_\lambda} \cdot \Delta T\\
@@ -145,7 +147,7 @@ c(p_\lambda) \geq  \displaystyle{\sum_{(s,d)\in \mathbb{A}}} \displaystyle{\sum_
 %\end{split}
 \end{equation}
 
-\item Bandwidth allocation. The allocated bandwidth on path $p_\lambda$ should be the minimum of three parameters: the capacity $c(p_\lambda)$, source server upload rate $R_{up}(s)$, and destination server download rate $R_{down}(d)$.
+\item The allocated bandwidth on path $p_\lambda$ should be the minimum of three parameters: the capacity $c(p_\lambda)$, source server upload rate $R_{up}(s)$, and destination server download rate $R_{down}(d)$.
 \begin{equation}
 %\begin{split}
 f_{B_{i,j},p_\lambda} \leq  min \{c(p_\lambda),R_{up}(s),R_{down}(d)\}\\
@@ -153,7 +155,7 @@ f_{B_{i,j},p_\lambda} \leq  min \{c(p_\lambda),R_{up}(s),R_{down}(d)\}\\
 %\end{split}
 \end{equation}
 
-\item Path selection. Only one path will be chosen for a particular block.
+\item Only one path will be chosen for a particular block.
 $\displaystyle{\sum_{p_\lambda \in Path(s,d)}} I_{B_{i,j},p_\lambda} = 1$
 \end{packeditemize}
 %\jc{maybe it's better in math after all. please write
