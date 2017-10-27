@@ -62,6 +62,15 @@ monitors the aggregated bandwidth usage of all
 latency-sensitive flows on each inter-/intra-DC link, and dynamically
 calculates the limit on total bandwidth usage of
 latency-insensitive inter-DC multicasts every 3 seconds.
+Because \name updates routing decision every few seconds,
+we reserve 20\% of link capacity to protect online flows
+from transient traffic bursts,
+%To protect online flows under transient traffic bursty,
+%we reserve 20\% link capacity
+i.e., the upper bound of the available bandwidth for bulk-data
+transfers is set to be the difference between 80\% of
+link capacity and the aggregated bandwidth usage of
+latency-sensitive traffic.
 %With the known link capacity and the aggregated size of latency-sensitive traffic, the residual bandwidth for background data can then be calculated by the difference.
 
 %So that the reserved 20\% link capacity can absorb the traffic jitters, mask the network degradation and ensure the online-server performance. In the server end, each agent enforces the bandwidth limits by Linux Traffic Control (\texttt{tc}). Thus, \name achieves the bandwidth separation dynamically and in real-time.

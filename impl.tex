@@ -14,16 +14,9 @@ We have deployed \name on \company's DCs, which consist of 67 geo-distributed se
 
 \name is implemented with 3621 lines of golang code \cite{golang}, and it can be fully integrated in \company's DCs. The three duplications of the controller are implemented on three different geo-located servers.
 The data plane (bulk data transmissions) between controller and agents adopts TCP, and the control plane (decision messages) adopts HTTP. For specific transmissions, \name uses \texttt{wget} to make data transfer and sets particular \texttt{--limit-rate} to enforce bandwidth.
-Because \name updates routing decision every few seconds,
-we reserve 20\% of link capacity to protect online flows
-under transient traffic bursts,
-%To protect online flows under transient traffic bursty,
-%we reserve 20\% link capacity
-i.e., the upper bound of the available bandwidth for bulk-data
-transfers is set to the difference between 80\% of
-link capacity and the aggregated bandwidth usage of
-latency-sensitive traffic.
 %\jc{add linux tc stuff here}
+The agent running in each server uses Linux Traffic Control (\texttt{tc}) to enforce the limit on the total bandwidth usage of inter-DC multicast traffic.
+%Thus, \name achieves the bandwidth separation dynamically and in real-time.
 
 %\jc{explain the application-facing api}
 
