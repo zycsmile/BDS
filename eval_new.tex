@@ -177,7 +177,7 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
 \end{tabular}
 }
 \end{center}
-\tightcaption{Average link utilizations of the source DC egress link and 3 inter-DC links ($l_1$, $l_2$ and $l_3$) under \company and \name.}
+\tightcaption{Average link utilizations of the source DC egress link and 3 inter-DC links ($l_1$, $l_2$, $l_3$) under \company and \name.}
 \label{table:usage}
 \vspace{-0.4cm}
 \end{table}
@@ -239,7 +239,7 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
 %                \caption{The proportion of blocks downloaded from the original source.}
 %                \label{fig:analysis:overlay}
 %        \end{subfigure}
-        \tightcaption{\name's fault tolerance (a), and sensitivity to different block sizes (b), and different cycle lengths (c).}
+        \tightcaption{\name's (a) fault tolerance, (b) sensitivity to different block sizes, and (c) different cycle lengths.}
         \label{fig:analysis}
 \vspace{-0.4cm}
 \end{figure*}
@@ -255,7 +255,7 @@ As \name implements strict bandwidth separation between latency-sensitive traffi
 \subsection{Micro-benchmarks}
 \label{subsec:evaluation:benchmarks}
 
-This section focuses on some benchmarks of \name. (1). Scalability of the centralized control. As \name adopts centralized control, the running time and scalability of the controller are key indicators of algorithm efficiency. (2). Algorithm adaptability. \name runs together with online latency-sensitive traffic, so high fault tolerance and strong robustness are essential requirements especially in rapidly changing networks. (3). In-depth analysis. The near-optimality of \name and the effects of exploring overlay networks also need to be clarified.
+This section focuses on some benchmarks of \name. (1). Scalability of the centralized control. As \name adopts centralized control, the running time and scalability of the controller are key indicators of algorithm efficiency. (2). Algorithm adaptability. \name runs together with latency-sensitive traffic, so high fault tolerance and strong robustness are essential requirements especially in rapidly changing networks. (3). In-depth analysis. The near-optimality of \name and the effects of exploring overlay networks also need to be clarified.
 
 \tightsubsubsection{Scalability}\label{subsec:evaluation:benchmarks:scalability}
 
@@ -305,7 +305,7 @@ This section focuses on some benchmarks of \name. (1). Scalability of the centra
 
 \tightsubsubsection{In-depth analysis.}\label{subsubsec:evaluation:depth}
 
-\mypara{Optimization over algorithm running time} \name decouples scheduling and routing, which can significantly reduce the computational complexity. To clearly show the optimization, we measure the algorithm running time under \name and the standard linear programming (LP) solution. For the standard LP experiments, we use the \textit{linprog} library on MATLAB, set the upper bound of the iteration number ($10^6$) if the algorithm does not converge and record the CPU time versus the block number. Figure \ref{fig:further:BDSvsLP} illustrates the comparison results, which shows that the running time of \name keeps below $25ms$ while that of standard LP grows quickly to $4s$ with only 4000 blocks. This result illustrates \name's optimization over algorithm running time.
+\mypara{Optimization over algorithm running time} \name decouples scheduling and routing, which can significantly reduce the computational complexity. To clearly show the optimization, we measure the algorithm running time under \name and the standard linear programming (LP) solution. For the standard LP experiments, we use the \textit{linprog} library on MATLAB, set the upper bound of the iteration number ($10^6$) if the algorithm does not converge and record the CPU time versus the block number. Figure \ref{fig:further:BDSvsLP} illustrates the comparison results, which shows that the running time of \name keeps below $25ms$ while that of standard LP grows quickly to $4s$ with only 4000 blocks. %This result illustrates \name's optimization over algorithm running time.
 
 \mypara{Near-optimality of \name} To testify the near-optimality, we conduct a simple experiment to evaluate the completion time under the standard LP and \name: 2 DCs, 4 servers, 20MBps for server upload/download rate, 1 to 4000 blocks (we cannot conduct large-scale experiments due to the explosive growth of the LP calculation time). Figure \ref{fig:further:BDSvsLP_CT} shows that the completion time of \name is quite near to that of the optimal standard LP.
 
