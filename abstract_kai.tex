@@ -1,29 +1,28 @@
 \begin{abstract}
 
 Many important cloud services require replicating massive data from one datacenter (DC) to many DCs.
-While recent efforts have greatly improved data transfers
-between any pair of DCs, they are insufficient for bulk-data multicast,
+While recent efforts have improved pair-wise inter-DC data transfers, they are insufficient for optimizing bulk-data multicast,
 because they do not harness servers' capability to store-and-forward data as
-well as abundant inter-DC overlay paths across geo-distributed DCs.
-To exploit these opportunities, we present {\em \name},
+well as the rich inter-DC overlay paths among geo-distributed DCs.
+To harness these opportunities, we present {\em \name},
 an application-level multicast overlay network that
-near-optimally sends inter-DC multicast traffic via
-inter-DC overlay paths.
-At its core, \name {} {\em fully centralizes} the overlay network control, allowing \name to maintain
+sends inter-DC multicast traffic via
+inter-DC overlay paths in a near-optimal manner.
+At its core, \name {} {\em fully centralizes} the overlay network control, allowing a controller to maintain
 an up-to-date global view of data delivery status in order
 to fully utilize available overlay paths.
 To handle network dynamics and workload churns,
 \name decouples the centralized control algorithm
 into overlay routing and transfer scheduling, each of which
-can be solved efficiently.
-This enables \name to  update overlay routing
-decisions frequently  (e.g.,
+can be optimized efficiently.
+This enables \name to update overlay routing
+decisions in near real time (e.g.,
 every other second)
 at the scale of multicasting hundreds of TB
 data over tens of thousands overlay paths.
 A pilot deployment in one of the largest online
 service providers shows that \name achieves 3-5$\times$
-speedup over the provider's existing system and several widely used overlay routing systems.
+speedup over the provider's existing system and several widely used overlay routing baselines.
 
 %Many important cloud services require replicating massive
 %amounts of data from one datacenter (DC) to many DCs.

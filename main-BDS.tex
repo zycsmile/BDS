@@ -4,10 +4,11 @@
 %\documentclass[10pt,journal,compsoc]{IEEEtran}
 %\documentclass[letterpaper,twocolumn,10pt]{article}
 %\usepackage{usenix,epsfig,endnotes}
-\documentclass[preprint]{sigplanconf-eurosys}
 %\documentclass[10pt, conference, letterpaper]{IEEEtran}
 %\documentclass{sig-alternate-10pt}
 %\IEEEoverridecommandlockouts
+%\documentclass[preprint]{sigplanconf-eurosys}
+\documentclass[nocopyrightspace]{sigplanconf-eurosys}
 
 \usepackage{fancyhdr}
 %\usepackage{algpseudocode}
@@ -61,13 +62,16 @@
 \newcommand{\jc}[1]{{\footnotesize\color{blue}{[JC: #1]}}}
 \newcommand{\fillme}{XXX\xspace}
 \newcommand{\name}{BDS\xspace}
-\newcommand{\company}{{\sf\small Anon}\xspace}
+\newcommand{\company}{{Baidu}\xspace}
 \newcommand{\Section}{\S}
 %\usepackage[cmex10]{amsmath}
 %\DeclareMathOperator{\E}{E}
-\hyphenation{op-tical net-works semi-conduc-tor}
-\tolerance=300
-
+%\hyphenation{recent op-tical net-works semi-conduc-tor}
+%\tolerance=500
+%\tolerance=1
+%\emergencystretch=\maxdimen
+\hyphenpenalty=5000
+\tolerance=1000
 
 \newcommand{\tightcaption}[1]{\vspace{-0.1cm}\caption{{\bf #1}}\vspace{-0.1cm}}
 %\newcommand{\tightsection}[1]{\vspace{-0.02in}\section{#1}\vspace{-0.03cm}}
@@ -114,23 +118,30 @@
 
 \title{\name: A Centralized Near-Optimal Overlay Network for Inter-Datacenter Data Replication}
 
-\authorinfo{96}
+\authorinfo{
+Yuchao Zhang$^1$,
+Junchen Jiang$^2$,
+Ke Xu$^3$,
+Xiaohui Nie$^3$,\\
+Martin J. Reed$^4$,
+Haiyang Wang$^5$,
+Guang Yao$^6$,
+Miao Zhang$^6$,
+Kai Chen$^1$,
+\\
+$^1$ HKUST 
+$^2$ University of Chicago 
+$^3$ Tsinghua University \\
+$^4$ University of Essex 
+$^5$ University of Minnesota at Duluth 
+$^6$ Baidu \\
+%
+zyc@ust.hk, livejc@gmail.com, xuke@tsinghua.edu.cn, \\
+nxh15@mails.tsinghua.edu.cn, mjreed@essex.ac.uk, haiyang@d.umn.edu, \\
+\{yaoguang,zhangmiao\}@baidu.com, kaichen@cse.ust.hk
+}
 
-%\normalsize{PaperID: 192} \vspace{-1cm}}
-% \\ \normalsize{PaperID: 93}}
-% \author{\thistime, \today}
-%\author{\normalsize{PaperID: 352}}
 
-%\author{\today}
-%\author{Paper \# 322}
-%\date{\today}
-%\author{\date{\thistime, \today}}
-%\author{
-%{ Junchen Jiang$^\dagger$, Vyas Sekar$^\dagger$, Henry Milner$^\star$, Davis Shepherd$^+$, Ion Stoica$^\star$$^+$$^\circ$,
-%         Hui Zhang$^\dagger$$^+$}
-%\\         { $^\dagger$CMU, $^\star$UC Berkeley, $^+$Conviva, $^\circ$Databricks}
-%\\ {\small PaperId: 302}
-%}
 \maketitle
 
 \input{abstract_kai}

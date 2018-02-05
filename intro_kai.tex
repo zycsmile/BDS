@@ -11,16 +11,14 @@ from one DC to many geo-distributed DCs.
 %logs, search engine indexes, offline file sharing, forum posts, and
 %databases) from one DC to any set of destination DCs.
 Our study on the workload of
-\company's\myfootnote{A large search engine provider, anonymized for
-double-blind review.} DCs reveals that
+\company reveals that
 inter-DC multicast amounts to 91\% of inter-DC traffic
 (\Section\ref{sec:motivation}), which corroborates the findings of
 other large-scale online service providers~\cite{kumar2015bwe,zhang2016piebridge}.
 As data sizes continue to explode and more DCs are deployed
-globally, inter-DC data transfer is expected
+globally, inter-DC data transfers are expected
 to grow significantly, which is a key driving force behind
-recent efforts towards improving inter-DC Wide Area Network (WAN)
-performance~\cite{savage1999Theend,jain2013b4,kumar2015bwe,hong2013achieving,zhang2015guarantee}.
+recent efforts towards improving inter-DC data transfer~\cite{savage1999Theend,jain2013b4,kumar2015bwe,hong2013achieving,zhang2015guarantee}.
 
 
 %Global-scale online services, such as Google, Facebook, and Baidu,
@@ -40,23 +38,21 @@ performance~\cite{savage1999Theend,jain2013b4,kumar2015bwe,hong2013achieving,zha
 \tightcaption{A simple network topology illustrating how
 overlay paths reduce inter-DC multicast completion time.
 %Assume the bottleneck is the outgoing router of DC $A$.
-Assume each DC has 1GB/s one-directional WAN links to any other
-DC, and $A$ sends 3GB data to $B$ and $C$.
+Assume that each DC has 1GB/s one-directional WAN links to any other
+DC, and that $A$ wants to send 3GB data to $B$ and $C$.
 Sending data from $A$ to $B$ and $C$ separately
 takes 3 seconds (a),
 but using overlay paths $A$$\rightarrow$$B$$\rightarrow$$C$
 and $A\rightarrow$$C$$\rightarrow$$B$
-simultaneously takes only 2 seconds.
+simultaneously takes only 2 seconds (b).
 The circled numbers show the order for each data piece
  is sent. }
 \label{fig:intro}
 \vspace{-0.4cm}
 \end{figure}
 
-Prior efforts to optimize inter-DC data replication have focused on improving the wide area network (WAN) performance
-between a pair of DCs. These WAN-centric approaches, however, are insufficient as they fail to leverage
-the application-level overlay paths available in
-geo-distributed DCs or harness server's capability to
+Prior efforts to optimize inter-DC data replication have focused on improving the wide area network (WAN) performance between any pair of DCs. These WAN-centric approaches, however, are imcomplete, as they fail to leverage the application-level overlay paths available in
+geo-distributed DCs, or server's capability to
 store-and-forward data.
 As illustrated in Figure~\ref{fig:intro}, the performance of
 inter-DC multicast could be substantially improved by
@@ -65,10 +61,10 @@ acting as intermediate points to circumvent slow WAN paths and
 performance bottlenecks in DC networks.
 %(More examples can be found in \Section\ref{sec:motivation}.)
 Note that these overlay paths must be {\em bottleneck-disjoint} (i.e., they do
-not share common bottleneck links), and
-such overlay paths are available in abundance in
-geo-distributed DCs (e.g., $A$$\rightarrow$$B$$\rightarrow$$C$,
-$A$$\rightarrow$$C$$\rightarrow$$B$ in Figure~\ref{fig:intro}).
+not share common bottleneck links, e.g., $A$$\rightarrow$$B$$\rightarrow$$C$,
+$A$$\rightarrow$$C$$\rightarrow$$B$ in Figure~\ref{fig:intro}), and that
+such bottleneck-disjoint overlay paths are available in abundance in
+geo-distributed DCs.
 
 
 
@@ -82,9 +78,9 @@ network conditions and the up-to-date data delivery status on each server.
 %overlay paths, and dynamically adapts the overlay routes and
 %schedules in response to changes in network conditions and
 %workload churns.
-Note that \name selects application-level overlay paths and is
+Note that \name selects application-level overlay paths and is thus
 complementary to network-layer techniques that
-improve the WAN performance.
+optimize the WAN performance.
 While application-level multicast overlays have been applied
 in other contexts
 (e.g.,~\cite{Liebeherr2002Application,Wang2007mTreebone,
@@ -96,17 +92,18 @@ challenges.
 %a large online service providers, we summarize two challenges,
 %which to our best knowledge do not have direct solution.
 First, as each DC has tens of thousands of servers, the
-resulting sheer amounts of overlay paths make it
+resulting sheer amount of overlay paths makes it
 unwieldy to update overlay routing decisions in real time.
-The performance could be suboptimal by simply borrowing techniques
-from prior work, such as servers making local reactive
-decisions~\cite{kostic2003bullet,Repantis2010Scaling,Huang2014A},
-or pruning the set of overlay paths by strictly
-structured (e.g., layered) topologies~\cite{Nygren2010The}.
-Second, a small increase in the delay of latency-sensitive traffic
+Prior work where servers make local reactive decisions~\cite{kostic2003bullet,Repantis2010Scaling,Huang2014A} cannot result in optimal scheduling due to the invisibility of global information, and the improved solution that prunes the set of overlay paths is limited by strictly structured (e.g., layered) topologies~\cite{Nygren2010The}, so we cannot simply borrow techniques from these works.
+%The performance could be suboptimal by simply borrowing techniques
+%from prior work, such as servers making local reactive
+%decisions~\cite{kostic2003bullet,Repantis2010Scaling,Huang2014A},
+%or pruning the set of overlay paths by strictly
+%structured (e.g., layered) topologies~\cite{Nygren2010The}.
+Second, even a small increase in the delay of latency-sensitive traffic
 can cause significant revenue loss, so the bandwidth usage
 of inter-DC bulk-data multicasts must be tightly controlled
-to avoid interference with latency-sensitive
+to avoid negative impact on latency-sensitive
 traffic\myfootnote{Despite priority-based queuing
 at each DC border router, bulk-data multicasts compete
 inter-DC WAN (not managed by \company) with
@@ -208,14 +205,14 @@ To address these challenges, \name fully {\em centralizes}
 the scheduling and routing of inter-DC multicast.
 Contrary to the intuition that servers must retain certain
 local decision-making capability to achieve scalability and
-responsiveness, \name's centralized design
-is built on two observations (\Section\ref{sec:overview}):
+responsiveness to performance events, \name's centralized design
+is built on two empirical observations (\Section\ref{sec:overview}).
 (1) While it is less likely to make
 centralized decisions in real time, most multicast data transfers
-last for tens of seconds and thus can tolerate certain delay incurred by
-the central controller in order to make optimal control based on a global view.
+last for tens of seconds and thus can tolerate certain commutation delay with
+the central controller in exchange for optimal routing and scheduling based on a global view.
 (b) Centrally coordinated bandwidth allocation is amenable
-to minimizing interference between inter-DC multicast
+to minimizing the interference between inter-DC multicast
 traffic and latency-sensitive traffic.% by enforcing bandwidth allocation on overlay paths.
 %(c) Finally, a centralized design is amenable to a simple
 %implementation from an engineering perspective;
@@ -258,15 +255,15 @@ traffic and latency-sensitive traffic.% by enforcing bandwidth allocation on ove
 %\end{packeditemize}
 
 
-The key to realizing \name's benefits in practice is to update
+The key to realizing benefits of \name's centralized design in practice is to update
 the overlay network on the timescale of seconds in response to dynamic network conditions
 and failures. \name achieves this by {\em decoupling} its centralized control
-into scheduling of data transfers and
+into two optimization problems, scheduling of data transfers, and
 overlay routing of individual data transfers.
-This decoupling attains provable optimality and at the same time
+This decoupling attains provable optimality, and at the same time,
 allows \name to update overlay network routing and scheduling in
-a fraction of second (4 orders of magnitude faster than without decoupling
-routing and scheduling) on production workloads
+a fraction of second (four orders of magnitude faster than solving
+routing and scheduling) jointly on workloads
 of a large online service provider (e.g., sending $10^5$s of data blocks
 simultaneously along $10^4$s of disjoint overlay paths, and updating
 the routing every other second).
@@ -327,17 +324,17 @@ the routing every other second).
 
 We have implemented a prototype of \name and integrated it in
 \company, one of the largest search service providers.
-We deployed \name in 10 DCs and ran a pilot study on 500 TB
-data for over 7 days.
+We deployed \name in 10 DCs and ran a pilot study on 500~TB
+data for over 7 days (70~TB per day).
 Our real-world experiments show that \name achieves 3-5$\times$
-speedup over \company's existing solution, and it can reduce
+speedup over \company's existing solution, and it can eliminate almost all the
 incidents of excessive bandwidth consumption by bulk-data
 transfers.
 Using real trace-driven evaluation and microbanchmarking,
 we also show that \name outperforms techniques widely used in
-CDNs, can handle the workload of \company's
-inter-DC multicast traffic with one general-purpose server,
-and can tolerate various failure scenarios.
+CDNs, and that \name can handle the workload of \company's
+inter-DC multicast traffic with one general-purpose server.
+We also show that \name can tolerate various failure scenarios.
 
 
 Our contributions are summarized as following:
@@ -345,8 +342,8 @@ Our contributions are summarized as following:
 \item Characterizing the workload of inter-DC bulk-data
 replication to motivate the need of application-level
 multicast overlay networks (\Section\ref{sec:motivation}).
-\item Designing \name, an application-level
-multicast overlay network which achieves near-optimal flow completion
+\item Presenting \name, an application-level
+multicast overlay network that achieves near-optimal flow completion
 time with a centralized control scheme (\Section\ref{sec:overview},\ref{sec:logic},\ref{sec:system}).
 \item Demonstrating the practical benefits of \name by a real-world
  deployment in a large online service provider (\Section\ref{sec:evaluation}).
