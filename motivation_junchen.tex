@@ -1,4 +1,4 @@
-\section{A case for application-level multicast overlay}
+\section{A case for application-level inter-DC multicast overlay}
 \label{sec:motivation}
 
 %\jc{Starting from Section 2, it would be paper outline.
@@ -10,17 +10,16 @@ application-level multicast overlay network,
 we first characterize the inter-DC multicast workload in
 \company, a global-scale online service provider
 (\Section\ref{subsec:motivation:multicast-traffic}).
-We then show the potential of improving multicast performance
+We then show the potential improvement of multicast performance
 by leveraging disjoint application-level overlay paths available in geo-distributed DCs
 (\Section\ref{subsec:motivation:case-for}).
-Finally, we examine \company's existing solution to
-inter-DC multicast and draw lessons from real-world
-incidents (\Section\ref{subsec:motivation:baseline})
-to inform the design of \name.
+Finally, we examine \company's current solution of
+inter-DC multicast, and draw lessons from real-world
+incidents to inform the design of \name (\Section\ref{subsec:motivation:baseline}).
 The findings are based on a dataset collected from \company's
 inter-DC WANs over a duration of 7 days.
-The dataset comprises of about 1265 data transfers
-between over 30 geo-distributed DCs.
+The dataset comprises of about 1265 multicast transfers
+among over 30 geo-distributed DCs.
 %\jc{what? i thought your results (table 1, fig 2, 4, 5) are
 %based on much larger dataset?}
 
@@ -57,7 +56,7 @@ between over 30 geo-distributed DCs.
 \begin{tabular}{| c | c|}
 \hline
  \rowcolor[gray]{0.9}
-\textbf{Type of application} & \textbf{Percent of multicast traffic} \\
+\textbf{Type of application} & \textbf{\% of multicast traffic} \\
 \hline\hline
 All applications & 91.13\%~\myfootnotemark\\
 \hline
@@ -92,13 +91,13 @@ traffic.}
 Table~\ref{table:rate} shows inter-DC multicast
 (replicating data from one DC to multiple DCs) as
 a fraction of inter-DC traffic.
-We see that multicast traffic dominates \company's
+We see that inter-DC multicast dominates \company's
 overall inter-DC traffic (91.13\%), as well as
-individual application types (89.2 to 99.1\%).
+the traffic of individual application types (89.2 to 99.1\%).
 {\em The fact that inter-DC multicast traffic
-amounting to a dominating share of inter-DC traffic
-highlights the importance of optimizing its
-performance.}
+amounts to a dominating share of inter-DC traffic
+highlights the importance of optimizing the
+performance of inter-DC multicast.}
 %=======
 %First, we use \company's WAN to examine whether
 %inter-DC multicast traffic (replicating data from
@@ -175,20 +174,20 @@ DCs.}
 
 %In the premise that bulk data shares a large fraction of overall traffic, we check the number of destination DCs of the data. Fig. \ref{fig:bulk:dest} shows that there are over 60\% applications with bulk data multicast traffic are destined to at least 90\% DCs, and about 20\% applications with bulk data destined to over 50\% (but less than 90\%) DCs. These results show that a large fraction of the bulk data traffic is multicast to almost all DCs.
 
-\mypara{Volumes of inter-DC multicast transfers}
-Finally, Figure~\ref{fig:bulk:size} outlines the data size distribution of inter-DC multicast.
+\mypara{Sizes of inter-DC multicast transfers}
+Finally, Figure~\ref{fig:bulk:size} outlines the distribution of data size of inter-DC multicast.
 We see that over 60\% multicast data files are over 1TB
 (and 90\% are over 50GB).
 %<<<<<<< HEAD
 Given that the total WAN bandwidth assigned to each multicast
 is on the order of several Gb/s,
 this suggests that the transfers are not transient but
-typically last for a duration on the timescale of at least tens of
-seconds instead. (The timescale is similar after optimization, see \Section\ref{sec:evaluation}).
-Therefore, {\em any scheme that improves multicast traffic needs to
+typically lasting for a duration on the timescales of at least tens of
+seconds instead.
+Therefore, {\em any scheme that optimizes multicast traffic must
 adapt to network dynamics.}
 On the flip side, such temporal persistence
-also indicates that {\em multicast traffic could tolerate certain delay
+also indicates that {\em multicast traffic might tolerate certain delay
 when adapting to changes in network conditions}, which inspires
 \name's centralized design (\Section\ref{sec:overview}).
 %=======
@@ -200,7 +199,7 @@ when adapting to changes in network conditions}, which inspires
 
 
 \vspace{0.1cm}
-These observations motivate the need for a systematic approach
+These observations, as we'll see later, together motivate the need for a systematic approach
 to optimizing inter-DC multicast.
 
 %To further explore the characteristics of the multicast data files, we summarize the data size of these files and present the statistical results in Fig. \ref{fig:bulk:size}, which shows that nearly 70\% applications have a data file larger than 1TB and over 90\% of these multicast applications have data files larger than 50GB. Thus, focusing on optimizing bulk data multicast transmission is quite valuable to improve WAN conditions.
@@ -228,9 +227,9 @@ to optimizing inter-DC multicast.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=84mm]{images/example-junchen.pdf}
+\includegraphics[width=84mm]{images/example-2.pdf}
 \vspace{-0.4cm}
-\tightcaption{An illustrative example showing the performance benefit of an application-level overlay network on inter-DC multicast.}
+\tightcaption{An illustrative example comparing the performance of an intelligent application-level overlay (d) with that of baselines: naive application-level overlay (c) and no overlay (b).}
 \label{fig:case:example}
 \vspace{-0.4cm}
 \end{figure}
@@ -240,18 +239,18 @@ benefit from application-level overlays~\cite{chu2000case}.
 Here we show that inter-DC multicast
 completion time (defined as the duration of data transfers
 until each destination DC has a full copy of the data)
-can be much improved by an
+can be greatly improved by an
 application-level overlay network.\myfootnote{An application-level overlay is complementary to
 prior work that focused on optimizing WAN.}
 
 The basic idea of application-level overlay networks is
-to leverage {\em bottleneck-disjoint} overlay paths.
+to spread traffic along {\em bottleneck-disjoint} overlay paths.
 %, which do not have common bottleneck links~\cite{datta19951}.
 In the context of inter-DC overlays, two
 overlay paths either traverse different sequences of DCs ({\em Type I}), or
 traverse the same DCs but different sequences of
-servers ({\em Type II}).
-Next, we use examples to show that bottleneck-disjoint overlay paths can rise in both types, and it can be used to improve inter-DC multicast performance.
+servers ({\em Type II}), or some combinations of the two types.
+Next, we use examples to show these bottleneck-disjoint overlay paths can be used to improve inter-DC multicast performance.
 
 \mypara{Examples of bottleneck-disjoint overlay paths}
 Recall that Figure~\ref{fig:intro} illustrates the benefits of
@@ -281,7 +280,7 @@ $b$ in $B$ with
 %<<<<<<< HEAD
 %Topologically, $A$ is directly connected with $B$ by a 2GB/s
 %link, and
-Assume the data is split into 6 6GB-blocks.
+The data is split into 6 6GB-blocks.
 We consider three strategies.
 (1) {\em Direct replication}:
 if $A$ sends data directly to $B$ and $C$ via WAN paths
@@ -306,7 +305,7 @@ is to send blocks through server $b$ acting as a
 store-and-relay point
 (Figure~\ref{fig:case:example}(c)),
 and the completion time is 13 seconds (27\% less than without overlay).
-(3) {\em Optimal multicast overlay}:
+(3) {\em Intelligent multicast overlay}:
 Figure~\ref{fig:case:example}(d) further improves the performance by
 selectively sending blocks along the two paths simultaneously,
 which completes in 9 seconds (30\% less than chain replication,
@@ -343,26 +342,22 @@ across all possible $b$.}
 It is hard to identify all bottleneck-disjoint overlay paths,
 since the dataset only has end-to-end throughput between
 servers.
-Instead, we show empirically that given two overlay
+Instead, we show empirically study one example of bottleneck-disjoint overlay path in the wild, which consists of two overlay
 paths $A$$\rightarrow$$b$$\rightarrow$$C$ and $A$$\rightarrow$$C$,
 where the WAN routing from DC $A$ to DC $C$ goes through DC $B$,
-and $b$ is a server in $B$, they are likely to be
-bottleneck-disjoint.
-(These two paths are topologically identical to
-Figure~\ref{fig:case:example}.)
+and $b$ is a server in $B$.
+These two paths are topologically identical to
+Figure~\ref{fig:case:example}.
 Note if two overlay paths have different end-to-end bandwidth
 (i.e., $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}\neq1$)
 at the same time,
-they should be bottleneck-disjoint.
-The reason we examine such overlay path pair is that
-if these pairs are widely available, we can
-create a new bottleneck-disjoint path by using any server $b$
-as an overlay point.
+they are bottleneck-disjoint.
 Figure~\ref{fig:case:size} shows the distribution of
 $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$
 among all possible values of $A$, $b$, and $C$ in the dataset.
 We can see that $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$ is
-below 0.8 or over 1.3 for about 30\% overlay pairs.
+below 0.8 or over 1.3 for about 30\% overlay pairs. These pairs are widely available, and we can create a new bottleneck-disjoint path by using any server $b$
+as an overlay point.
 %\jc{these measurements were collected at the same time? could this variance be simply noise?} Yes, they were collected at the same time. Just as the network monitor does.
 
 
@@ -462,9 +457,7 @@ below 0.8 or over 1.3 for about 30\% overlay pairs.
 \subsection{Limitations of existing solutions}
 \label{subsec:motivation:baseline}
 
-While inter-DC multicast can benefit from application-level overlay networks,
-realizing these benefits in practice
-is not easy. At a first glance, we can simply borrow existing techniques
+However, realizing the potential improvement of application-level overlay network foe inter-DC multicast is easier said than done. At a first glance, we may simply borrow existing techniques
 from multicast overlay networks in other contexts.
 But the operational experience of \company indicates
 two limitations of this approach.
@@ -545,31 +538,31 @@ fashion.
 
 \noindent{\bf Limitation 1:
 Inefficient local adaptation.}
-The existing decentralized protocol lacks the global view and thus cannot make the optimal scheduling.
+The existing decentralized protocol lacks the global view and thus may stuck with suboptimal scheduling and routing.
 To show this, we sent a 30GB file from one DC to two destination
 DCs in \company's network.
 Each DC had 640 servers, each with 20Mbps upload and download
 bandwidth. This 30GB file was evenly stored in all these
 640 servers.
-Ideally, if servers select
+Ideally, if the servers select
 the best source for all blocks, the ideal
 completion time will be
 $\frac{30\times 1024}{640\times 20Mbps \times 60s/min} = 41$
 minutes. But as shown in Figure~\ref{fig:motivation},
-servers in the destination DCs on average receive data in
+servers in the destination DCs on average received data in
 195 minutes (4.75 times of the optimal completion
-time), and 5\% of them even take over 250 minutes.
+time), and 5\% of them even took over 250 minutes.
 %There are two reasons that contributed to the suboptimal
 %completion time:
 %1.
 The key reason is that
-individual servers only see from a subset of possible data sources
-(servers who have already downloaded part of a file)
+individual servers only see a subset of possible data sources
+(i.e., servers who have already downloaded part of a file),
 and thus cannot leverage all available overlay path to
 maximize the throughput.
 Such suboptimal performance
 could occur even if the overlay
-network is partially decentralized and each server does have a
+network is only partially decentralized where each server does have a
 global view (e.g.,~\cite{Huang2014A}),
 since each server still makes local adaptations which creates potential
 hotspots and congestion on overlay paths.
@@ -616,11 +609,11 @@ Interference with latency-sensitive traffic.}
 The existing multicast overlay network shares the same inter-DC WAN
 with latency-sensitive traffic.
 Despite using standard QoS techniques and giving the lowest priority to
-bulk data transfers, we still see frequent interference between
-latency-sensitive traffic and bursty arrivals of bulk-data multicast
+bulk data transfers, we still see negative impacts on
+latency-sensitive traffic by bursty arrivals of bulk-data multicast
 requests. We monitored the bandwidth utilization of an inter-DC
-link in two days during which there was a bulk data transfer at 11:00 on the 2nd day lasting for 6 hours. Figure~\ref{fig:lesson2} shows the link utilization. The blue line denotes the outgoing (outbound) bandwidth and the green line denotes the ingoing (inbound) bandwidth.
-From this figure, we can see that the bulk data transfer caused high link utilization and congestion due
+link in two days during which there was a bulk data transfer at 11:00 on the 2nd day lasting for 6 hours. Figure~\ref{fig:lesson2} shows the total utilization of an inter-DC link over time. The blue line denotes the outgoing (outbound) bandwidth and the green line denotes the ingoing (inbound) bandwidth.
+From this figure, we can see that the bulk data transfer caused excessive link utilization (i.e., exceeding the safety threshold of 80\%) due
 to lack of global coordination. As a result, the latency-sensitive online traffic experienced over
 30$\times$ longer delay.
 
