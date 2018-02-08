@@ -10,10 +10,10 @@
 %\end{figure}
 %\vspace{-15pt}
 
-We have deployed \name on \company's DCs, which consist of 67 geo-distributed servers in 10 DCs. Evaluations in the next section are based on this deployment. %The topology is shown as Fig. \ref{fig:topology}.
+We have deployed \name on \company's DCs, which consist of 67 geo-distributed servers in 10 DCs. Evaluation in the next section is based on this deployment. %The topology is shown as Fig. \ref{fig:topology}.
 
-\name is implemented with 3621 lines of golang code \cite{golang}, and it can be fully integrated in \company's DCs. The three duplications of the controller are implemented on three different geo-located servers.
-The data plane (bulk data transmissions) between controller and agents adopts TCP, and the control plane (decision messages) adopts HTTP. For specific transmissions, \name uses \texttt{wget} to make data transfer and sets particular \texttt{--limit-rate} to enforce bandwidth.
+\name is implemented with 3621 lines of golang code \cite{golang}, and it was fully integrated in \company's DCs. The duplications of the controller are implemented on three different geo-located zookeeper servers.
+The data plane bulk data transmissions between controller and agents use TCP, and the control plane decision messages use \texttt{HTTP POST}. For specific transmissions, \name uses \texttt{wget} to make data transfer, and enforce bandwidth by \texttt{--limit-rate}.
 %\jc{add linux tc stuff here}
 The agent running in each server uses Linux Traffic Control (\texttt{tc}) to enforce the limit on the total bandwidth usage of inter-DC multicast traffic.
 %Thus, \name achieves the bandwidth separation dynamically and in real-time.
@@ -22,7 +22,7 @@ The agent running in each server uses Linux Traffic Control (\texttt{tc}) to enf
 
  %\jc{which option?}
 
-The application-facing API is also very simple because \name's implementation makes no specific requirements on applications. Any application prepares to distribute bulk data just call the public functions provided by \name and follow three steps: first, register on \name, initiate the basic information about source DC, destination DCs, all end servers and the bulk data; second, install agents on the involved end servers; third, assign the start time of bulk data transmission. Then \name will start the data distribution at the specified time. Such simple implementation also makes \name applicable to other companies' DCs. 	
+\name n be seamlessly integrated with applications because \name's implementation makes no specific requirements on applications. All the applications need to do is to call the public APIs provided by \name to complete three steps: first, register on \name, assign the source DC, destination DCs, servers and the bulk data; second, install agents on all those servers; third, set the start time of bulk data transfers. Then \name will start the data distribution at the specified time. Such simple implementation also makes \name applicable to other companies' DCs. 	
 
 %\jc{this is oversimplistic. did you make any assumption about the agent? what if a hadoop application wants to use your stuff?}
 
