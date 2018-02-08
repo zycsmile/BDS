@@ -25,11 +25,11 @@
 \vspace{-0.4cm}
 \end{figure*}
 
-To evaluate \name, we integrated our end-to-end prototype in \company, and ran a pilot deployment across the above network.
-Using a combination of pilot deployment, trace-driven simulations, and microbenchmarks, we show that:
+To evaluate \name, we integrated our end-to-end prototype in \company, and ran a pilot deployment under the above implementation.
+Using a combination of pilot deployment, trace-driven simulation, and microbenchmarking, we show that:
 \begin{packedenumerate}
-\item \name completes inter-DC multicast 3-5$\times$ faster than \company's existing solution and solutions used in industry (\Section\ref{subsec:evaluation:centralized}).
-\item \name significantly reduces the incidents of interferences between bulk-data multicast trafic and latency-sensitive traffic (\Section\ref{subsec:evaluation:separation}).
+\item \name completes inter-DC multicast 3-5$\times$ faster than \company's existing solution and other baselines used in industry (\Section\ref{subsec:evaluation:centralized}).
+\item \name significantly reduces the incidents of interferences between bulk-data multicast traffic and latency-sensitive traffic (\Section\ref{subsec:evaluation:separation}).
 \item \name can scale to the traffic demand of a large online service provider, tolerate various failure scenarios, and is close to the theoretically optimal performance (\Section\ref{subsec:evaluation:benchmarks}).
 \end{packedenumerate}
 
@@ -63,36 +63,40 @@ Using a combination of pilot deployment, trace-driven simulations, and microbenc
 \label{subsec:evaluation:centralized}
 
 We compare \name against three existing solutions:
-\company's existing solution (a decentralized strategy),
+\company's existing solution (a decentralized strategy which has been evolving for 5 years with end-to-end evaluations),
 Bullet~\cite{kostic2003bullet} (a centralized strategy), and
 Akamai's overlay network~\cite{Andreev2013Designing} for live video streaming
 multicast.
 
 
 \tightsubsubsection{Methodology}
-We start with the evaluation methodology.
+We start with the methodology.
 
-\mypara{Pilot deployment} We choose several services with different daily bulk data sizes. In general, such bulk data is transferred using \company's existing solution (that has already run for more than 5 years), while we randomly choose several days using \name instead of the current solution. To make sure the two solutions work in the same environment, we conduct the following experiments at the same time of a day.
+\mypara{Pilot deployment} We choose several services with different data sizes and run randomized A/B testing in which
+%In general, such bulk data is transferred using \company's existing solution (that has already run for more than 5 years), while
+we randomly choose several days to use \name instead of the current solution. To make sure the two solutions work in the similar environment, we conduct all the experiments at 02:00 every day in the morning.
 
-\mypara{Trace-driven simulation} While the pilot deployment on real traffic is realistic, we also use trace-driven simulation to evaluate \name on a larger scale.
+\mypara{Trace-driven simulation} Complementary to the pilot deployment on real traffic, we also use trace-driven simulation to evaluate \name on a larger scale.
 %than the pilot deployment cannot implement other solutions on \company's real network. Instead,
 We simulate the other two overlay multicast techniques by setting topology, DC scale and configuring servers with the same scale as \name's DCs, and replay inter-DC multicast data requests in the same chronological
-order as in the real trace.
+order as in the pilot deployment (including the number of requests and the number of nodes).
 
 
 %To evaluate the benefits of centralized control, we conduct two series of experiments: the comparisons with \company's existing solution based on the pilot deployments, and the comparisons with other overlay multicast techniques using trace-driven simulations.
 
 \tightsubsubsection{\name vs. \company's existing solution}
 
-We first choose one service with 70~TB daily bulk data, which is distributively stored in the source DC (with 1000 servers). Each of the other DCs announces a download requirement and finally stores this bulk data in the same way with 1000 servers.
+We first choose one service with 70~TB aggregated daily bulk data, which is distributed stored in the source DC (with 1000 servers). Each of the other DCs downloads a copy of the data and stores it in the same way with 1000 servers.
 
 %First of all, we present the completion time of destination servers under \name and \company in Figure
 
 To intuitively present the overall improvements by \name, we draw the cumulative distribution function (CDF) of the completion time in Figure \ref{fig:BDSvsAnon:overall}, from which we can see that the completion time under \company's existing solution is about 200 minutes while that under \name is less than 40 minutes, which is 5 times shorter.
 
-For detailed illustration, we further pick three applications whose data volumes are large, medium and small, and draw three pairs of bar charts in Figure \ref{fig:BDSvsAnon:FCT}, each representing \name's and \company's mean (stddev) completion time for one application. These bars show that for small data volume, \name outperforms 1.6 times than \company, and more than 3 times than \company for large data applications. In other words, the benefit of \name increases along with the bulk data size.
+For detailed illustration, we further pick three applications whose data volumes are large, medium and small, and compare \name's and \company's mean (stddev) completion time for each application in Figure \ref{fig:BDSvsAnon:FCT}.
+%draw three pairs of bar charts in Figure \ref{fig:BDSvsAnon:FCT}, each representing \name's and \company's mean (stddev) completion time for one application. 
+These bars show that the benefit of \name increases along with the bulk data size. For small data volume, \name outperforms \company by 1.6 times, and more than 3 times than \company for large-data transfers.
 
-To prove that this is not a special case, we repeat the experiments during 7 days and draw the average completion time of both \name and \company in Figure \ref{fig:BDSvsAnon:time}. \name is quite stable during these 7 days while \company illustrates some volatilities. In general, \name achieves about 4.5 times shorter completion time than \company.
+We also repeat the experiments for 7 days to offer more statistical significance and draw the average completion time of both \name and \company in Figure \ref{fig:BDSvsAnon:time}. \name consistently outperforms \company by 4 times, and has less performance variations. is quite stable during these 7 days while \company illustrates some volatilities. In general, \name achieves about 4.5 times shorter completion time than \company.
 %\item \name vs. \company's existing solution (pilot deployment)
 %\begin{itemize}
 %\item Overall improvement: A CDF with two lines to show the aggregated flow completion time
@@ -104,16 +108,12 @@ To prove that this is not a special case, we repeat the experiments during 7 day
 
 %As we cannot implement other experimental systems in our real online network just as comparisons, we conduct a series of simulations using trace-driven simulations in this section, and compare \name's performance versus Bullet \cite{kostic2003bullet} and a CDN-based solution \cite{Andreev2013Designing} adopted by Akamai.
 
-In the trace-driven simulations, we use a topology with 13 DCs (one of which acts as the source DC) and set all the parameters the same as the real network, including data file size, data source and destination, paths, link capacities and server upload/download rates. As to the comparison systems, we choose two commercial-off-the-shelf systems. Bullet \cite{kostic2003bullet} is a data dissemination system using an overlay mesh and Akamai's video streaming system \cite{Andreev2013Designing} in overlay multicast networks.
-
-As a distributed algorithm working on an overlay mesh network, Bullet \cite{kostic2003bullet} enables geo-distributed nodes to self-organize into a overlay mesh. Specifically, each node uses RanSub \cite{Rodriguez2003Using} to distribute summary ticket information to other nodes and receive disjoint data from its sending peers. The main difference between \name and Bullet lies in the control scheme, i.e., \name is a centralized method that has a global view of data delivery states, while Bullet is a decentralized scheme and each node makes decision locally.
-
-Akamai designs a 3-layer overlay network for delivering live streams \cite{Andreev2013Designing}, where a source forwards its streams to reflectors, and reflectors send outgoing streams to stage sinks. There are two main differences between Akamai and \name: (1) Akamai adopts a 3-layer topology where edge servers receive data from their parent reflectors, while \name explores bigger searching space without layer limitation. (2) The receiving sequence of data must be sequential in Akamai because it serves for the live streaming application. But there is no such requirements in \name, and the side effect is that \name has to calculate the optimal order $\overrightarrow{o_B}$ as additional work.
+In the trace-driven simulations, we use a topology with 13 DCs (one of which acts as the source DC) and set all the parameters the same as the real network, including data file size, data source and destination, paths, link capacities and server upload/download rates. We use two baselines: Bullet \cite{kostic2003bullet} is a data dissemination system using an overlay mesh, and Akamai's video streaming system \cite{Andreev2013Designing} in overlay multicast networks.
 
 %We conduct three series of experiments and show the results in Figure \ref{fig:versusCDN}: baseline \ref{fig:cdn:baseline}, large scale \ref{fig:cdn:scale} and small bandwidth experiments \ref{fig:cdn:bw}. We find \name achieves 3$\times$ shorter completion time than Bullet in the baseline experiments, and more than 4$\times$ improvement in the large scale experiments and small bandwidth experiments.
-We conduct three series of experiments and show the results in Table \ref{table:versusAkamai}: baseline, large-scale and small bandwidth experiments. In the baseline experiments, the size of the bulk data is 10TB, the number of servers per DC is 100, and the upload and download rate limits are set to 20MBps. In the large-scale experiment, the bulk data is 100TB, server number per DC is 1000. In the small bandwidth experiment, server upload and download rate limit are reduced to 5MBps. We find that \name achieves 3 times shorter completion time than Bullet and Akamai in the baseline experiments, and more than 4 times shorter completion time in the large-scale and small bandwidth experiments.
+We conduct three series of experiments and show the results in Table \ref{table:versusAkamai}: baseline, large-scale and small bandwidth experiments. In the baseline experiments, the size of the bulk data is 10TB, the number of servers per DC is 100, and the upload and download rate limits are set to 20MBs. In the large-scale experiment, the bulk data is 100TB, server number per DC is 1000. In the small bandwidth experiment, server upload and download rate limit are reduced to 5MBs. We find that \name achieves 3 times shorter completion time than Bullet and Akamai in the baseline experiments, and more than 4 times shorter completion time in the large-scale and small bandwidth experiments.
 
-Considering the results in large-scale experiments, we found that the completion time of Bullet (Akamai) increases to about 3 to 3.5 times than that in the baseline experiments while \name only increases to about 2 times. This proves \name's good scalability. Similarly, in the small bandwidth experiments (which is very common when delay-sensitive traffic bursts), the completion time of Bullet and Akamai is 6.1 and 5.52, respectively, while that of \name is about 4 times. This result illustrates the high efficiency of \name under strict bandwidth limitations.
+Considering the results in large-scale experiments, we found that the completion time of Bullet (and Akamai) increase to more than 3 times compared that in the baseline experiments - from $28m$ (and $25m$)to about $82m$ (and $87m$), while \name only increases to about 2 times - from $9.41m$ to $20.33m$. This proves \name's good scalability. Similarly, in the small bandwidth experiments (which is very common when delay-sensitive traffic bursts), the completion time of Bullet and Akamai increases to $171m$ and $138m$, respectively, while that of \name is just $38.25m$. This result illustrates the high efficiency of \name under strict bandwidth limitations.
 %In the large scale experiments, the completion time of Bullet increases to about 3 times than that in the baseline experiment, and that of Akamai multicast solution is about 3.5 times. But \name., \name increase to while that of respectively.
 
 \begin{table}[t]
@@ -159,7 +159,7 @@ Akamai & $25m$ & $87m$ & $138m$\\
 \vspace{-0.4cm}
 \end{figure}
 
-To test the effectiveness of bandwidth separation and check whether the bulk data transfer affects latency-sensitive traffic, we set the upper bound of available bandwidth for bulk data transfer to 10~GBps and monitor the real usage of one inter-DC link. The results are shown in Figure \ref{fig:quota}, from which we can see the real bandwidth usage stays below 10~GBps throughout the whole transmission process, verifying the effectiveness of bandwidth separation, and thus \name is able to reduce the incidents of delay on latency-sensitive traffic caused by bulk data transfers.
+To test the effectiveness of bandwidth separation and check whether the bulk data transfers affect latency-sensitive traffic, we set the upper bound of available bandwidth for bulk data transfer to 10~GBs, and monitor the real usage of one inter-DC link. The results are shown in Figure \ref{fig:quota}, from which we can see the real bandwidth usage stays below 10~GBs throughout the whole transmission process. This shows that \name can effectively separate bandwidth and thus reduce the incidents of delay on latency-sensitive traffic caused by bulk data transfers.
 
 \begin{table}[t]
 \begin{center}
@@ -245,7 +245,7 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
 \end{figure*}
 
 
-As \name implements strict bandwidth separation between latency-sensitive traffic and bulk data transfer while still showing shorter completion time, does it occupy too much bandwidth on inter-DC links? To answer this question, we record the average utilizations of the egress link of the source DC and 3 randomly selected inter-DC links, denoted as $l_1,l_2$ and $l_3$. The result in Table \ref{table:usage} shows that link utilizations do not change much with \name or \company. This is because \name can make disjoint data transfer among servers and thus avoids transferring repeated data on the same link.
+As \name implements strict bandwidth separation between latency-sensitive traffic and bulk data transfers while still showing shorter completion time, does it occupy too much bandwidth on inter-DC links? To answer this question, we record the average utilizations of the egress link of the source DC and 3 randomly selected inter-DC links, denoted as $l_1,l_2$ and $l_3$. The result in Table \ref{table:usage} shows that link utilizations do not change much with \name. This is because \name spreads data transfers over bottleneck-disjoint paths, so it avoids transferring the same data on the same link.
 
 %\begin{itemize}
 %\item Draw a graph (what graph can you get on this?) to show with bandwidth separation, \name can reduce the incidents of delay on latency-sensitive traffic caused by bulk data transfers.%DrawLink.m
@@ -255,7 +255,13 @@ As \name implements strict bandwidth separation between latency-sensitive traffi
 \subsection{Micro-benchmarks}
 \label{subsec:evaluation:benchmarks}
 
-This section focuses on some benchmarks of \name. (1). Scalability of the centralized control. As \name adopts centralized control, the running time and scalability of the controller are key indicators of algorithm efficiency. (2). Algorithm adaptability. \name runs together with latency-sensitive traffic, so high fault tolerance and strong robustness are essential requirements especially in rapidly changing networks. (3). In-depth analysis. The near-optimality of \name and the effects of exploring overlay networks also need to be clarified.
+This section examines \name in very details through micro-benchmarks. 
+%focuses on some benchmarks of \name. 
+(1) Scalability of the centralized control. 
+%As \name adopts centralized control, the running time and scalability of the controller are key indicators of algorithm efficiency. 
+(2) Fault tolerance.
+%Algorithm adaptability. \name runs together with latency-sensitive traffic, so high fault tolerance and strong robustness are essential requirements especially in rapidly changing networks. (3). In-depth analysis. The near-optimality of \name and the effects of exploring overlay networks also need to be clarified.
+(3) Setting of \name parameters.
 
 \tightsubsubsection{Scalability}\label{subsec:evaluation:benchmarks:scalability}
 
@@ -294,20 +300,23 @@ This section focuses on some benchmarks of \name. (1). Scalability of the centra
 \tightsubsubsection{Fault tolerance}
 
 %\mypara{Fault tolerance}
-\Section\ref{subsec:system:fault} introduces the working principles under failures. Here we design the following scenario to verify the fault tolerance of \name. We use the number of downloaded blocks per cycle as reference. During cycles 0 to 9, \name works as usual, and one agent fails in the 10th cycle. The controller fails in the 20th cycle and recovers in the 30th cycle. Figure \ref{fig:analysis:failure} shows the average number of downloaded blocks per cycle. We find that the failure of one agent affects the algorithm efficiency for only one cycle and the system recovers in the 11th cycle, and the influence is not even notable. When the controller is unavailable, \name falls back to a default decentralized overlay protocol, resulting in graceful performance degradation. With the recovery of the controller, the performance recovers in the 30th cycle.
+\Section\ref{subsec:system:fault} introduces the working principles under failures. Here we examine the impact of the following failure scenario on the number of downloaded blocks per cycle. During cycles 0 to 9, \name works as usual, and one agent fails in the 10th cycle. The controller fails in the 20th cycle and recovers in the 30th cycle. Figure \ref{fig:analysis:failure} shows the average number of downloaded blocks per cycle. We find that the slight impact of agent failure only lasts for one cycle, and the system recovers in the 11th cycle. When the controller is unavailable, \name falls back to a default decentralized overlay protocol, resulting in graceful performance degradation. With the recovery of the controller, the performance recovers in the 30th cycle.
 
 \tightsubsubsection{Choosing the values of key parameters}\label{subsec:evaluation:benchmarks:parameters}
 
-\mypara{Block size} In \name, the bulk data file is split into blocks and can be transferred on disjoint paths. But this introduces a tradeoff between scheduling efficiency and calculation overhead. We therefore conduct two series of experiments using different block sizes (2MB and 64MB). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2MB/block scenario is 1.5 to 2 times shorter than that in the 64MB/block scenario. This is because smaller block size results in less degradation on the theoretical optimum (see Appendix for the proof). However, this optimization introduces longer controller running time, as shown in Figure \ref{fig:scale:cpu}. Overall, block size decisions depend on: (1) requirements on the completion time, and (2) controller's operation overhead.
+\mypara{Block size} In \name, the bulk data file is split into blocks and can be transferred on bottleneck-disjoint paths. But this introduces a tradeoff between scheduling efficiency and calculation overhead. We therefore conduct two series of experiments using different block sizes (2MB and 64MB). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2MB/block scenario is 1.5 to 2 times shorter than that in the 64MB/block scenario. This is because smaller block sizes result in closer-to-optimal performance (see Appendix for the proof). However, this optimization introduces longer controller running time, as shown in Figure \ref{fig:scale:cpu}. We pick block size by balancing two considerations: (1) requirements on the completion time, and (2) controller's operation overhead.
 
-\mypara{Update cycle lengths} Since any change in network environment may potentially alter the optimal overlay routing decisions, \name reacts to the changing network conditions by adjusting the routing scheme periodically. To testify the adjustment frequency, we set different cycle lengths from $0.5s$ to $95s$ to the same bulk data transfer, and Figure \ref{fig:analysis:cycleDiff} shows the completion time. Overall, smaller cycle lengths result in shorter completion time but the benefit is not so obvious when the cycle length is less than $3s$. This is because over-frequent adjustments introduce more overhead on: (1). the information collection from agents to the controller, (2). the execution of the centralized algorithm, and (3). the re-establishment of new TCP connection. Thus, considering adjustment granularity and the corresponding overhead, we finally choose $3s$ as the default cycle length.
+\mypara{Update cycle lengths} Since any change in network environment may potentially alter the optimal overlay routing decisions, \name reacts to the changing network conditions by adjusting the routing scheme periodically. To testify the adjustment frequency, we set different cycle lengths from $0.5s$ to $95s$ to the same bulk data transfer, and Figure \ref{fig:analysis:cycleDiff} shows the completion time. Smaller cycle lengths result in shorter completion time, but the benefit diminishes when the cycle length is less than $3s$. This is because too frequent updates introduce more overhead on: (1) the information collection from agents to the controller, (2) the execution of the centralized algorithm, and (3) the re-establishment of new TCP connection. Thus, considering adjustment granularity and the corresponding overhead, we finally choose $3s$ as the default cycle length.
 
 
 \tightsubsubsection{In-depth analysis.}\label{subsubsec:evaluation:depth}
 
-\mypara{Optimization over algorithm running time} \name decouples scheduling and routing, which can significantly reduce the computational complexity. To clearly show the optimization, we measure the algorithm running time under \name and the standard linear programming (LP) solution. For the standard LP experiments, we use the \textit{linprog} library on MATLAB, set the upper bound of the iteration number ($10^6$) if the algorithm does not converge and record the CPU time versus the block number. Figure \ref{fig:further:BDSvsLP} illustrates the comparison results, which shows that the running time of \name keeps below $25ms$ while that of standard LP grows quickly to $4s$ with only 4000 blocks. %This result illustrates \name's optimization over algorithm running time.
+\mypara{Optimization over algorithm running time} \name decouples scheduling and routing, which can significantly reduce the computational complexity. To clearly show the optimization, we measure the algorithm running time under \name and the standard linear programming (LP) solution. For the standard LP experiments, we use the \textit{linprog} library on MATLAB \cite{mathworks}, set the upper bound of the iteration number ($10^6$) if the algorithm does not converge, and record the CPU time as a function of the block number. Figure \ref{fig:further:BDSvsLP} shows that the running time of \name keeps below $25ms$ while that of standard LP grows quickly to $4s$ with only 4000 blocks. %This result illustrates \name's optimization over algorithm running time.
+\name is much faster than off-the-shelf LP solver.
 
-\mypara{Near-optimality of \name} To testify the near-optimality, we conduct a simple experiment to evaluate the completion time under the standard LP and \name: 2 DCs, 4 servers, 20MBps for server upload/download rate, 1 to 4000 blocks (we cannot conduct large-scale experiments due to the explosive growth of the LP calculation time). Figure \ref{fig:further:BDSvsLP_CT} shows that the completion time of \name is quite near to that of the optimal standard LP.
+\mypara{Near-optimality of \name} To measure the near-optimality, we evaluate the data transfer completion time under the standard LP and \name: 2 DCs, 4 servers, 20MBs for server upload/download rate.
+%1 to 4000 blocks (we cannot conduct large-scale experiments due to the explosive growth of the LP calculation time).
+We vary the number of blocks from 1 to 4000, over which the LP solver can't finish in reasonable time. Figure \ref{fig:further:BDSvsLP_CT} shows that the difference of completion time between \name and the optimal standard LP is about 15\%.
 
 
 \mypara{Benefit of disjoint overlay paths} \Section\ref{subsec:motivation:case-for} reveals the benefits of disjoint paths on application-level overlay networks. To explore the potential benefit, we record the ratio of the number of blocks downloaded from the original source to the total number of blocks, and the CDF is shown in Figure \ref{fig:further:overlay}. For about 90\% servers, the proportion is less than 20\%, which means that more than 80\% blocks are downloaded from other DCs on the disjoint paths, demonstrating great potential of multicast overlay network.
@@ -342,7 +351,7 @@ This section focuses on some benchmarks of \name. (1). Scalability of the centra
 
 
 
-In summary, both the prototype pilot deployed on \company network and the trace-driven simulations of \name achieve 3-5$\times$ speedup over existing solutions, with good scalability, strong adaptability and near-optimal scheduling results.
+In summary, both the prototype pilot deployment and the trace-driven simulations of \name show 3-5$\times$ speedup over existing solutions, with good scalability and reliability, and near-optimal scheduling results.
 
 
 %\begin{itemize}
