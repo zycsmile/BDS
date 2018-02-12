@@ -280,7 +280,7 @@ $b$ in $B$ with
 %<<<<<<< HEAD
 %Topologically, $A$ is directly connected with $B$ by a 2GB/s
 %link, and
-The data is split into 6 6GB-blocks.
+The data is split into six 6GB-blocks.
 We consider three strategies.
 (1) {\em Direct replication}:
 if $A$ sends data directly to $B$ and $C$ via WAN paths
@@ -340,9 +340,9 @@ across all possible $b$.}
 
 \mypara{Bottleneck-disjoint overlay paths in the wild}
 It is hard to identify all bottleneck-disjoint overlay paths,
-since the dataset only has end-to-end throughput between
-servers.
-Instead, we show empirically study one example of bottleneck-disjoint overlay path in the wild, which consists of two overlay
+since the dataset only has end-to-end throughput between servers.
+Instead, we empirically claim that {\em if two overlay paths have different end-to-end bandwidth at the same time, they should be bottleneck-disjoint} because of different intermediate servers.
+We show one example of bottleneck-disjoint overlay path in the wild, which consists of two overlay
 paths $A$$\rightarrow$$b$$\rightarrow$$C$ and $A$$\rightarrow$$C$,
 where the WAN routing from DC $A$ to DC $C$ goes through DC $B$,
 and $b$ is a server in $B$.
@@ -355,8 +355,10 @@ they are bottleneck-disjoint.
 Figure~\ref{fig:case:size} shows the distribution of
 $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$
 among all possible values of $A$, $b$, and $C$ in the dataset.
-We can see that $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$ is
-below 0.8 or over 1.3 for about 30\% overlay pairs. These pairs are widely available, and we can create a new bottleneck-disjoint path by using any server $b$
+We can see that only a quite small part (less than 5\%) of the paths share the same bottleneck with path $A\rightarrow C$ (the ratio equals to 1), and more than 95\% paths have different end-to-end bandwidth with path $A\rightarrow C$.
+%We can see that $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$ is
+%below 0.8 or over 1.3 for about 30\% overlay pairs. 
+These pairs are widely available, and we can create a new bottleneck-disjoint path by using any server $b$
 as an overlay point.
 %\jc{these measurements were collected at the same time? could this variance be simply noise?} Yes, they were collected at the same time. Just as the network monitor does.
 
