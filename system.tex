@@ -30,7 +30,7 @@ The centralized controller of \name sets a 3-second scheduling cycle, and update
 There are two optimizations in our implementation.
 \begin{itemize}
 \item \emph{Blocks merging}.
-To reduce the computational scale and achieve higher-efficient transmissions, \name merges the blocks with the same source and destination pair into one subtask.
+To reduce the computational scale and achieve more efficient transmissions, \name merges the blocks with the same source and destination pair into one subtask.
 This has two advantages: (1) it significantly reduces the number of pending blocks in each scheduling cycle, making calculation on the centralized control algorithm computationally more manageable,
 (2) it avoids establishing multiple TCP connections between two servers, which could cause performance instability and  performance degradation.
 %There are two advantages: reducing the computation scale and achieving higher-efficient transmissions. To be specific: 1) there will be a large number of pending blocks in each scheduling cycle, making calculation on the controller computationally hard to finish within an acceptable time, while block merging can significantly reduce the block number and thus reduce the calculation scale; 2) concurrent transmission will make all blocks establish connections at the same time, sharing the limited bandwidth and thus cannot possibly be finished in one cycle. This will result in connection hanging and inefficient transmissions.
@@ -65,7 +65,7 @@ calculates the limit of the total available bandwidth for inter-DC multicasts tr
 %we reserve 20\% of link capacity to protect online flows
 %from transient traffic bursts,
 To protect delay-sensitive flows under transient traffic bursty,
-we reserve 20\% link capacity to mask network conditions, 
+we reserve 20\% link capacity to mask network conditions,
 i.e., the upper bound of the available bandwidth for bulk-data
 transfers is set to be the difference between 80\% of
 link capacity and the aggregated bandwidth usage of

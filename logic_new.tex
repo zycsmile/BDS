@@ -16,7 +16,7 @@ and near real-time updates by
 {\em decoupling} the control logic into two steps (\Section\ref{subsec:logic:separation}):
 overlay scheduling, i.e., which data blocks to be sent
 (\Section\ref{subsec:logic:scheduling}),
-and routing, i.e., which paths to send each data block
+and routing, i.e., which paths to use to send each data block
 (\Section\ref{subsec:logic:routing}), each of which
 can be solved efficiently and near-optimally with proved guarantees
 (\Section\ref{subsec:logic:scheduling},~\ref{subsec:logic:routing}).
@@ -120,12 +120,13 @@ We start with the basic formulation of the overlay control under the assumption 
 Each multicast transmission, referred to as a {\em task} $T$, is defined
 by a source DC, a set of destination DCs, and a data file chopped into
 a list of fixed-sized data
-{\em blocks}\footnote{Splitting data into fine-grained blocks enables
-parallel transfer along
-multiple overlay paths to increase throughput. Too small data blocks
-increases computational overhead of the routing algorithm.
-In practice, we found 2MB is a good tradeoff
-(\Section\ref{subsec:evaluation:benchmarks:parameters})}.
+{\em blocks}
+%\footnote{Splitting data into fine-grained blocks enables
+%parallel transfer along
+%multiple overlay paths to increase throughput. Too small data blocks
+%increases computational overhead of the routing algorithm.
+%In practice, we found 2MB is a good tradeoff
+%(\Section\ref{subsec:evaluation:benchmarks:parameters})}.
 %the block size is 2MB, for efficient transmission and acceptable calculation overhead)
 The $i$th block of the $j$th task is denoted as $B_{i,j}$.
 Besides traffic demand, the inputs also include link capacity $c(l_{u,v})$, and
@@ -201,7 +202,7 @@ Since any change in network performance or arrival of
 new request may alter the optimal overlay
 routing decisions,
 %The problem can be formulated precisely according to the above definitions only when the network is static and all the conditions stay unchanged during the whole transmission period. However, it is impractical to make such assumptions because bulk data transfer and constantly changing online traffic co-exists in the network and the design choice of \name is to make dynamic bandwidth separation. Therefore,
-\name updates the solutions to the above formulation every cycle of 3 seconds, which is empirically sufficient to achieve near-optimal performance (\Section\ref{subsubsec:evaluation:depth}). Unfortunately, as a mixed-integer LP problem, the original formulation is intractable in practice, because the computational overhead grows exponentially with more potential sources, paths, and data blocks. Specifically, the centralized overlay routing algorithm should pick the data source from $10^4$s of servers for $10^5$s of blocks, and this scale even grows exponentially when we consider more fine-grained block partitions. Such computational complexity makes it intractable for the controller to explore all the possible paths to make optimal decisions on near-realtime timescales.
+\name monitors the network conditions, updates the real-time parameters such as available bandwidth, transfer rate and residual bunk data size, and solves the the above maximization problem every cycle of 3 seconds, which is empirically sufficient to achieve near-optimal performance (\Section\ref{subsubsec:evaluation:depth}). Unfortunately, as a mixed-integer LP problem, the original formulation is intractable in practice, because the computational overhead grows exponentially with more potential sources, paths, and data blocks. Specifically, the centralized overlay routing algorithm should pick the data source from $10^4$s of servers for $10^5$s of blocks, and this scale even grows exponentially when we consider more fine-grained block partitions. Such computational complexity makes it intractable for the controller to explore all the possible paths to make optimal decisions on near-realtime timescales.
 
 %To make it tractable, \name decouples the problem into two steps and tries to find the optimal solution for each step.
 
@@ -271,7 +272,7 @@ Therefore, in this scheduling step, \name will firstly pick out the subset of bl
 \subsection{Routing}
 \label{subsec:logic:routing}
 
-After the scheduling step selects the block set to transfer ($\overrightarrow{o_\mathbb{B}}$), the routing step then decides the residual three tuples, $\langle s_{\mathbb{B}}^*, p_{\lambda}^*, f^*_{\mathbb{B},p_{\lambda}^*} \rangle$, for all blocks.% $\mathbb{B}$, the source $s_{\mathbb{B}}^*$, the path $p_{B}^*$, and bandwidth allocation of the path $f^*_{B,p_{B}^*}$.
+After the scheduling step selects the block set to transfer ($\overrightarrow{o_\mathbb{B}}$), the routing step decides the residual three tuples, $\langle s_{\mathbb{B}}^*, p_{\lambda}^*, f^*_{\mathbb{B},p_{\lambda}^*} \rangle$, for all blocks.% $\mathbb{B}$, the source $s_{\mathbb{B}}^*$, the path $p_{B}^*$, and bandwidth allocation of the path $f^*_{B,p_{B}^*}$.
 %In the overlay routing step, \name routes and transfers blocks according to the output of data scheduling step ($\overrightarrow{o_B}$), and then tries to make optimal routing strategy (assign $s_{B}^*$, $p_{B}^*$ and $f^*_{B,p_{B}^*}$) for each block $B$.
 %Note that there are multiple potential data sources for each block in the multicast overlay network, so the objective of routing is to pick the most efficient data source and paths before allocating the bandwidths on these selected paths.
 
