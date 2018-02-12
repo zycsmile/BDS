@@ -86,7 +86,7 @@ order as in the pilot deployment (including the number of requests and the numbe
 
 \tightsubsubsection{\name vs. \company's existing solution}
 
-We first choose one service with 70~TB aggregated daily bulk data, which is distributedly stored in the source DC (with 1000 servers). Each of the other DCs downloads a copy of the data and stores it in the same way with 1000 servers.
+We first choose one service with 70~TB aggregated daily bulk data, which is distributedly stored in the source DC. Each of the other DCs downloads a copy of the data and stores it in the same distributed way.
 
 %First of all, we present the completion time of destination servers under \name and \company in Figure
 
@@ -96,7 +96,9 @@ For detailed illustration, we further pick three applications whose data volumes
 %draw three pairs of bar charts in Figure \ref{fig:BDSvsAnon:FCT}, each representing \name's and \company's mean (stddev) completion time for one application.
 These bars show that the benefit of \name increases along with the bulk data size. For small data volume, \name outperforms \company by 1.6 times, and more than 3 times than \company for large-data transfers.
 
-We also repeat the experiments for 7 days to offer more statistical significance and draw the average completion time of both \name and \company in Figure \ref{fig:BDSvsAnon:time}. \name consistently outperforms \company by 4 times, and has less performance variations. is quite stable during these 7 days while \company illustrates some volatilities. In general, \name achieves about 4.5 times shorter completion time than \company.
+We also repeat the experiments for 7 days to offer more statistical significance and draw the average completion time of both \name and \company in Figure \ref{fig:BDSvsAnon:time}. \name consistently outperforms \company by 4 times, and has less performance variations. 
+%is quite stable during these 7 days while \company illustrates some volatilities. 
+In general, \name achieves about 4.5 times shorter completion time than \company.
 %\item \name vs. \company's existing solution (pilot deployment)
 %\begin{itemize}
 %\item Overall improvement: A CDF with two lines to show the aggregated flow completion time
@@ -108,7 +110,7 @@ We also repeat the experiments for 7 days to offer more statistical significance
 
 %As we cannot implement other experimental systems in our real online network just as comparisons, we conduct a series of simulations using trace-driven simulations in this section, and compare \name's performance versus Bullet \cite{kostic2003bullet} and a CDN-based solution \cite{Andreev2013Designing} adopted by Akamai.
 
-In the trace-driven simulations, we use a topology with 13 DCs (one of which acts as the source DC) and set all the parameters to be the same as for the real network, including data file size, data source and destination, paths, link capacities and server upload/download rates. We use two baselines: Bullet \cite{kostic2003bullet} is a data dissemination system using an overlay mesh, and Akamai's video streaming system \cite{Andreev2013Designing} in overlay multicast networks.
+For \company's infrastructure, there are 1k to 20k servers in each DC, but there is no need for \name to be deployed in all the servers because only some of these servers are used for bunk data transfer. In the trace-driven simulations, we use a topology with 11 DCs (one of which acts as the source DC) and set all the parameters to be the same as for the real network, including data file size, data source and destination, paths, link capacities and server upload/download rates. We use two baselines: Bullet \cite{kostic2003bullet} is a data dissemination system using an overlay mesh, and Akamai's video streaming system \cite{Andreev2013Designing} in overlay multicast networks.
 
 %We conduct three series of experiments and show the results in Figure \ref{fig:versusCDN}: baseline \ref{fig:cdn:baseline}, large scale \ref{fig:cdn:scale} and small bandwidth experiments \ref{fig:cdn:bw}. We find \name achieves 3$\times$ shorter completion time than Bullet in the baseline experiments, and more than 4$\times$ improvement in the large scale experiments and small bandwidth experiments.
 We conduct three series of experiments and show the results in Table \ref{table:versusAkamai}: baseline, large-scale and small bandwidth experiments. In the baseline experiments, the size of the bulk data is 10TB, the number of servers per DC is 100, and the upload and download rate limits are set to 20MBs. In the large-scale experiment, the bulk data is 100TB, server number per DC is 1000. In the small bandwidth experiment, server upload and download rate limit are reduced to 5MBs. We find that \name achieves 3 times shorter completion time than Bullet and Akamai in the baseline experiments, and more than 4 times shorter completion time in the large-scale and small bandwidth experiments.
@@ -267,7 +269,7 @@ This section examines \name in very details through micro-benchmarks.
 
 \tightsubsubsection{Scalability}\label{subsec:evaluation:benchmarks:scalability}
 
-\mypara{Controller running time} As the controller needs to assign specific transmissions for all blocks, the algorithm running time is naturally related to the number of blocks. We show the relationship of block number and algorithm running time in Figure \ref{fig:scale:cpu}, from which we can see that the controller running time is still lower than $300ms$ even when there are $3\times 10^5$ blocks. This is the instantaneous peak value of block number when the bulk data size is 10~TB, and the block merging scheme described in \Section\ref{subsec:system:centralized} will further reduce the block number and reduce the algorithm running time.
+\mypara{Controller running time} As the controller needs to assign specific transmissions for all blocks, the algorithm running time is naturally related to the number of blocks. We show the relationship of block number and algorithm running time in Figure \ref{fig:scale:cpu}, from which we can see that the controller running time is still lower than $300ms$ even when there are $3\times 10^5$ blocks \myfootnote{$3\times 10^5$ is the instantaneous peak value of block number for a particular large scale CDN service, and $300ms$ is quite reasonable for practical usage.}. This is the instantaneous peak value of block number when the bulk data size is 10~TB, and the block merging scheme described in \Section\ref{subsec:system:centralized} will further reduce the block number and reduce the algorithm running time.
 
 \mypara{Network delay} \name works in inter-DC networks, so the network delay among DCs is a key factor in the algorithm updating process. We record the network delay of 5000 requests and present the CDF in Figure \ref{fig:scale:network}. We can see that 90\% of the network delays are below $50ms$ and the average value is about $25ms$, which is less than 1\% of the decision updating cycle (3 seconds).
 
