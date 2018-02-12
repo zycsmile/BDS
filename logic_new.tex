@@ -72,23 +72,29 @@ can be solved efficiently and near-optimally with proved guarantees
 \hline
 \textit{$\mathbb{B}$} & Set of blocks of all tasks\\
 \hline
+\textit{$\mathbb{P}$} & Set of all possible paths in $\mathbb{A}$\\
+\hline
+\textit{$\mathbb{B}_n$} & Set of blocks on server $n$\\
+\hline
 \textit{$\overrightarrow{o_\mathbb{B}}$} & Transmission sequence of $\mathbb{B}$\\
 \hline
 \textit{$B_{i,j}$} & Block $i$ in Task $j$\\
 \hline
-\textit{$c(l_{u,v})$} & Capacity of link $l_{u,v}$\\
-\hline
 \textit{$R_{up}(n)/R_{down}(n)$} & Upload/download rate limit of server $n$\\
 \hline
-\textit{$Path(s,d)$} & Set of all possible paths in $\mathbb{A}$\\
+\textit{$p_{(s,d)}$} & A path between a source and destination pair\\
+\hline
+\textit{$l(p_{(s,d)})$} & A link in path $p_{(s,d)}$\\
+\hline
+\textit{$c(l)$} & Capacity of link $l$\\
 \hline
 \textit{$s_{B_{i,j}}$} & Data source of $B_{i,j}$\\
+%\hline
+%\textit{$p_{\lambda}$} & One particular path in $Path(s,d)$\\
 \hline
-\textit{$p_{\lambda}$} & One particular path in $Path(s,d)$\\
+\textit{$f_{B_{i,j},p}$} & Transmission rate of $B_{i,j}$ on path $p_\lambda$\\
 \hline
-\textit{$f_{B_{i,j},p_\lambda}$} & Transmission rate of $B_{i,j}$ on path $p_\lambda$\\
-\hline
-\textit{$I_{B_{i,j},p_\lambda}$} & 0 or 1: whether $p_\lambda$ is selected for $B_{i,j}$\\
+\textit{$I_{B_{i,j},p}$} & 0 or 1: whether $p$ is selected for $B_{i,j}$\\
 \hline
 %\textit{$f(l_{u,v}$)} & The allocated transmission rate on link $l_{u,v}$\\
 %\hline
@@ -106,7 +112,7 @@ We start with the basic formulation of the overlay control under the assumption 
 
 %\jc{Notions are too complicated. Please simplify. 4.1 should be at most 1/3 pg.}
 
-\noindent(1) {\em Input.}% \jc{the formulation only consider one multicast request? No, multiple.}
+\noindent(1) {\em Input.} % \jc{the formulation only consider one multicast request? No, multiple.}
 %One source DC, sets of destination DCs,
 %network topology,
 %server upload (and download) rate limit,
@@ -125,40 +131,48 @@ The $i$th block of the $j$th task is denoted as $B_{i,j}$.
 Besides traffic demand, the inputs also include link capacity $c(l_{u,v})$, and
 server upload (and download) rate limit $R_{up}(n)$ (and $R_{down}(n)$). %\jc{what're the notions of toplogy, bandwidth? aren't link capacity and rate limit the same? Not the same, link capacity is the attribute of links and rate limit is the attribute of servers.}
 
-\noindent(2) {\em Output.} A four-tuple for each server $n$: $\langle \overrightarrow{o_\mathbb{B}}, s_{\mathbb{B}}^*, p_{\lambda}^*, f^*_{\mathbb{B},p_{\lambda}^*} \rangle$, which denotes the block transmission sequence, the optimal source, overlay path for each block, and the optimal allocated bandwidth on this path, respectively. %\jc{what the hell is B?!, and where's the server notation?}
+\noindent(2) {\em Output.} A four-tuple for each server $n$.
+
+$\langle \overrightarrow{o_{\mathbb{B}_n}}, s_{\mathbb{B}_n}^*, p^*_{(s^*_{\mathbb{B}_n},d)}, f^*_{\mathbb{B}_n,p^*_{(s^*_{\mathbb{B}_n},d)}} \rangle$, which denotes the block transmission sequence, the optimal source, overlay path for each block, and the optimal allocated bandwidth on this path, respectively. %\jc{what the hell is B?!, and where's the server notation?}
 
 \noindent(3) {\em Constraints.}
 The formulation is subject to constraints similar to those of maximum concurrent flow (MCF) problem~\cite{garg2007faster}.%\jc{you can tighten the space between equations and texts, if you need space}
 %There are four constraints on link capacity, data size, bandwidth allocation and path selection:
 
-%The mentioned three constraints can then be formulated as follows:
 \begin{packeditemize}
-\item The summed allocated bandwidth on this path should be no more than its capacity $c(p_\lambda)$.
+
+\item The allocated bandwidth on path $p_{(s,d)}$ should be the minimum of three parameters: the capacity of links that are in the path $c(l(p_{(s,d)}))$, source server upload rate $R_{up}(s)$, and destination server download rate $R_{down}(d)$.
+\begin{equation}
+\begin{split}
+f_{B_{i,j},p_{(s,d)}} \leq  min \{c(l(p_{(s,d)})),R_{up}(s),R_{down}(d)\},& \\
+\text{for }\forall B_{i,j}, p_{(s,d)} &
+%& \forall p_\lambda \in Path(s,d) \label{st:bottleneck}
+\end{split}
+\end{equation}
+
+%The mentioned three constraints can then be formulated as follows:
+
+\item The summed allocated bandwidth of a link should be no more than its capacity $c(l)$.
 \begin{equation}
 %\begin{split}
-c(p_\lambda) \geq  \displaystyle{\sum_{(s,d)\in \mathbb{A}}} \displaystyle{\sum_{B_{i,j} \in \mathbb{B}}} f_{B_{i,j},p_\lambda} \cdot I_{B_{i,j},p_\lambda}, \text{for }\forall p_\lambda\\
+c(l(p_{(s,d)})) \geq  \displaystyle{\sum_{p_{(s,d)}\in \mathbb{P}}} \displaystyle{\sum_{B_{i,j} \in \mathbb{B}}} f_{B_{i,j},p_{(s,d)}} \cdot I_{B_{i,j},p_{(s,d)}}, \text{for }\forall l(p_{(s,d)})\\
 %& \forall p_\lambda \in Path(s,d) \label{st:capacity}
 %\end{split}
 \end{equation}
 
-\item The product of allocated bandwidth and schedule cycle $\Delta T$ should be no less than block size $\mathbb{S}(B_{i,j})$.
+\item The product of the allocated bandwidth and schedule cycle $\Delta T$ should be no less than block size $\mathbb{S}(B_{i,j})$.
 \begin{equation}
 %\begin{split}
-\mathbb{S}(B_{i,j}) \leq  \displaystyle{\sum_{(s,d)\in \mathbb{A}}} \displaystyle{\sum_{p_{\lambda}\in Path(s,d)}} f_{B_{i,j},p_\lambda} \cdot I_{B_{i,j},p_\lambda} \cdot \Delta T, \text{for }\forall B_{i,j}\\
+\mathbb{S}(B_{i,j}) \leq \displaystyle{\sum_{p_{(s,d)}\in \mathbb{P}}} \displaystyle{\sum_{B_{i,j} \in \mathbb{B}}} f_{B_{i,j},p_{(s,d)}} \cdot I_{B_{i,j},p_{(s,d)}} \cdot \Delta T, \text{for }\forall B_{i,j}\\
 %& \forall B_{i,j} \in \mathbb{B} \label{st:size}\\
 %\end{split}
 \end{equation}
 
-\item The allocated bandwidth on path $p_\lambda$ should be the minimum of three parameters: the capacity $c(p_\lambda)$, source server upload rate $R_{up}(s)$, and destination server download rate $R_{down}(d)$.
-\begin{equation}
-%\begin{split}
-f_{B_{i,j},p_\lambda} \leq  min \{c(p_\lambda),R_{up}(s),R_{down}(d)\}, \text{for }\forall B_{i,j}, p_\lambda\\
-%& \forall p_\lambda \in Path(s,d) \label{st:bottleneck}
-%\end{split}
-\end{equation}
 
 \item Only one path will be chosen for a particular block.
-$\displaystyle{\sum_{p_\lambda \in Path(s,d)}} I_{B_{i,j},p_\lambda} = 1, \text{for }\forall s,d$
+\begin{equation}
+\displaystyle{\sum_{p_{(s,d)} \in \mathbb{P}}} I_{B_{i,j},p_{(s,d)}} = 1, \text{for }\forall p_{(s,d)}
+\end{equation}
 \end{packeditemize}
 %\jc{maybe it's better in math after all. please write
 %it in math and add comments in the end to describe the
@@ -177,7 +191,7 @@ $\displaystyle{\sum_{p_\lambda \in Path(s,d)}} I_{B_{i,j},p_\lambda} = 1, \text{
 
 \begin{equation}
 \centering
-max \quad \displaystyle{\sum_{(s,d)\in \mathbb{A}}} \displaystyle{\sum_{B_{i,j} \in \mathbb{B}}} \displaystyle{\sum_{p_{\lambda}\in Path(s,d)}} w(B_{i,j})\cdot f_{B_{i,j},p_\lambda} \cdot I_{B_{i,j},p_\lambda}
+max \quad \displaystyle{\sum_{p_{(s,d)}\in \mathbb{P}}} \displaystyle{\sum_{B_{i,j} \in \mathbb{B}}} w(B_{i,j})\cdot f_{B_{i,j},p_{(s,d)}} \cdot I_{B_{i,j},p_{(s,d)}}
 \label{equation:objective}
 \end{equation}
 where $w(B_{i,j})$ is the weight of $B_{i,j}$.
