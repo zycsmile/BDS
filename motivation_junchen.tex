@@ -246,10 +246,11 @@ prior work that focused on optimizing WAN.}
 The basic idea of application-level overlay networks is
 to spread traffic along {\em bottleneck-disjoint} overlay paths.
 %, which do not have common bottleneck links~\cite{datta19951}.
-In the context of inter-DC overlays, two
-overlay paths either traverse different sequences of DCs ({\em Type I}), or
-traverse the same DCs but different sequences of
-servers ({\em Type II}), or some combinations of the two types.
+In the context of inter-DC overlays, 
+there are two types of overlay paths: (1) a path traverses different sequence of DCs. (2) a path that traverses the same DC but different server sequences. In {\em Type I}, the bottleneck can be in intermediate links or inside a DC, while in {\em Type II}, the bottleneck is likely to be inside a DC. \myfootnote{There are also some combinations of the two types.}
+%two overlay paths either traverse different sequences of DCs ({\em Type I}), or
+%traverse the same DCs but different sequences of
+%servers ({\em Type II}), 
 Next, we use examples to show these bottleneck-disjoint overlay paths can be used to improve inter-DC multicast performance.
 
 \mypara{Examples of bottleneck-disjoint overlay paths}
@@ -544,7 +545,7 @@ The existing decentralized protocol lacks the global view and thus may stuck wit
 To show this, we sent a 30GB file from one DC to two destination
 DCs in \company's network.
 Each DC had 640 servers, each with 20Mbps upload and download
-bandwidth. This 30GB file was evenly stored in all these
+bandwidth \myfootnote{In \company, multiple services are mixed-deployed in the same DCs and even in the same servers, so the server bandwidth is shared by many services and the allocated available bandwidth for bunk data transfer is 20Mbps in general case}. This 30GB file was evenly stored in all these
 640 servers.
 Ideally, if the servers select
 the best source for all blocks, the ideal
@@ -614,7 +615,7 @@ Despite using standard QoS techniques and giving the lowest priority to
 bulk data transfers, we still see negative impacts on
 latency-sensitive traffic by bursty arrivals of bulk-data multicast
 requests. We monitored the bandwidth utilization of an inter-DC
-link in two days during which there was a bulk data transfer at 11:00 on the 2nd day lasting for 6 hours. Figure~\ref{fig:lesson2} shows the total utilization of an inter-DC link over time. The blue line denotes the outgoing (outbound) bandwidth and the green line denotes the ingoing (inbound) bandwidth.
+link in two days during which there was a bulk data transfer at 11:00 on the 2nd day lasting for 6 hours. Figure~\ref{fig:lesson2} shows the total utilization of an inter-DC link over time. The blue line denotes the outgoing (outbound) bandwidth and the green line denotes the incoming (inbound) bandwidth.
 From this figure, we can see that the bulk data transfer caused excessive link utilization (i.e., exceeding the safety threshold of 80\%) due
 to lack of global coordination. As a result, the latency-sensitive online traffic experienced over
 30$\times$ longer delay.
