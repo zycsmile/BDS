@@ -96,8 +96,8 @@ For detailed illustration, we further pick three applications whose data volumes
 %draw three pairs of bar charts in Figure \ref{fig:BDSvsAnon:FCT}, each representing \name's and \company's mean (stddev) completion time for one application.
 These bars show that the benefit of \name increases along with the bulk data size. For small data volume, \name outperforms \company by 1.6 times, and more than 3 times than \company for large-data transfers.
 
-We also repeat the experiments for 7 days to offer more statistical significance and draw the average completion time of both \name and \company in Figure \ref{fig:BDSvsAnon:time}. \name consistently outperforms \company by 4 times, and has less performance variations. 
-%is quite stable during these 7 days while \company illustrates some volatilities. 
+We also repeat the experiments for 7 days to offer more statistical significance and draw the average completion time of both \name and \company in Figure \ref{fig:BDSvsAnon:time}. \name consistently outperforms \company by 4 times, and has less performance variations.
+%is quite stable during these 7 days while \company illustrates some volatilities.
 In general, \name achieves about 4.5 times shorter completion time than \company.
 %\item \name vs. \company's existing solution (pilot deployment)
 %\begin{itemize}
@@ -161,7 +161,7 @@ Akamai & $25m$ & $87m$ & $138m$\\
 \vspace{-0.4cm}
 \end{figure}
 
-To test the effectiveness of bandwidth separation and check whether the bulk data transfers affect latency-sensitive traffic, we set the upper bound of available bandwidth for bulk data transfer to 10~GBs, and monitor the real usage of one inter-DC link. The results are shown in Figure \ref{fig:quota}, from which we can see the real bandwidth usage stays below 10~GBs throughout the whole transmission process. 
+To test the effectiveness of bandwidth separation and check whether the bulk data transfers affect latency-sensitive traffic, we set the upper bound of available bandwidth for bulk data transfer to 10~GBs, and monitor the real usage of one inter-DC link. The results are shown in Figure \ref{fig:quota}, from which we can see the real bandwidth usage stays below 10~GBs throughout the whole transmission process.
 When being used online, the upper bound of bandwidth for bulk data transfers is set to be the difference between link capacity and the peak bandwidth of latency-sensitive workloads. Therefore, the effectiveness of \name bandwidth separation can guarantee that bulk transfers do not interfere with latency-sensitive workloads.% bound the bunk data transfer, the latency-sensitive workloads would generally not be interfered.
 %and thus \name can effectively reduce the incidents of delay on latency-sensitive traffic caused by bulk data transfers.
 
@@ -221,7 +221,7 @@ When being used online, the upper bound of bandwidth for bulk data transfers is 
         \end{subfigure}
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
-                \includegraphics[width=50mm]{images/blkSize.eps} %
+                \includegraphics[width=50mm]{images/blkSize_v2.eps} %plotTCT_IDC.m
                 \caption{Completion time under different block sizes.}
                 \label{fig:analysis:blksize}
         \end{subfigure}
