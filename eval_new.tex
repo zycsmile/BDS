@@ -20,7 +20,7 @@
                 \caption{Comparison by completion time.}
                 \label{fig:BDSvsAnon:time}
         \end{subfigure}
-        \tightcaption{[\name vs. \company] Results from pilot deployments.}
+        \tightcaption{[\name vs. \alg] Results from pilot deployments.}
         \label{fig:BDSvsAnon}
 \vspace{-0.4cm}
 \end{figure*}
@@ -28,7 +28,7 @@
 To evaluate \name, we integrated our end-to-end prototype in \company, and ran a pilot deployment under the above implementation.
 Using a combination of pilot deployment, trace-driven simulation, and microbenchmarking, we show that:
 \begin{packedenumerate}
-\item \name completes inter-DC multicast 3-5$\times$ faster than \company's existing solution and other baselines used in industry (\Section\ref{subsec:evaluation:centralized}).
+\item \name completes inter-DC multicast 3-5$\times$ faster than \alg and other baselines used in industry (\Section\ref{subsec:evaluation:centralized}).
 \item \name significantly reduces the incidents of interferences between bulk-data multicast traffic and latency-sensitive traffic (\Section\ref{subsec:evaluation:separation}).
 \item \name can scale to the traffic demand of a large online service provider, tolerate various failure scenarios, and is close to the theoretically optimal performance (\Section\ref{subsec:evaluation:benchmarks}).
 \end{packedenumerate}
@@ -63,9 +63,10 @@ Using a combination of pilot deployment, trace-driven simulation, and microbench
 \label{subsec:evaluation:centralized}
 
 We compare \name against three existing solutions:
-\company's existing solution (a decentralized strategy which has been evolving for 5 years with end-to-end evaluations),
-Bullet~\cite{kostic2003bullet} (a centralized strategy), and
-Akamai's overlay network~\cite{Andreev2013Designing} for live video streaming
+\alg (\company's existing solution),  
+%(a decentralized strategy which has been evolving for 5 years with end-to-end evaluations),
+Bullet~\cite{kostic2003bullet} (a decentralized  strategy), and
+Akamai's overlay network~\cite{Andreev2013Designing} (a centralized strategy) for live video streaming
 multicast.
 
 
@@ -84,21 +85,21 @@ order as in the pilot deployment (including the number of requests and the numbe
 
 %To evaluate the benefits of centralized control, we conduct two series of experiments: the comparisons with \company's existing solution based on the pilot deployments, and the comparisons with other overlay multicast techniques using trace-driven simulations.
 
-\tightsubsubsection{\name vs. \company's existing solution}
+\tightsubsubsection{\name vs. \alg}
 
 We first choose one service with 70~TB aggregated daily bulk data, which is distributedly stored in the source DC. Each of the other DCs downloads a copy of the data and stores it in the same distributed way.
 
 %First of all, we present the completion time of destination servers under \name and \company in Figure
 
-To intuitively present the overall improvements by \name, we draw the cumulative distribution function (CDF) of the completion time in Figure \ref{fig:BDSvsAnon:overall}, from which we can see that the completion time under \company's existing solution is about 200 minutes while that under \name is less than 40 minutes, which is 5 times shorter.
+To intuitively present the overall improvements by \name, we draw the cumulative distribution function (CDF) of the completion time in Figure \ref{fig:BDSvsAnon:overall}, from which we can see that the completion time under \alg is about 200 minutes while that under \name is less than 40 minutes, which is 5 times shorter.
 
-For detailed illustration, we further pick three applications whose data volumes are large, medium and small, and compare \name's and \company's mean (stddev) completion time for each application in Figure \ref{fig:BDSvsAnon:FCT}.
+For detailed illustration, we further pick three applications whose data volumes are large, medium and small, and compare \name's and \alg's mean (stddev) completion time for each application in Figure \ref{fig:BDSvsAnon:FCT}.
 %draw three pairs of bar charts in Figure \ref{fig:BDSvsAnon:FCT}, each representing \name's and \company's mean (stddev) completion time for one application.
-These bars show that the benefit of \name increases along with the bulk data size. For small data volume, \name outperforms \company by 1.6 times, and more than 3 times than \company for large-data transfers.
+These bars show that the benefit of \name increases along with the bulk data size. For small data volume, \name outperforms \alg by 1.6 times, and more than 3 times than \alg for large-data transfers.
 
-We also repeat the experiments for 7 days to offer more statistical significance and draw the average completion time of both \name and \company in Figure \ref{fig:BDSvsAnon:time}. \name consistently outperforms \company by 4 times, and has less performance variations.
+We also repeat the experiments for 7 days to offer more statistical significance and draw the average completion time of both \name and \alg in Figure \ref{fig:BDSvsAnon:time}. \name consistently outperforms \alg by 4 times, and has less performance variations.
 %is quite stable during these 7 days while \company illustrates some volatilities.
-In general, \name achieves about 4.5 times shorter completion time than \company.
+In general, \name achieves about 4.5 times shorter completion time than \alg.
 %\item \name vs. \company's existing solution (pilot deployment)
 %\begin{itemize}
 %\item Overall improvement: A CDF with two lines to show the aggregated flow completion time
@@ -174,14 +175,14 @@ When being used online, the upper bound of bandwidth for bulk data transfers is 
  \rowcolor[gray]{0.9}
 \textbf{System} & \textbf{Source DC egress link} & \textbf{$l_1$} & \textbf{$l_2$} & \textbf{$l_3$}\\
 \hline \hline
-\company & 69.82\% & 53.09\% & 57.98\% & 63.01\% \\
+\alg & 69.82\% & 53.09\% & 57.98\% & 63.01\% \\
 \hline
 \name & 70.55\% & 62.46\% & 63.23\% & 64.24\% \\
 \hline
 \end{tabular}
 }
 \end{center}
-\tightcaption{Average link utilizations of the source DC egress link and 3 inter-DC links ($l_1$, $l_2$, $l_3$) under \company and \name.}
+\tightcaption{Average link utilizations of the source DC egress link and 3 inter-DC links ($l_1$, $l_2$, $l_3$) under \alg and \name.}
 \label{table:usage}
 \vspace{-0.4cm}
 \end{table}

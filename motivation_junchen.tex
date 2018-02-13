@@ -14,7 +14,7 @@ We then show the potential improvement of multicast performance
 by leveraging disjoint application-level overlay paths available in geo-distributed DCs
 (\Section\ref{subsec:motivation:case-for}).
 Finally, we examine \company's current solution of
-inter-DC multicast, and draw lessons from real-world
+inter-DC multicast (\alg), and draw lessons from real-world
 incidents to inform the design of \name (\Section\ref{subsec:motivation:baseline}).
 The findings are based on a dataset collected from \company's
 inter-DC WANs over a duration of 7 days.
@@ -471,7 +471,7 @@ two limitations of this approach.
 
 \mypara{Existing solutions of \company}
 To meet the need of rapid growth of inter-DC data replication,
-\company has deployed an application-level
+\company has deployed \alg, an application-level
 overlay network a few years ago.
 Despite years of refinement, the overlay network
 is still based on a receiver-driven decentralized
