@@ -246,11 +246,11 @@ prior work that focused on optimizing WAN.}
 The basic idea of application-level overlay networks is
 to spread traffic along {\em bottleneck-disjoint} overlay paths.
 %, which do not have common bottleneck links~\cite{datta19951}.
-In the context of inter-DC overlays, 
+In the context of inter-DC overlays,
 there are two types of overlay paths: (1) a path traverses different sequence of DCs. (2) a path that traverses the same DC but different server sequences. In {\em Type I}, the bottleneck can be in intermediate links or inside a DC, while in {\em Type II}, the bottleneck is likely to be inside a DC. \myfootnote{There are also some combinations of the two types.}
 %two overlay paths either traverse different sequences of DCs ({\em Type I}), or
 %traverse the same DCs but different sequences of
-%servers ({\em Type II}), 
+%servers ({\em Type II}),
 Next, we use examples to show these bottleneck-disjoint overlay paths can be used to improve inter-DC multicast performance.
 
 \mypara{Examples of bottleneck-disjoint overlay paths}
@@ -358,7 +358,7 @@ $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$
 among all possible values of $A$, $b$, and $C$ in the dataset.
 We can see that only a quite small part (less than 5\%) of the paths share the same bottleneck with path $A\rightarrow C$ (the ratio equals to 1), and more than 95\% paths have different end-to-end bandwidth with path $A\rightarrow C$.
 %We can see that $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$ is
-%below 0.8 or over 1.3 for about 30\% overlay pairs. 
+%below 0.8 or over 1.3 for about 30\% overlay pairs.
 These pairs are widely available, and we can create a new bottleneck-disjoint path by using any server $b$
 as an overlay point.
 %\jc{these measurements were collected at the same time? could this variance be simply noise?} Yes, they were collected at the same time. Just as the network monitor does.
@@ -625,7 +625,7 @@ to lack of global coordination. As a result, the latency-sensitive online traffi
 
 \begin{figure}[t!]
         \center
-        \includegraphics[width=3in]{images/nj02-M2A_0212-0216_v2.eps}
+        \includegraphics[width=3in]{images/nj02-M2A_0212-0216_v3.eps}
         \tightcaption{The utilization of the inter-DC link in two days. Inter-DC bulk data transfer on the 2nd day caused severe interference on latency-sensitive traffic.}
         \label{fig:lesson2}
 \vspace{-0.1in}
