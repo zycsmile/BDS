@@ -63,7 +63,7 @@ Using a combination of pilot deployment, trace-driven simulation, and microbench
 \label{subsec:evaluation:centralized}
 
 We compare \name against three existing solutions:
-\alg (\company's existing solution),  
+\alg (\company's existing solution),
 %(a decentralized strategy which has been evolving for 5 years with end-to-end evaluations),
 Bullet~\cite{kostic2003bullet} (a decentralized  strategy), and
 Akamai's overlay network~\cite{Andreev2013Designing} (a centralized strategy) for live video streaming
@@ -87,7 +87,7 @@ order as in the pilot deployment (including the number of requests and the numbe
 
 \tightsubsubsection{\name vs. \alg}
 
-We first choose one service with 70~TB aggregated daily bulk data, which is distributedly stored in the source DC. Each of the other DCs downloads a copy of the data and stores it in the same distributed way.
+We first choose one service with 70~TB aggregated daily bulk data, which is distributedly stored in the source DC. Each of the other DCs downloads a copy of the data.% and stores it in the same distributed way.
 
 %First of all, we present the completion time of destination servers under \name and \company in Figure
 
@@ -95,7 +95,7 @@ To intuitively present the overall improvements by \name, we draw the cumulative
 
 For detailed illustration, we further pick three applications whose data volumes are large, medium and small, and compare \name's and \alg's mean (stddev) completion time for each application in Figure \ref{fig:BDSvsAnon:FCT}.
 %draw three pairs of bar charts in Figure \ref{fig:BDSvsAnon:FCT}, each representing \name's and \company's mean (stddev) completion time for one application.
-These bars show that the benefit of \name increases along with the bulk data size. For small data volume, \name outperforms \alg by 1.6 times, and more than 3 times than \alg for large-data transfers.
+These bars show that the benefit of \name increases along with the bulk data size. \name outperforms \alg by 1.6 times for small data volume, and more than 3 times for large-data transfers.
 
 We also repeat the experiments for 7 days to offer more statistical significance and draw the average completion time of both \name and \alg in Figure \ref{fig:BDSvsAnon:time}. \name consistently outperforms \alg by 4 times, and has less performance variations.
 %is quite stable during these 7 days while \company illustrates some volatilities.
@@ -111,7 +111,7 @@ In general, \name achieves about 4.5 times shorter completion time than \alg.
 
 %As we cannot implement other experimental systems in our real online network just as comparisons, we conduct a series of simulations using trace-driven simulations in this section, and compare \name's performance versus Bullet \cite{kostic2003bullet} and a CDN-based solution \cite{Andreev2013Designing} adopted by Akamai.
 
-For \company's infrastructure, there are 1k to 20k servers in each DC, but there is no need for \name to be deployed in all the servers because only some of these servers are used for bunk data transfer. In the trace-driven simulations, we use a topology with 11 DCs (one of which acts as the source DC) and set all the parameters to be the same as for the real network, including data file size, data source and destination, paths, link capacities and server upload/download rates. We use two baselines: Bullet \cite{kostic2003bullet} is a data dissemination system using an overlay mesh, and Akamai's video streaming system \cite{Andreev2013Designing} in overlay multicast networks.
+For \company's infrastructure, there are 1k to 20k servers in each DC, but there is no need for \name to be deployed in all the servers because only some of these servers are used for bulk data transfer. In the trace-driven simulations, we use a topology with 11 DCs (one of which acts as the source DC) and set all the parameters to be the same as for the real network, including data file size, data source and destination, paths, link capacities and server upload/download rates. We use two baselines: Bullet \cite{kostic2003bullet} is a data dissemination system using an overlay mesh, and Akamai's video streaming system \cite{Andreev2013Designing} in overlay multicast networks.
 
 %We conduct three series of experiments and show the results in Figure \ref{fig:versusCDN}: baseline \ref{fig:cdn:baseline}, large scale \ref{fig:cdn:scale} and small bandwidth experiments \ref{fig:cdn:bw}. We find \name achieves 3$\times$ shorter completion time than Bullet in the baseline experiments, and more than 4$\times$ improvement in the large scale experiments and small bandwidth experiments.
 We conduct three series of experiments and show the results in Table \ref{table:versusAkamai}: baseline, large-scale and small bandwidth experiments. In the baseline experiments, the size of the bulk data is 10TB, the number of servers per DC is 100, and the upload and download rate limits are set to 20MBs. In the large-scale experiment, the bulk data is 100TB, server number per DC is 1000. In the small bandwidth experiment, server upload and download rate limit are reduced to 5MBs. We find that \name achieves 3 times shorter completion time than Bullet and Akamai in the baseline experiments, and more than 4 times shorter completion time in the large-scale and small bandwidth experiments.
@@ -159,7 +159,7 @@ Akamai & $25m$ & $87m$ & $138m$\\
   \includegraphics[width=45mm]{images/Quota_v2.eps}%DrawLink.m
   \tightcaption{The effectiveness of bandwidth separation.}
   \label{fig:quota}
-\vspace{-0.4cm}
+\vspace{-0.2cm}
 \end{figure}
 
 To test the effectiveness of bandwidth separation and check whether the bulk data transfers affect latency-sensitive traffic, we set the upper bound of available bandwidth for bulk data transfer to 10~GBs, and monitor the real usage of one inter-DC link. The results are shown in Figure \ref{fig:quota}, from which we can see the real bandwidth usage stays below 10~GBs throughout the whole transmission process.
@@ -270,8 +270,8 @@ This section examines \name in very details through micro-benchmarks.
 
 \tightsubsubsection{Scalability}\label{subsec:evaluation:benchmarks:scalability}
 
-\mypara{Controller running time} As the controller needs to assign specific transmissions for all blocks, the algorithm running time is naturally related to the number of blocks. For \company's scenario, $3\times 10^5$ is the instantaneous peak value of block number for a particular large scale CDN service, so we evaluate the algorithm running time over the number of blocks and show the results in Figure \ref{fig:scale:cpu}, from which we can see that the controller running time keeps lower than $300ms$, which is quite reasonable for practical usage. 
-To explore the theoretical limits of centralized computation, we further investigate \name's performance on larger scales: (1) More DCs. We double the number of DCs, so the block number increases to $6\times 10^5$. (2) More blocks. On base of (1), we double the size of bunk data, so the block number increases to $12\times 10^5$. The results of these simulations are also shown in \ref{fig:scale:cpu}, which illustrates that the algorithm running time is still less than $800ms$ even in the order of $10^6$ (far more beyond the peak value of practical system).
+\mypara{Controller running time} As the controller needs to assign specific transmissions for all blocks, the algorithm running time is naturally related to the number of blocks. For \company's scenario, $3\times 10^5$ is the instantaneous peak value of block number for a particular large scale CDN service, so we evaluate the algorithm running time over the number of blocks and show the results in Figure \ref{fig:scale:cpu}, from which we can see that the controller running time keeps lower than $300ms$, which is quite reasonable for practical usage.
+To explore the theoretical limits of centralized computation, we further investigate \name's performance on larger scales: (1) More DCs. We double the number of DCs, so the block number increases to $6\times 10^5$. (2) More blocks. On base of (1), we double the size of bulk data, so the block number increases to $12\times 10^5$. The results of these simulations are also shown in \ref{fig:scale:cpu}, which illustrates that the algorithm running time is still less than $800ms$ even in the order of $10^6$ (far more beyond the peak value of practical system).
 %This is the instantaneous peak value of block number when the bulk data size is 10~TB, and the block merging scheme described in \Section\ref{subsec:system:centralized} will further reduce the block number and reduce the algorithm running time.
 
 \mypara{Network delay} \name works in inter-DC networks, so the network delay among DCs is a key factor in the algorithm updating process. We record the network delay of 5000 requests and present the CDF in Figure \ref{fig:scale:network}. We can see that 90\% of the network delays are below $50ms$ and the average value is about $25ms$, which is less than 1\% of the decision updating cycle (3 seconds).
@@ -311,7 +311,9 @@ Here we examine the impact of the following failure scenario on the number of do
 
 \tightsubsubsection{Choosing the values of key parameters}\label{subsec:evaluation:benchmarks:parameters}
 
-\mypara{Block size} In \name, the bulk data file is split into blocks and can be transferred on bottleneck-disjoint paths. But this introduces a tradeoff between scheduling efficiency and calculation overhead. We therefore conduct two series of experiments using different block sizes (2MB and 64MB). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2MB/block scenario is 1.5 to 2 times shorter than that in the 64MB/block scenario. This is because a smaller block sizes result in closer-to-optimal performance (see Appendix for the proof). However, this optimization introduces longer controller running time, as shown in Figure \ref{fig:scale:cpu}. We pick block size by balancing two considerations: (1) requirements on the completion time, and (2) controller's operation overhead.
+\mypara{Block size} In \name, the bulk data file is split into blocks and can be transferred on bottleneck-disjoint paths. But this introduces a tradeoff between scheduling efficiency and calculation overhead. We therefore conduct two series of experiments using different block sizes (2MB and 64MB). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2MB/block scenario is 1.5 to 2 times shorter than that in the 64MB/block scenario. 
+%This is because a smaller block sizes result in closer-to-optimal performance (see Appendix for the proof).
+However, this optimization introduces longer controller running time, as shown in Figure \ref{fig:scale:cpu}. We pick block size by balancing two considerations: (1) requirements on the completion time, and (2) controller's operation overhead.
 
 \mypara{Update cycle lengths} Since any change in network environment may potentially alter the optimal overlay routing decisions, \name reacts to the changing network conditions by adjusting the routing scheme periodically. To testify the adjustment frequency, we set different cycle lengths from $0.5s$ to $95s$ to the same bulk data transfer, and Figure \ref{fig:analysis:cycleDiff} shows the completion time. Smaller cycle lengths result in shorter completion time, but the benefit diminishes when the cycle length is less than $3s$. This is because too frequent updates introduce more overhead on: (1) the information collection from agents to the controller, (2) the execution of the centralized algorithm, and (3) the re-establishment of new TCP connection. Thus, considering adjustment granularity and the corresponding overhead, we finally choose $3s$ as the default cycle length.
 
@@ -323,7 +325,7 @@ Here we examine the impact of the following failure scenario on the number of do
 
 \mypara{Near-optimality of \name} To measure the near-optimality, we evaluate the data transfer completion time under the standard LP and \name: 2 DCs, 4 servers, 20MBs for server upload/download rate.
 %1 to 4000 blocks (we cannot conduct large-scale experiments due to the explosive growth of the LP calculation time).
-We vary the number of blocks from 1 to 4000, over which the LP solver can't finish in reasonable time. Figure \ref{fig:further:BDSvsLP_CT} shows that the difference of completion time between \name and the optimal standard LP is about 15\%.
+We vary the number of blocks from 1 to 4000, over which the LP solver can't finish in reasonable time. Figure \ref{fig:further:BDSvsLP_CT} shows the near-optimality of \name.%that the difference of completion time between \name and the optimal standard LP is about 15\%.
 
 
 \mypara{Benefit of disjoint overlay paths} \Section\ref{subsec:motivation:case-for} reveals the benefits of disjoint paths on application-level overlay networks. To explore the potential benefit, we record the ratio of the number of blocks downloaded from the original source to the total number of blocks, and the CDF is shown in Figure \ref{fig:further:overlay}. For about 90\% servers, the proportion is less than 20\%, which means that more than 80\% blocks are downloaded from other DCs on the disjoint paths, demonstrating great potential of multicast overlay network.

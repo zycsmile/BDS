@@ -72,9 +72,9 @@ can be solved efficiently and near-optimally with proved guarantees
 \hline
 \textit{$\mathbb{B}$} & Set of blocks of all tasks\\
 \hline
-\textit{$\mathbb{P}$} & Set of all possible paths in $\mathbb{A}$\\
-\hline
 \textit{$\mathbb{B}_n$} & Set of blocks on server $n$\\
+\hline
+\textit{$\mathbb{P}$} & Set of all possible paths in $\mathbb{A}$\\
 \hline
 \textit{$\overrightarrow{o_\mathbb{B}}$} & Transmission sequence of $\mathbb{B}$\\
 \hline
@@ -202,7 +202,7 @@ Since any change in network performance or arrival of
 new request may alter the optimal overlay
 routing decisions,
 %The problem can be formulated precisely according to the above definitions only when the network is static and all the conditions stay unchanged during the whole transmission period. However, it is impractical to make such assumptions because bulk data transfer and constantly changing online traffic co-exists in the network and the design choice of \name is to make dynamic bandwidth separation. Therefore,
-\name monitors the network conditions, updates the real-time parameters such as available bandwidth, transfer rate and residual bunk data size, and solves the the above maximization problem every cycle of 3 seconds, which is empirically sufficient to achieve near-optimal performance (\Section\ref{subsubsec:evaluation:depth}). Unfortunately, as a mixed-integer LP problem, the original formulation is intractable in practice, because the computational overhead grows exponentially with more potential sources, paths, and data blocks. Specifically, the centralized overlay routing algorithm should pick the data source from $10^4$s of servers for $10^5$s of blocks, and this scale even grows exponentially when we consider more fine-grained block partitions. Such computational complexity makes it intractable for the controller to explore all the possible paths to make optimal decisions on near-realtime timescales.
+\name monitors the network conditions, updates the real-time parameters such as available bandwidth, transfer rate and residual bulk data size, and solves the the above maximization problem every cycle of 3 seconds, which is empirically sufficient to achieve near-optimal performance (\Section\ref{subsubsec:evaluation:depth}). Unfortunately, as a mixed-integer LP problem, the original formulation is intractable in practice, because the computational overhead grows exponentially with more potential sources, paths, and data blocks. Specifically, the centralized overlay routing algorithm should pick the data source from $10^4$s of servers for $10^5$s of blocks, and this scale even grows exponentially when we consider more fine-grained block partitions. Such computational complexity makes it intractable for the controller to explore all the possible paths to make optimal decisions on near-realtime timescales.
 
 %To make it tractable, \name decouples the problem into two steps and tries to find the optimal solution for each step.
 
@@ -256,7 +256,8 @@ outputs the transmission order $\overrightarrow{o_\mathbb{B}}$, and the objectiv
 The key to avoid degradation in reducing the searching space is to make sure that the optimal result is still retained in the reduced searching space.
 %In other words, the optimal result is not in the space that is pruned by scheduling procedure.
 %We show that the a simple-yet-efficient way of achieving optimal scheduling result is to maintain same amount of copies of each data block. We will give a full proof of the above statement in Appendix~\ref{??}, but let us  intuitively explain it here.
-We claim that {\em the optimal result occurs when availability of all data blocks is balanced}, i.e., all the blocks are duplicated with the same amount of copies. Thus, a simple-yet-efficient way of avoiding degradation when reducing searching space is to balance block availability. We will give a full proof of the above statement in Appendix~\Section\ref{appendix:balance}.
+We claim that {\em the optimal result occurs when availability of all data blocks is balanced}, i.e., all the blocks are duplicated with the same amount of copies. Thus, a simple-yet-efficient way of avoiding degradation when reducing searching space is to balance block availability. 
+%We will give a full proof of the above statement in Appendix~\Section\ref{appendix:balance}.
 %, but let us intuitively explain it here.
 %thus the key concern is to balance the duplication of all blocks. So here \name prunes the searching space that will not result in balanced duplications and selects the least duplicated blocks to transmit first.
 %In this way, the optimal result will be retained in the reduced searching space.
@@ -288,6 +289,8 @@ and the optimal transmission rate of the relaxed problem is $F^*=\alpha\dot f^*$
 Therefore, finding the optimal solution to the original problem becomes simply maximing $\alpha$ instead, and this can be solved in polynomial time \cite{reed2012traffic}.
 %equivalent to that of the original problem $f^*$ with a relationship given by $F^* / \alpha = f^*$. Thus, the original problem is converted to maximize $\alpha$ and can be solved within polynomial time.
 
-However, when splitting tasks infinitesimally, the number of blocks will grow considerably large, and the computing time will be intolerable. \name adopts two coping strategies: it merges the blocks with the same source and destination pair into one subtask so as to reduce the calculation scale (see blocks merging in \Section\ref{subsec:system:centralized}); furthermore, it uses the improved fully polynomial-time approximation schemes (FPTAS) (\cite{fleischer2000approximating}) to optimize the dual problem of the original problem and works out an $\epsilon$-optimal solution (see Appendix~\Section\ref{appendix:optimality} for the proof of near-optimality of \name).% with $\alpha' \geq \alpha_\epsilon \geq \alpha'(1-\epsilon)^{-3}$. This algorithm optimizes the dual problem of the relaxed LP problem by proceeding in phases and iterations
+However, when splitting tasks infinitesimally, the number of blocks will grow considerably large, and the computing time will be intolerable. \name adopts two coping strategies: it merges the blocks with the same source and destination pair into one subtask so as to reduce the calculation scale (see blocks merging in \Section\ref{subsec:system:centralized}); furthermore, it uses the improved fully polynomial-time approximation schemes (FPTAS) (\cite{fleischer2000approximating}) to optimize the dual problem of the original problem and works out an $\epsilon$-optimal solution. 
+%(see Appendix~\Section\ref{appendix:optimality} for the proof of near-optimality of \name).
+% with $\alpha' \geq \alpha_\epsilon \geq \alpha'(1-\epsilon)^{-3}$. This algorithm optimizes the dual problem of the relaxed LP problem by proceeding in phases and iterations
 %\jc{sorry, but i'm totally lost. what's the key idea? is it just a standard LP relaxation?}
 %\jc{is this the same as ``blocks merging'' in the next section?}
