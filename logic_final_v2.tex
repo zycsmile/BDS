@@ -72,9 +72,9 @@ can be solved efficiently and near-optimally with proved guarantees
 %\mypara{Under fixed network capacity}
 Since any change in network performance or arrival of
 new request may alter the optimal overlay
-routing decisions, any scheduling system should implement a network monitor to update network-level statistics periodically.
+routing decisions, scheduling systems always implement network monitors to update network-level statistics periodically. We start with the formulation of the overlay control, which outputs the block transmission order, path selection and bandwidth allocation. We will later discuss the algorithm feasibility in practice. 
 %We start with the basic formulation of the overlay control under the assumption of fixed network capacity and fixed demand of multicast requests. We will later extend it to dynamic network performance and traffic demands.
-Table \ref{table:para} summarizes the key variables and parameters. The problem of multicast overlay routing can be formulated as follows:
+Table \ref{table:para} summarizes the key variables and parameters, and the problem of multicast overlay routing can be formulated as follows:
 
 
 \noindent(1) {\em Input.} % \jc{the formulation only consider one multicast request? No, multiple.}
@@ -91,7 +91,7 @@ server upload (and download) rate limit $R_{up}(n)$ (and $R_{down}(n)$).
 $\langle \mathbb{B}_n(T_i), s_{\mathbb{B}_n}^*, p^*_{(s^*_{\mathbb{B}_n},d)}, f^*_{\mathbb{B}_n,p^*_{(s^*_{\mathbb{B}_n},d)}} \rangle$, which denotes the block set transmitted in each $T_i$ (i.e., transmission order of $\mathbb{B}_n$), the optimal source of these blocks, overlay path for each block, and the optimal allocated bandwidth on the overlay path, respectively.
 
 \noindent(3) {\em Constraints.}
-The formulation is subject to constraints similar to those of maximum concurrent flow (MCF) problem~\cite{garg2007faster}.
+The constraints on the formulation include server rate limits, link capacity, block transmission order and path selection.
 
 \begin{packeditemize}
 
@@ -139,7 +139,7 @@ max \quad \displaystyle{\sum_{p_{(s,d)}\in \mathbb{P}}} \displaystyle{\sum_{b_{i
 \label{equation:objective}
 \end{equation}
 
-%\mypara{Dynamic updates}
+\mypara{Feasibility Analysis}
 %To achieve near-optimal performance, the monitor in \name updates network conditions (such as available bandwidth, transfer rate and residual bulk data size) every cycle of 3 seconds (\Section\ref{subsec:evaluation:benchmarks:parameters}).
 Unfortunately, as a mixed-integer LP problem, such formulation is intractable in practice, because the computational overhead grows exponentially with more potential sources, paths, and data blocks. Specifically, the centralized overlay routing algorithm should pick the data source from $10^4$s of servers for $10^5$s of blocks, and this scale even grows exponentially when we consider more fine-grained block partitions. Such computational complexity makes it intractable (\Section\ref{subsubsec:evaluation:depth}) for the controller to explore all the possible paths to make optimal decisions on near-realtime timescales.
 
