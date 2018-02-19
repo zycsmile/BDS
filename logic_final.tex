@@ -37,7 +37,7 @@ can be solved efficiently and near-optimally with proved guarantees
 \hline
 \textit{$\overrightarrow{o_\mathbb{B}}$} & Transmission order of $\mathbb{B}$\\
 \hline
-\textit{$B_{i,j}$} & Block $i$ in Task $j$\\
+\textit{$b_{i,j}$} & Block $i$ in Task $j$\\
 \hline
 \textit{$R_{up}(n)/R_{down}(n)$} & Upload/download rate limit of server $n$\\
 \hline
@@ -47,13 +47,13 @@ can be solved efficiently and near-optimally with proved guarantees
 \hline
 \textit{$c(l)$} & Capacity of link $l$\\
 \hline
-\textit{$s_{B_{i,j}}$} & Data source of $B_{i,j}$\\
+\textit{$s_{b_{i,j}}$} & Data source of $b_{i,j}$\\
 %\hline
 %\textit{$p_{\lambda}$} & One particular path in $Path(s,d)$\\
 \hline
-\textit{$f_{B_{i,j},p}$} & Transmission rate of $B_{i,j}$ on path $p_\lambda$\\
+\textit{$f_{b_{i,j},p}$} & Transmission rate of $b_{i,j}$ on path $p_\lambda$\\
 \hline
-\textit{$I_{B_{i,j},p}$} & Binary: whether $p$ is selected to send $B_{i,j}$\\
+\textit{$I_{b_{i,j},p}$} & Binary: whether $p$ is selected to send $b_{i,j}$\\
 \hline
 %\textit{$f(l_{u,v}$)} & The allocated transmission rate on link $l_{u,v}$\\
 %\hline
@@ -74,7 +74,7 @@ Each multicast transmission, referred to as a {\em task} $T$, is defined
 by a source DC, a set of destination DCs, and a data file chopped into
 a list of fixed-sized data
 {\em blocks}
-The $i$th block of the $j$th task is denoted as $B_{i,j}$.
+The $i$th block of the $j$th task is denoted as $b_{i,j}$.
 Besides traffic demand, the inputs also include link capacity $c$, and
 server upload (and download) rate limit $R_{up}(n)$ (and $R_{down}(n)$).
 
@@ -90,8 +90,8 @@ The formulation is subject to constraints similar to those of maximum concurrent
 \item The allocated bandwidth on path $p_{(s,d)}$ should be the minimum of three parameters: the capacity of links that are in the path $c(l)$, source server upload rate $R_{up}(s)$, and destination server download rate $R_{down}(d)$.
 \begin{equation}
 \begin{split}
-f_{B_{i,j},p_{(s,d)}} \leq  \displaystyle{min_{l\in p_{(s,d)}}} \{c(l),R_{up}(s),R_{down}(d)\},& \\
-\text{for }\forall B_{i,j}&
+f_{b_{i,j},p_{(s,d)}} \leq  \displaystyle{min_{l\in p_{(s,d)}}} \{c(l),R_{up}(s),R_{down}(d)\},& \\
+\text{for }\forall b_{i,j}&
 %& \forall p_\lambda \in Path(s,d) \label{st:bottleneck}
 \end{split}
 \end{equation}
@@ -101,15 +101,15 @@ f_{B_{i,j},p_{(s,d)}} \leq  \displaystyle{min_{l\in p_{(s,d)}}} \{c(l),R_{up}(s)
 \item The summed allocated bandwidth of a link should be no more than its capacity $c(l)$.
 \begin{equation}
 %\begin{split}
-c(l) \geq  \displaystyle{\sum_{p_{(s,d)}\in \mathbb{P},l\in p_{(s,d)}}} \displaystyle{\sum_{B_{i,j} \in \mathbb{B}}} f_{B_{i,j},p_{(s,d)}} \cdot I_{B_{i,j},p_{(s,d)}}, \text{for }\forall l\\
+c(l) \geq  \displaystyle{\sum_{p_{(s,d)}\in \mathbb{P},l\in p_{(s,d)}}} \displaystyle{\sum_{b_{i,j} \in \mathbb{B}}} f_{b_{i,j},p_{(s,d)}} \cdot I_{b_{i,j},p_{(s,d)}}, \text{for }\forall l\\
 %& \forall p_\lambda \in Path(s,d) \label{st:capacity}
 %\end{split}
 \end{equation}
 
-\item The product of the allocated bandwidth and scheduling cycle $\Delta T$ should be no less than block size $\mathbb{S}(B_{i,j})$.
+\item The product of the allocated bandwidth and scheduling cycle $\Delta T$ should be no less than block size $\mathbb{S}(b_{i,j})$.
 \begin{equation}
 %\begin{split}
-\mathbb{S}(B_{i,j}) \leq \displaystyle{\sum_{p_{(s,d)}\in \mathbb{P}}} \displaystyle{\sum_{B_{i,j} \in \mathbb{B}}} f_{B_{i,j},p_{(s,d)}} \cdot I_{B_{i,j},p_{(s,d)}} \cdot \Delta T, \text{for }\forall B_{i,j}\\
+\mathbb{S}(b_{i,j}) \leq \displaystyle{\sum_{p_{(s,d)}\in \mathbb{P}}} \displaystyle{\sum_{b_{i,j} \in \mathbb{B}}} f_{b_{i,j},p_{(s,d)}} \cdot I_{b_{i,j},p_{(s,d)}} \cdot \Delta T, \text{for }\forall b_{i,j}\\
 %& \forall B_{i,j} \in \mathbb{B} \label{st:size}\\
 %\end{split}
 \end{equation}
@@ -117,7 +117,7 @@ c(l) \geq  \displaystyle{\sum_{p_{(s,d)}\in \mathbb{P},l\in p_{(s,d)}}} \display
 
 \item Only one path will be chosen for a particular block.
 \begin{equation}
-\displaystyle{\sum_{p_{(s,d)} \in \mathbb{P}}} I_{B_{i,j},p_{(s,d)}} = 1, \text{for }\forall B_{i,j}
+\displaystyle{\sum_{p_{(s,d)} \in \mathbb{P}}} I_{b_{i,j},p_{(s,d)}} = 1, \text{for }\forall b_{i,j}
 \end{equation}
 \end{packeditemize}
 %\jc{maybe it's better in math after all. please write
@@ -137,10 +137,10 @@ c(l) \geq  \displaystyle{\sum_{p_{(s,d)}\in \mathbb{P},l\in p_{(s,d)}}} \display
 
 \begin{equation}
 \centering
-max \quad \displaystyle{\sum_{p_{(s,d)}\in \mathbb{P}}} \displaystyle{\sum_{B_{i,j} \in \mathbb{B}}} w(B_{i,j})\cdot f_{B_{i,j},p_{(s,d)}} \cdot I_{B_{i,j},p_{(s,d)}}
+max \quad \displaystyle{\sum_{p_{(s,d)}\in \mathbb{P}}} \displaystyle{\sum_{b_{i,j} \in \mathbb{B}}} f_{b_{i,j},p_{(s,d)}} \cdot I_{b_{i,j},p_{(s,d)}}
 \label{equation:objective}
 \end{equation}
-where $w$ is the weight of tasks, which is set to be the task priority in real system.
+%where $w$ is the weight of tasks, which is set to be the task priority in real system.
 
 \mypara{Dynamic updates}
 Since any change in network performance or arrival of
