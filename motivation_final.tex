@@ -93,9 +93,9 @@ Next, we want to know if these transfers are destined to a large
 fraction (or just a handful) of DCs, and whether they share common 
 destinations. Figure~\ref{fig:bulk:dest} sketches the distribution 
 of the percentage of \company's DCs to which multicast transfers 
-are destined. We see that 90\% multicast transfers are destined to 
-at least 60\% DCs, and 70\% are destined to over 80\% DCs. Moreover, 
-we found a great diversity in source DCs and the sets of destination
+are destined. We see that 90\% of multicast transfers are destined to 
+at least 60\% of the DCs, and 70\% are destined to over 80\% of the DCs. Moreover, 
+we found a great diversity in the source DCs and the sets of destination
 DCs (not shown here). These observations suggest that it is untenable
 to pre-configure all possible multicast requests; instead, {\em we 
 need a system to automatically route and schedule any given inter-DC 
@@ -132,8 +132,8 @@ to optimizing inter-DC multicast performance.
 \vspace{-0.4cm}
 \end{figure}
 
-It is known that multicast can benefit from application-level 
-overlays~\cite{chu2000case}. Next, we show that inter-DC multicast
+It is known that, generally, multicast can be delivered using application-level 
+overlays~\cite{chu2000case}. Here, we show that inter-DC multicast
 completion time (defined by the time until each destination DC has
 a full copy of the data) can be greatly reduced by an 
 application-level overlay network. Note that an application-level 
@@ -151,7 +151,7 @@ DCs ({\em Type II}), or some combination of the two.
 %In Type I, the bottleneck can be in intermediate links or inside a DC, 
 %and in {\em Type II}, the bottleneck is likely to be inside a DC. 
 Next, we use examples to show bottleneck-disjoint overlay paths can 
-arise in both types of overlay paths and hwo they improve inter-DC 
+arise in both types of overlay paths and how they improve inter-DC 
 multicast performance.
 
 \mypara{Examples of bottleneck-disjoint overlay paths}
@@ -194,7 +194,7 @@ and 50\% less than direct replication).
 \centering
 \includegraphics[width=1.5in]{images/potential_v2.eps}%DrawUp.m
 \tightcaption{There is a significant performance variance among
-the inter-DC overlay paths in our dataset, indicating that most 
+the inter-DC overlay paths in our network, indicating that most 
 pairs of overlay paths are bottleneck disjoint.
 %The figure shows the ratio between the available bandwidth
 %from $A$ to $C$ through WAN ($BW_{A\rightarrow C}$) and
@@ -209,7 +209,7 @@ pairs of overlay paths are bottleneck disjoint.
 
 \mypara{Bottleneck-disjoint overlay paths in the wild}
 It is hard to identify all bottleneck-disjoint overlay paths in our
-dataset, since it does not have per-hop bandwidth information of each
+network performance dataset, since it does not have per-hop bandwidth information of each
 multicast transfer.
 Instead, we observe that if two overlay paths have different end-to-end 
 throughput at the same time, they should be bottleneck-disjoint.
@@ -219,7 +219,7 @@ and $A$$\rightarrow$$C$, where the WAN routing from DC $A$ to DC $C$ goes
 through DC $B$, and $b$ is a server in $B$ (these two paths are 
 topologically identical to Figure~\ref{fig:case:example}).
 If $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}\neq1$,
-they are bottleneck-disjoint ($BW_p$ denotes the througput of path $p$).
+they are bottleneck-disjoint ($BW_p$ denotes the throughput of path $p$).
 Figure~\ref{fig:case:size} shows the distribution of
 $\frac{BW_{A\rightarrow C}}{BW_{A\rightarrow b\rightarrow C}}$
 among all possible values of $A$, $b$, and $C$ in the dataset.
@@ -231,11 +231,11 @@ they are bottleneck disjoint.
 \subsection{Limitations of existing solutions}
 \label{subsec:motivation:baseline}
 
-However, realizing the potential improvement of application-level 
-overlay network is easier said than done. At a first glance, we can 
+Realizing and demonstrating the potential improvement of an application-level 
+overlay network has some complications. As a first order approximation, we can 
 simply borrow existing techniques from multicast overlay networks 
 in other contexts. But the operational experience of \company shows
-two limitations of this approach.
+two limitations of this approach that will be described below.
 
 \mypara{Existing solutions of \company}
 To meet the need of rapid growth of inter-DC data replication, 
@@ -254,7 +254,7 @@ decentralized fashion.
 \noindent{\bf Limitation 1:
 Inefficient local adaptation.}
 The existing decentralized protocol lacks the global view and thus 
-may stuck with suboptimal scheduling and routing decisions.
+suffers from suboptimal scheduling and routing decisions.
 To show this, we sent a 30GB file from one DC to two destination
 DCs in \company's network. Each DC had 640 servers, each with 20Mbps 
 upload and download bandwidth (in the same magnitude of bandwidth 
@@ -268,9 +268,9 @@ completion time will be
 $\frac{30\times 1024}{640\times 20Mbps \times 60s/min} = 41$
 minutes. But as shown in Figure~\ref{fig:motivation},
 servers in the destination DCs on average took 195 minutes (4.75$\times$ 
-the optimal completion time) to receive data, and 5\% servers even 
+the optimal completion time) to receive data, and 5\% of servers even 
 waited for over 250 minutes.
-The key reason is that individual servers only see a subset of 
+The key reason for this problem is that individual servers only see a subset of 
 available data sources (i.e., servers who have already downloaded part of 
 a file), and thus cannot leverage all available overlay paths to
 maximize the throughput. Such suboptimal performance could occur even if 
@@ -291,9 +291,9 @@ compared with that of the ideal solution. }
 \end{figure}
 
 \noindent{\bf Limitation 2:
-Interference with latency-sensitive traffic.}
+Interaction with latency-sensitive traffic.}
 The existing multicast overlay network shares the same inter-DC WAN
-with latency-sensitive traffic. Despite using standard QoS techniques 
+with latency-sensitive traffic. Despite using standard QoS techniques, 
 and giving the lowest priority to bulk data transfers, we still see 
 negative impacts on latency-sensitive traffic by bursty arrivals of 
 bulk-data multicast requests. Figure~\ref{fig:lesson2} shows the 
