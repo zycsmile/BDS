@@ -25,19 +25,19 @@
 \vspace{-0.4cm}
 \end{figure*}
 
-%To evaluate \name, we integrated our end-to-end prototype in 
+%To evaluate \name, we integrated our end-to-end prototype in
 %\company, and ran a pilot deployment of \name.
-Using a combination of pilot deployment in \company's DCs, 
+Using a combination of pilot deployment in \company's DCs,
 trace-driven simulation, and microbenchmarking, we show that:
 \begin{packedenumerate}
-\item \name completes inter-DC multicast 3-5$\times$ faster than 
-\company's existing solutions, as well as other baselines used in 
+\item \name completes inter-DC multicast 3-5$\times$ faster than
+\company's existing solutions, as well as other baselines used in
 industry (\Section\ref{subsec:evaluation:centralized}).
-\item \name significantly reduces the incidents of interferences 
-between bulk-data multicast traffic and latency-sensitive traffic 
+\item \name significantly reduces the incidents of interferences
+between bulk-data multicast traffic and latency-sensitive traffic
 (\Section\ref{subsec:evaluation:separation}).
-\item \name can scale to the traffic demand of a large online 
-service provider, tolerate various failure scenarios, and achieves 
+\item \name can scale to the traffic demand of a large online
+service provider, tolerate various failure scenarios, and achieves
 close to optimal flow completion time
 (\Section\ref{subsec:evaluation:benchmarks}).
 \end{packedenumerate}
@@ -47,61 +47,61 @@ close to optimal flow completion time
 
 \tightsubsubsection{Methodology}
 
-\mypara{Baselines} 
-We compare \name with three existing solutions: \alg (\company's 
-existing decentralized inter-DC multi-cast strategy), 
-Bullet~\cite{kostic2003bullet}, and Akamai's overlay 
-network~\cite{Andreev2013Designing} (a centralized strategy for 
+\mypara{Baselines}
+We compare \name with three existing solutions: \alg (\company's
+existing decentralized inter-DC multi-cast strategy),
+Bullet~\cite{kostic2003bullet}, and Akamai's overlay
+network~\cite{Andreev2013Designing} (a centralized strategy for
 multicasting live videos).
 
 
-\mypara{Pilot deployment} 
-We choose several services with different data sizes, and run 
-A/B testing in which we run \name instead of \company's default 
-solution \alg for the same hours in several randomly chosen days. 
+\mypara{Pilot deployment}
+We choose several services with different data sizes, and run
+A/B testing in which we run \name instead of \company's default
+solution \alg for the same hours in several randomly chosen days.
 
-\mypara{Trace-driven simulation} 
-Complementary to the pilot deployment on real traffic, we also use 
+\mypara{Trace-driven simulation}
+Complementary to the pilot deployment on real traffic, we also use
 trace-driven simulation to evaluate \name on a larger scale.
-We simulate the other two overlay multicast techniques using the 
-same topology, number of servers, and link capacities as \name, and 
+We simulate the other two overlay multicast techniques using the
+same topology, number of servers, and link capacities as \name, and
 replay inter-DC multicast data requests in the same chronological
 order as in the pilot deployment.
 
 \tightsubsubsection{\name vs. \alg}
 \label{subsubsec:name-vs-alg}
 
-We begin by evaluating \name and \alg on one service that needs to 
-distribut 70~TB data from a source DC to \jc{how many?} DCs.
-Figure~\ref{fig:BDSvsAnon:overall} shows the cumulative distribution 
-function (CDF) of the completion time on each destination DC \jc{do you have enough dst DCs to plot the smooth CDF?}. We can
-see that the median completion time of \name is 35 minutes, 
-$5\times$ faster than \alg, where most DCs takes 190 minutes to 
+We begin by evaluating \name and \alg on one service that needs to
+distribute 70~TB data from one source DC to ten destination DCs.
+Figure~\ref{fig:BDSvsAnon:overall} shows the cumulative distribution
+function (CDF) of the completion time on each destination server. We can
+see that the median completion time of \name is 35 minutes,
+$5\times$ faster than \alg, where most DCs takes 190 minutes to
 get the data.
 
-To generalize the finding, we pick three applications whose data 
-volumes are large, medium and small, and compare \name's and \alg's 
-mean (and standard deviation) of completion time for each application 
+To generalize the finding, we pick three applications whose data
+volumes are large, medium and small, and compare \name's and \alg's
+mean (and standard deviation) of completion time for each application
 in Figure~\ref{fig:BDSvsAnon:FCT}.
-We see that \name consistently outperforms \alg, and has less 
-performance variance. We also see that \name has greater improvement 
-in applications with larger data sizes. Finally, 
-Figure~\ref{fig:BDSvsAnon:time} shows the timeseries of the mean 
+We see that \name consistently outperforms \alg, and has less
+performance variance. We also see that \name has greater improvement
+in applications with larger data sizes. Finally,
+Figure~\ref{fig:BDSvsAnon:time} shows the timeseries of the mean
 completion time of \name and \alg in one randomly chosen application,
 and we see that \name consistently outperforms \alg by 4$\times$.
 
 \tightsubsubsection{\name vs. other overlay multicast techniques}
 
-Table~\ref{table:versusAkamai} compares \name with two other 
+Table~\ref{table:versusAkamai} compares \name with two other
 baselines, Bullet and Akamai's overlay network, using trace-driven
-simulation. We show the results in three setups. In the baseline setup, 
-we send 10TB data from one DC to 11 DCs, each has 100 servers, and 
-the upload and download link capacities are set to be 20MBs. In the 
-large-scale setup, we send 100TB data between the same DCs, each has 
-1000 servers. The rate-limited setup is the same as the baseline setup\jc{right?}, 
-except the server upload and download rate limit are set to be 5MBs. 
-We see that \name achieves 3$\times$ shorter completion time than 
-Bullet and Akamai in the baseline setup, and over 4$\times$ shorter 
+simulation. We show the results in three setups. In the baseline evaluations,
+we send 10TB data from one DC to 11 DCs, each has 100 servers, and
+the upload and download link capacities are set to be 20MBs. In the
+large-scale evaluations, we send 100TB data between the same DCs, each with
+1000 servers. In the rate-limited evaluations, the setup is the same as that in the baseline experiments
+except the server upload and download rate limit set to be 5MBs.
+We see that \name achieves 3$\times$ shorter completion time than
+Bullet and Akamai in the baseline setup, and over 4$\times$ shorter
 completion time in the large-scale and small bandwidth setups, which
 corroborates the findings in \Section\ref{subsubsec:name-vs-alg} that
 \name has more improvement when data sizes are large.
@@ -140,39 +140,39 @@ Akamai & $25m$ & $87m$ & $138m$\\
 \vspace{-0.2cm}
 \end{figure}
 
-To reduce the incidences of negative interference between bulk-data 
-multicast traffic and latency-sensitive traffic, \company sets a 
+To reduce the incidences of negative interference between bulk-data
+multicast traffic and latency-sensitive traffic, \company sets a
 bandwidth limit of bulk data transfers on each link by the difference
-between the link capacity and the historical peak bandwidth of 
-latency-sensitive traffic. Naturally, we can minimize the incidents, 
-if \name can keep the bulk-data multicast traffic within the bandwidth 
-limit. To test \name's effectiveness of separating bandwidth between 
+between the link capacity and the historical peak bandwidth of
+latency-sensitive traffic. Naturally, we can minimize the incidents,
+if \name can keep the bulk-data multicast traffic within the bandwidth
+limit. To test \name's effectiveness of separating bandwidth between
 bulk-data multicast traffic and latency-sensitive traffic, we set an
-10GB/s bandwidth limit to bulk data transfers, and 
-Figure~\ref{fig:quota} shows the actual bandwidth usage of \name on 
+10GB/s bandwidth limit to bulk data transfers, and
+Figure~\ref{fig:quota} shows the actual bandwidth usage of \name on
 one inter-DC link. We can see that in \name the actual bandwidth used
-by bulk data is always below 10~GB/s. 
+by bulk data is always below 10~GB/s.
 
-\begin{table}[t]
-\begin{center}
-\resizebox{3in}{!}{%
-%\begin{tabular}{p{2cm}<{\centering}|p{2cm}<{\centering}}
-\begin{tabular}{| c | c | c | c | c |}
-\hline
- \rowcolor[gray]{0.9}
-\textbf{System} & \textbf{Source DC egress link} & \textbf{$l_1$} & \textbf{$l_2$} & \textbf{$l_3$}\\
-\hline \hline
-\alg & 69.82\% & 53.09\% & 57.98\% & 63.01\% \\
-\hline
-\name & 70.55\% & 62.46\% & 63.23\% & 64.24\% \\
-\hline
-\end{tabular}
-}
-\end{center}
-\tightcaption{Average link utilizations of the source DC egress link and 3 inter-DC links ($l_1$, $l_2$, $l_3$) under \alg and \name.}
-\label{table:usage}
-\vspace{-0.4cm}
-\end{table}
+%\begin{table}[t]
+%\begin{center}
+%\resizebox{3in}{!}{%
+%%\begin{tabular}{p{2cm}<{\centering}|p{2cm}<{\centering}}
+%\begin{tabular}{| c | c | c | c | c |}
+%\hline
+% \rowcolor[gray]{0.9}
+%\textbf{System} & \textbf{Source DC egress link} & \textbf{$l_1$} & \textbf{$l_2$} & \textbf{$l_3$}\\
+%\hline \hline
+%\alg & 69.82\% & 53.09\% & 57.98\% & 63.01\% \\
+%\hline
+%\name & 70.55\% & 62.46\% & 63.23\% & 64.24\% \\
+%\hline
+%\end{tabular}
+%}
+%\end{center}
+%\tightcaption{Average link utilizations of the source DC egress link and 3 inter-DC links ($l_1$, $l_2$, $l_3$) under \alg and \name.}
+%\label{table:usage}
+%\vspace{-0.4cm}
+%\end{table}
 
 \begin{figure*}[t]
         \centering
@@ -237,8 +237,8 @@ by bulk data is always below 10~GB/s.
 \end{figure*}
 
 
-\jc{i'm totally lost... what's the point of this para?}
-As \name implements strict bandwidth separation between latency-sensitive traffic and bulk data transfers while still showing shorter completion time, does it occupy too much bandwidth on inter-DC links? To answer this question, we record the average utilizations of the egress link of the source DC and 3 randomly selected inter-DC links, denoted as $l_1,l_2$ and $l_3$. The result in Table \ref{table:usage} shows that link utilizations do not change much with \name. This is because \name spreads data transfers over bottleneck-disjoint paths, so it avoids transferring the same data on the same link.
+%\jc{i'm totally lost... what's the point of this para?}
+%As \name implements strict bandwidth separation between latency-sensitive traffic and bulk data transfers while still showing shorter completion time, does it occupy too much bandwidth on inter-DC links? To answer this question, we record the average utilizations of the egress link of the source DC and 3 randomly selected inter-DC links, denoted as $l_1,l_2$ and $l_3$. The result in Table \ref{table:usage} shows that link utilizations do not change much with \name. This is because \name spreads data transfers over bottleneck-disjoint paths, so it avoids transferring the same data on the same link.
 
 %\begin{itemize}
 %\item Draw a graph (what graph can you get on this?) to show with bandwidth separation, \name can reduce the incidents of delay on latency-sensitive traffic caused by bulk data transfers.%DrawLink.m
@@ -250,20 +250,20 @@ As \name implements strict bandwidth separation between latency-sensitive traffi
 
 Next, we use micro-benchmarking to evaluate \name along three metrics:
 (1) scalability of the centralized control;
-(2) fault tolerance; and 
+(2) fault tolerance; and
 (3) optimality of \name parameters.
 
 \tightsubsubsection{Scalability}
 \label{subsec:evaluation:benchmarks:scalability}
 
-\mypara{Controller running time} 
+\mypara{Controller running time}
 As the controller needs to decide the scheduling and routing of each
-data block, the running time of the control logic naturally scales 
-with the number of blocks. Figure~\ref{fig:scale:cpu} shows the 
+data block, the running time of the control logic naturally scales
+with the number of blocks. Figure~\ref{fig:scale:cpu} shows the
 running time as a function of the total number of blocks. We can see
-that the centralized \name controller can update the scheduling and 
-routing decision within 800ms with $10^6$ blocks. To put this number 
-into perspective, in \company's DCs, the maximum number of simultaneous 
+that the centralized \name controller can update the scheduling and
+routing decision within 800ms with $10^6$ blocks. To put this number
+into perspective, in \company's DCs, the maximum number of simultaneous
 outstanding data blocks is around $3\times 10^5$, for which \name can
 finish updating the decisions within 300ms.
 
@@ -304,7 +304,7 @@ Here we examine the impact of the following failure scenario on the number of do
 
 \tightsubsubsection{Choosing the values of key parameters}\label{subsec:evaluation:benchmarks:parameters}
 
-\mypara{Block size} In \name, the bulk data file is split into blocks and can be transferred on bottleneck-disjoint paths. But this introduces a tradeoff between scheduling efficiency and calculation overhead. We therefore conduct two series of experiments using different block sizes (2MB and 64MB). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2MB/block scenario is 1.5 to 2 times shorter than that in the 64MB/block scenario. 
+\mypara{Block size} In \name, the bulk data file is split into blocks and can be transferred on bottleneck-disjoint paths. But this introduces a tradeoff between scheduling efficiency and calculation overhead. We therefore conduct two series of experiments using different block sizes (2MB and 64MB). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2MB/block scenario is 1.5 to 2 times shorter than that in the 64MB/block scenario.
 %This is because a smaller block sizes result in closer-to-optimal performance (see Appendix for the proof).
 However, this optimization introduces longer controller running time, as shown in Figure \ref{fig:scale:cpu}. We pick block size by balancing two considerations: (1) requirements on the completion time, and (2) controller's operation overhead.
 
