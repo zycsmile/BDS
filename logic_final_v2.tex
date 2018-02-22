@@ -144,7 +144,10 @@ c(l) \geq \displaystyle{\sum_{b_{i,j} \in \mathbb{B}}} f_{b_{i,j},p} \cdot I_{b_
 \end{packeditemize}
 
 
-\noindent(4) {\em Objective.} To speed up the bulk data distribution, we aim at maximizing the sum of allocated bandwidth in any time slot for all the blocks over all the paths.
+%\noindent(4) {\em Objective.} To speed up the bulk data distribution, we aim at maximizing the sum of allocated bandwidth in any time slot for all the blocks over all the paths.
+\noindent(4) {\em Objective.} The objective of bulk data distribution problem is to minimize the transmission completion time. In other words, $min$ $k$.
+
+\mypara{Approximate Solution} To make the above problem solvable, one possible approximate solution is to convert it to a mixed-integer LP problem, which maximizes the sum of allocated bandwidth in any time slot for all the blocks over all the paths.
 
 \begin{equation}
 \centering
@@ -152,23 +155,30 @@ max \quad \displaystyle{\sum_{p\in \mathbb{P}}} \displaystyle{\sum_{b_{i,j} \in 
 \label{equation:objective}
 \end{equation}
 
-\mypara{Feasibility Analysis}
+%\mypara{Feasibility Analysis}
 %To achieve near-optimal performance, the monitor in \name updates network conditions (such as available bandwidth, transfer rate and residual bulk data size) every cycle of 3 seconds (\Section\ref{subsec:evaluation:benchmarks:parameters}).
-Unfortunately, as a mixed-integer LP problem, such formulation is intractable in practice, because the computational overhead grows exponentially with more potential sources, paths, and data blocks. Specifically, the centralized overlay routing algorithm should pick the data source from $10^4$s of servers for $10^5$s of blocks, and this scale even grows exponentially when we consider more fine-grained block partitions. Such computational complexity makes it intractable (\Section\ref{subsubsec:evaluation:depth}) for the controller to explore all the possible paths to make optimal decisions on near-realtime timescales.
+Such approximation however introduces two problems. 
+First, it introduces a gap with the theoretical optimal result, because there is a certain probability that maximizing the allocated bandwidth in one cycle would not result in maximized bandwidth in the subsequent cycles.
+Second, as a mixed-integer LP problem, such formulation is intractable in practice, because the computational overhead grows exponentially with more potential sources, paths, and data blocks. Specifically, the centralized overlay routing algorithm should pick the data source from $10^4$s of servers for $10^5$s of blocks, and this scale even grows exponentially when we consider more fine-grained block partitions. Such computational complexity makes it intractable (\Section\ref{subsubsec:evaluation:depth}) for the controller to explore all the possible paths to make optimal decisions on near-realtime timescales.
+%Unfortunately, as a mixed-integer LP problem, such formulation is intractable in practice, because the computational overhead grows exponentially with more potential sources, paths, and data blocks. Specifically, the centralized overlay routing algorithm should pick the data source from $10^4$s of servers for $10^5$s of blocks, and this scale even grows exponentially when we consider more fine-grained block partitions. Such computational complexity makes it intractable (\Section\ref{subsubsec:evaluation:depth}) for the controller to explore all the possible paths to make optimal decisions on near-realtime timescales.
 
 
 \subsection{Decoupling scheduling and routing}
 \label{subsec:logic:separation}
 
-At a high level, the key insight that allows \name to update the overlay control problem is
+At a high level, the key insight that allows \name to make the solution practical is
 to decouple the aforementioned formulation into two steps:
-a {\em scheduling} step which firstly selects a subset of blocks to be transferred in time slot $T_k$
+a {\em scheduling} step which firstly selects the subset of blocks to be transferred in time slot $T_k$
 ($\mathbb{B}^{T_k}_n$), followed by a subsequent {\em routing}
-step which determines the residual three tuples: $\langle \mathbb{S}^*, \mathbb{p}^*, f \rangle$, as described in \Section\ref{subsec:logic:formulation} {\em output}.
+step which determines the residual three tuples: $\langle \mathbb{S}^*, \mathbb{P}^*, f \rangle$, as described in \Section\ref{subsec:logic:formulation} {\em output}.
 
 On one hand, such decoupling significantly reduces the computational overhead of the centralized controller. As the scheduling step selects a subset of blocks, and only these selected blocks will be considered in the subsequent routing step, so the searching space is thus significantly reduced.
 
-On the other hand, such decoupling, if done carefully, can be near-optimal. In the original formulation, the optimal solution is to decide the optimal block transmission order for all blocks, while such decoupling converts this optimal solution into an equivalent one, i.e., to decide the optimal order to transmit the selected blocks in each scheduling cycle (so as to enforce network dynamic updates). Thus, the decoupling introduces little degradation as long as \name could find the optimal solutions for both scheduling and routing steps in each cycle. Next we describe each step in more details.
+On the other hand, such decoupling, if done carefully, can be near-optimal. The degradation of the approximate LP solution comes from the lack of consideration for the subsequent cycles. But in \name, the scheduling step can carefully selects the optimal block set to be transferred in one cycle, i.e., decide the optimal block transmission order. Thus, \name theoretically avoids the abovementioned degradation.
+
+Next we describe each step in more details.
+
+%On the other hand, such decoupling, if done carefully, can be near-optimal. In the original formulation, the optimal solution is to decide the optimal block transmission order for all blocks, while such decoupling converts this optimal solution into an equivalent one, i.e., to decide the optimal order to transmit the selected blocks in each scheduling cycle (so as to enforce network dynamic updates). Thus, the decoupling introduces little degradation as long as \name could find the optimal solutions for both scheduling and routing steps in each cycle. Next we describe each step in more details.
 
 
 \subsection{Scheduling}
@@ -186,7 +196,7 @@ The key to avoid degradation in reducing the searching space is to make sure tha
 \subsection{Routing}
 \label{subsec:logic:routing}
 
-After the scheduling step selects the block set to transfer in each time slot ($\mathbb{B}^{T_k}_n$), the routing step decides the residual three tuples, $\langle \mathbb{S}^*, \mathbb{p}^*, f \rangle$, for all blocks.
+After the scheduling step selects the block set to transfer in each time slot ($\mathbb{B}^{T_k}_n$), the routing step decides the residual three tuples, $\langle \mathbb{S}^*, \mathbb{P}^*, f \rangle$, for all blocks.
 
 With the constraints described in \Section\ref{subsec:logic:formulation}, this formulation in Equation \ref{equation:objective} is an integer multi-commodity flow algorithm which is known to be NP-complete \cite{garg1997primal}.
 %, and there is no known algorithm to find an optimal solution.
