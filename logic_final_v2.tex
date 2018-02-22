@@ -11,8 +11,8 @@ overlay scheduling, i.e., which data blocks to be sent
 (\Section\ref{subsec:logic:scheduling}),
 and routing, i.e., which paths to use to send each data block
 (\Section\ref{subsec:logic:routing}), each of which
-can be solved efficiently and near-optimally with proved guarantees
-(\Section\ref{subsec:logic:scheduling},~\ref{subsec:logic:routing}).
+can be solved efficiently and near-optimally.% with proved guarantees
+%(\Section\ref{subsec:logic:scheduling},~\ref{subsec:logic:routing}).
 
 \subsection{Basic formulation}
 \label{subsec:logic:formulation}
@@ -41,13 +41,17 @@ can be solved efficiently and near-optimally with proved guarantees
 \hline
 \textit{$\mathbb{P}$} & Set of all possible paths in $\mathbb{A}$\\
 \hline
-\textit{$p_{(s,s')}$} & A path between a source and destination pair\\
+\textit{$\mathbb{P}_{s,s'}$} & Set of paths between a source and destination pair\\
+\hline
+\textit{$p$} & A particular path\\
 \hline
 \textit{$l$} & A link on a path\\
 \hline
 \textit{$c(l)$} & Capacity of link $l$\\
 \hline
-\textit{$\mathbb{S}^{T_k}_{b_{i,j}}$} & Set of all possible source servers of $b_{i,j}$ at $T_k$\\
+\textit{$\omega^{T_k}_{b_{i,j},s}$} & Binary: whether server $s$ has block $b_{i,j}$ at $T_k$\\
+\hline
+\textit{$\mathbb{S}^{T_k}_{b_{i,j}}$} & Set of all possible source servers whose $\omega^{T_k}_{b_{i,j},s}=1$\\
 \hline
 %\textit{$s_{b_{i,j}}$} & A source server for $b_{i,j}$\\
 %\hline
@@ -82,24 +86,26 @@ Table \ref{table:para} summarizes the key variables and parameters, and the prob
 \noindent(1) {\em Input.} % \jc{the formulation only consider one multicast request? No, multiple.}
 Each multicast transmission, referred to as a {\em task}, is defined
 by a source DC, a set of destination DCs, and a data file chopped into
-a list of data {\em blocks}. 
-The $i$th block of the $j$th task is denoted as $b_{i,j}$. Besides traffic demand, the inputs also include link capacity $c$, and
+a list of data {\em blocks}.
+A path between source server $s$ and destination server $s'$ ($p\in \mathbb{P}_{s,s'}$) consists of several links $l$, and $l$ is defined as any link between a pair of network devices (e.g., servers, routers).
+%The $i$th block of the $j$th task is denoted as $b_{i,j}$. Besides traffic demand, 
+Besides link capacity $c(l)$, the inputs also include 
 server upload (and download) rate limit $R_{up}$ (and $R_{down}$).
 
-\noindent(2) {\em Output.} A four-tuple for each server $n$.
-
-$\langle \mathbb{B}^{T_k}_n, \mathbb{S}_{\mathbb{B}_n}^{*T_k}, p^*_{(\mathbb{S}_{\mathbb{B}_n}^{*T_k},n)}, f^*_{\mathbb{B}^{T_k}_n,p^*_{(\mathbb{S}_{\mathbb{B}_n}^{*T_k},n)}} \rangle$, which denotes the block set transmitted in each $T_k$ (i.e., transmission order of $\mathbb{B}_n$), the optimal source of these blocks, the optimal paths, and the optimal allocated bandwidth on the paths, respectively.
+\noindent(2) {\em Output.} For each server $n$ in any time slot $T_k$, a four-tuple for each block $b_{i,j}$ in $\mathbb{B}_n^{T_k}$. $\langle b_{i,j}, \mathbb{S}^*_{b_{i,j}}, \mathbb{P}^*_{\mathbb{S}^*_{b_{i,j}},n}, f_{b_{i,j},\mathbb{P}^*_{\mathbb{S}^*_{b_{i,j}},n}} \rangle$, which denotes the block $b_{i,j}$ transmitted in $T_k$, the optimal source server of $b_{i,j}$, the optimal path, and the allocated bandwidth on the path, respectively.
+%$\langle \mathbb{B}^{T_k}_n, \mathbb{S}_{\mathbb{B}_n}^{*T_k}, p^*_{(\mathbb{S}_{\mathbb{B}_n}^{*T_k},n)}, f^*_{\mathbb{B}^{T_k}_n,p^*_{(\mathbb{S}_{\mathbb{B}_n}^{*T_k},n)}} \rangle$, which denotes the block set transmitted in each $T_k$ (i.e., transmission order of $\mathbb{B}_n$), the optimal source of these blocks, the optimal paths, and the optimal allocated bandwidth on the paths, respectively.
 
 \noindent(3) {\em Constraints.}
 The constraints on the formulation include server rate limits, link capacity, block transmission order and path selection.
 
 \begin{packeditemize}
 
-\item The allocated bandwidth on path $p_{(s,s')}$ should be the minimum of three parameters: the capacity $c(l)$ of links that are in $p_{(s,s')}$, source server upload rate $R_{up}(s)$, and destination server download rate $R_{down}(s')$. For all possible source servers of $b_{i,j}$ at $T_k$.
+\item The allocated bandwidth on path $p$ should be the minimum of three parameters: the capacity $c(l)$ of links in $p$, source server upload rate $R_{up}(s)$, and destination server download rate $R_{down}(s')$.% For all possible source servers for $b_{i,j}$ at $T_k$.
 \begin{equation}
 \begin{split}
-f_{b_{i,j},p_{(s,s')}} \leq  \displaystyle{min_{l\in p_{(s,s')}}} \{c(l),R_{up}(s),R_{down}(s')\},& \\
-\text{for }\forall b_{i,j}, T_k, s\in \mathbb{S}^{T_k}_{b_{i,j}}&
+%f_{b_{i,j},p} \leq  \displaystyle{min_{l\in p_{(s,s')}}} \{c(l),R_{up}(s),R_{down}(s')\},& \\
+f_{b_{i,j},p} \leq  min \{\displaystyle{min_{l\in p}c(l)},R_{up}(s),R_{down}(s')\},& \\
+\text{for }\forall b_{i,j}, p\in \mathbb{P}_{s,s'}, s\in \mathbb{S}^{T_k}_{b_{i,j}}&%, \omega^{T_k}_{b_{i,j},s}=1 &
 %& \forall p_\lambda \in Path(s,d) \label{st:bottleneck}
 \end{split}
 \end{equation}
@@ -108,8 +114,8 @@ f_{b_{i,j},p_{(s,s')}} \leq  \displaystyle{min_{l\in p_{(s,s')}}} \{c(l),R_{up}(
 
 \item At any time, the summed allocated bandwidth of a link should be no more than its capacity $c(l)$.
 \begin{equation}
-%\begin{split}
-c(l) \geq  \displaystyle{\sum_{l\in p_{(s,s')}\in \mathbb{P}}} \displaystyle{\sum_{b_{i,j} \in \mathbb{B}}} f_{b_{i,j},p_{(s,s')}} \cdot I_{b_{i,j},p_{(s,s')}}, \text{for }\forall l\\
+%\begin{split} \displaystyle{\sum_{l\in p_{(s,s')}\in \mathbb{P}}}
+c(l) \geq \displaystyle{\sum_{b_{i,j} \in \mathbb{B}}} f_{b_{i,j},p} \cdot I_{b_{i,j},p}, \text{for }\forall l\in p\\
 %& \forall p_\lambda \in Path(s,d) \label{st:capacity}
 %\end{split}
 \end{equation}
@@ -117,7 +123,7 @@ c(l) \geq  \displaystyle{\sum_{l\in p_{(s,s')}\in \mathbb{P}}} \displaystyle{\su
 \item For block set $\mathbb{B}^{T_k}_n$, the product of the allocated bandwidth and scheduling cycle $\Delta T$ should be no less than its size $\rho(\mathbb{B}^{T_k}_n)$.
 \begin{equation}
 \begin{split}
-\rho(\mathbb{B}^{T_k}_n) \leq \displaystyle{\sum_{p_{(s,s')}\in \mathbb{P}}} \displaystyle{\sum_{b_{i,j} \in \mathbb{B}^{T_k}_n}} f_{b_{i,j},p_{(s,s')}} \cdot I_{b_{i,j},p_{(s,s')}} \cdot \Delta T,& \\
+\rho(\mathbb{B}^{T_k}_n) \leq \displaystyle{\sum_{p\in \mathbb{P}}} \displaystyle{\sum_{b_{i,j} \in \mathbb{B}^{T_k}_n}} f_{b_{i,j},p} \cdot I_{b_{i,j},p} \cdot \Delta T,& \\
 \text{for }\forall T_k, \mathbb{B}^{T_k}_n &
 %& \forall B_{i,j} \in \mathbb{B} \label{st:size}\\
 \end{split}
@@ -126,42 +132,53 @@ c(l) \geq  \displaystyle{\sum_{l\in p_{(s,s')}\in \mathbb{P}}} \displaystyle{\su
 
 \item Only one path will be chosen for a particular block.
 \begin{equation}
-\displaystyle{\sum_{p_{(s,s')} \in \mathbb{P}}} I_{b_{i,j},p_{(s,s')}} = 1, \text{for }\forall b_{i,j}
+\displaystyle{\sum_{p \in \mathbb{P}}} I_{b_{i,j},p} = 1, \text{for }\forall b_{i,j}
 \end{equation}
 
 
 \item The destination server in the last scheduling cycle could be the source server in the next cycle.
 \begin{equation}
-\mathbb{S}^{T_{k+1}}_{b_{i,j}} = \mathbb{S}^{T_k}_{b_{i,j}} \cup s'
+%\mathbb{S}^{T_{k+1}}_{b_{i,j}} = \mathbb{S}^{T_k}_{b_{i,j}} \cup s'
+\omega^{T_{k+1}}_{b_{i,j},s'} = 1, \text{for }\forall b_{i,j}, s'
 \end{equation}
 \end{packeditemize}
 
 
-\noindent(4) {\em Objective.} To speed up the bulk data distribution, we aim at maximizing the sum of allocated bandwidth in any time slot for all the blocks over all the paths.
+%\noindent(4) {\em Objective.} To speed up the bulk data distribution, we aim at maximizing the sum of allocated bandwidth in any time slot for all the blocks over all the paths.
+\noindent(4) {\em Objective.} The objective of bulk data distribution problem is to minimize the transmission completion time. In other words, $min$ $k$.
+
+\mypara{Approximate Solution} To make the above problem solvable, one possible approximate solution is to convert it to a mixed-integer LP problem, which maximizes the sum of allocated bandwidth in any time slot for all the blocks over all the paths.
 
 \begin{equation}
 \centering
-max \quad \displaystyle{\sum_{p_{(s,s')}\in \mathbb{P}}} \displaystyle{\sum_{b_{i,j} \in \mathbb{B}}} f_{b_{i,j},p_{(s,s')}} \cdot I_{b_{i,j},p_{(s,s')}}
+max \quad \displaystyle{\sum_{p\in \mathbb{P}}} \displaystyle{\sum_{b_{i,j} \in \mathbb{B}}} f_{b_{i,j},p} \cdot I_{b_{i,j},p}
 \label{equation:objective}
 \end{equation}
 
-\mypara{Feasibility Analysis}
+%\mypara{Feasibility Analysis}
 %To achieve near-optimal performance, the monitor in \name updates network conditions (such as available bandwidth, transfer rate and residual bulk data size) every cycle of 3 seconds (\Section\ref{subsec:evaluation:benchmarks:parameters}).
-Unfortunately, as a mixed-integer LP problem, such formulation is intractable in practice, because the computational overhead grows exponentially with more potential sources, paths, and data blocks. Specifically, the centralized overlay routing algorithm should pick the data source from $10^4$s of servers for $10^5$s of blocks, and this scale even grows exponentially when we consider more fine-grained block partitions. Such computational complexity makes it intractable (\Section\ref{subsubsec:evaluation:depth}) for the controller to explore all the possible paths to make optimal decisions on near-realtime timescales.
+Such approximation however introduces two problems. 
+First, it introduces a gap with the theoretical optimal result, because there is a certain probability that maximizing the allocated bandwidth in one cycle would not result in maximized bandwidth in the subsequent cycles.
+Second, as a mixed-integer LP problem, such formulation is intractable in practice, because the computational overhead grows exponentially with more potential sources, paths, and data blocks. Specifically, the centralized overlay routing algorithm should pick the data source from $10^4$s of servers for $10^5$s of blocks, and this scale even grows exponentially when we consider more fine-grained block partitions. Such computational complexity makes it intractable (\Section\ref{subsubsec:evaluation:depth}) for the controller to explore all the possible paths to make optimal decisions on near-realtime timescales.
+%Unfortunately, as a mixed-integer LP problem, such formulation is intractable in practice, because the computational overhead grows exponentially with more potential sources, paths, and data blocks. Specifically, the centralized overlay routing algorithm should pick the data source from $10^4$s of servers for $10^5$s of blocks, and this scale even grows exponentially when we consider more fine-grained block partitions. Such computational complexity makes it intractable (\Section\ref{subsubsec:evaluation:depth}) for the controller to explore all the possible paths to make optimal decisions on near-realtime timescales.
 
 
 \subsection{Decoupling scheduling and routing}
 \label{subsec:logic:separation}
 
-At a high level, the key insight that allows \name to update the overlay control problem is
+At a high level, the key insight that allows \name to make the solution practical is
 to decouple the aforementioned formulation into two steps:
-a {\em scheduling} step which firstly selects a subset of blocks to be transferred in time slot $T_k$
+a {\em scheduling} step which firstly selects the subset of blocks to be transferred in time slot $T_k$
 ($\mathbb{B}^{T_k}_n$), followed by a subsequent {\em routing}
-step which determines the residual three tuples: $\langle \mathbb{S}^*, p^*, f^* \rangle$, as described in \Section\ref{subsec:logic:formulation} {\em output}.
+step which determines the residual three tuples: $\langle \mathbb{S}^*, \mathbb{P}^*, f \rangle$, as described in \Section\ref{subsec:logic:formulation} {\em output}.
 
 On one hand, such decoupling significantly reduces the computational overhead of the centralized controller. As the scheduling step selects a subset of blocks, and only these selected blocks will be considered in the subsequent routing step, so the searching space is thus significantly reduced.
 
-On the other hand, such decoupling, if done carefully, can be near-optimal. In the original formulation, the optimal solution is to decide the optimal block transmission order for all blocks, while such decoupling converts this optimal solution into an equivalent one, i.e., to decide the optimal order to transmit the selected blocks in each scheduling cycle (so as to enforce network dynamic updates). Thus, the decoupling introduces little degradation as long as \name could find the optimal solutions for both scheduling and routing steps in each cycle. Next we describe each step in more details.
+On the other hand, such decoupling, if done carefully, can be near-optimal. The degradation of the approximate LP solution comes from the lack of consideration for the subsequent cycles. But in \name, the scheduling step can carefully selects the optimal block set to be transferred in one cycle, i.e., decide the optimal block transmission order. Thus, \name theoretically avoids the abovementioned degradation.
+
+Next we describe each step in more details.
+
+%On the other hand, such decoupling, if done carefully, can be near-optimal. In the original formulation, the optimal solution is to decide the optimal block transmission order for all blocks, while such decoupling converts this optimal solution into an equivalent one, i.e., to decide the optimal order to transmit the selected blocks in each scheduling cycle (so as to enforce network dynamic updates). Thus, the decoupling introduces little degradation as long as \name could find the optimal solutions for both scheduling and routing steps in each cycle. Next we describe each step in more details.
 
 
 \subsection{Scheduling}
@@ -179,7 +196,7 @@ The key to avoid degradation in reducing the searching space is to make sure tha
 \subsection{Routing}
 \label{subsec:logic:routing}
 
-After the scheduling step selects the block set to transfer in each time slot ($\mathbb{B}^{T_k}_n$), the routing step decides the residual three tuples, $\langle \mathbb{S}^*, p^*, f^* \rangle$, for all blocks.
+After the scheduling step selects the block set to transfer in each time slot ($\mathbb{B}^{T_k}_n$), the routing step decides the residual three tuples, $\langle \mathbb{S}^*, \mathbb{P}^*, f \rangle$, for all blocks.
 
 With the constraints described in \Section\ref{subsec:logic:formulation}, this formulation in Equation \ref{equation:objective} is an integer multi-commodity flow algorithm which is known to be NP-complete \cite{garg1997primal}.
 %, and there is no known algorithm to find an optimal solution.
