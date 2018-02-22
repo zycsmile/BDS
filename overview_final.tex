@@ -1,10 +1,10 @@
 \section{Overview of \name}
 \label{sec:overview}
 
-To optimize inter-DC multicasts while minimizing interference with 
+To optimize inter-DC multicasts, while minimizing interference with 
 latency-sensitive traffic, we present {\em \name}, a {\em fully centralized} 
 near-optimal application-level overlay network for inter-DC multicast. 
-Before presenting \name in details, we first highlight the intuitions 
+Before presenting \name in detail, we first highlight the intuitions 
 behind its design choices, and the challenges to make it practical.
 
 
@@ -21,9 +21,9 @@ view or orchestration.
 %local adaptation with a centralized logic operating
 %on coarse timescales.
 In contrast, \name takes an explicit stance that it is practical to 
-fully centralize the control of an wide-area overlay networks and 
+fully centralize the control of wide-area overlay networks and 
 still achieve near-optimal performance in the setting of inter-DC 
-multicasts. \name coincide with parallel recent work of centralizing
+multicasts. The design of \name coincides other recents works of centralizing
 management of large-scale distributed systems, e.g.,~\cite{gog2016firmament}
 At a high level, \name uses a centralized controller that 
 periodically pulls information (e.g., data delivery status) from all 
@@ -49,7 +49,7 @@ performance degradation to local adaptation
 \begin{packedenumerate}
 
 \item {\em Large decision space:}
-The sheer amount of inter-DC overlay paths (which grow exponentially
+The sheer number of inter-DC overlay paths (which grow exponentially
 with more servers acting as overlay nodes) makes it difficult for 
 individual servers to explore all available overlay paths based only 
 on local measurements. In contrast, we could significantly improve 
@@ -76,8 +76,8 @@ As observed in \Section\ref{subsec:motivation:baseline}, it is vital
 that inter-DC multicasts avoid hotspots and excessive bandwidth usage 
 that negatively impact the latency of delay-sensitive traffic, but 
 it is difficult to prevent such situations without any coordination 
-across overlay servers. In contrast, it is mechanically simpler to 
-allocate bandwidth of each data transfer by directing setting the 
+across overlay servers. In contrast, it is simpler to 
+allocate bandwidth of each data transfer by controlling the 
 sending rate at all servers in a centralized fashion 
 (\Section\ref{sec:system}).
 
@@ -92,21 +92,19 @@ data units or control messages.
 
 %\mypara{Fast and near-optimal decision-making}
 \mypara{The key to realizing centralized control}
-In essence, \name trades slight update delay for the closer-to-optimal 
-decisions in a centralized fashion. Thus, the key to striking such a 
+In essence, the design of \name performs a trade-off between incurring
+a small update delay in return for the near-optimal 
+decisions brought by a centralized system. Thus, the key to striking such a 
 favorable balance is a near-optimal yet efficient overlay routing 
 algorithm that can update decisions in near realtime. At a first 
 glance, this is indeed intractable. For the workload at a scale of 
 \company, the centralized overlay routing algorithm must pick the next 
-hops for $10^5$s of blocks from $10^4$s of servers, a scale that 
-could grow exponentially when we consider the number of possible 
-overlay paths that go through these servers as well as finer-grained 
-block partitions. With the standard routing formulation and linear 
+hops for $10^5$ of data blocks from $10^4$ servers. This operates at a scale that 
+could grow exponentially when we consider the growth in the number of possible 
+overlay paths that go through these servers and with  finer grained 
+block partitioning. With the standard routing formulation and linear 
 programming solvers, it could be completely unrealistic to make 
-optimal solutions by exploring such a large decision space 
+near-optimal solutions by exploring such a large decision space 
 (\Section\ref{subsubsec:evaluation:depth}).
 The next section will present how \name addresses this challenge.
-
-
-
 
