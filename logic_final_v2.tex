@@ -11,8 +11,8 @@ overlay scheduling, i.e., which data blocks to be sent
 (\Section\ref{subsec:logic:scheduling}),
 and routing, i.e., which paths to use to send each data block
 (\Section\ref{subsec:logic:routing}), each of which
-can be solved efficiently and near-optimally with proved guarantees
-(\Section\ref{subsec:logic:scheduling},~\ref{subsec:logic:routing}).
+can be solved efficiently and near-optimally.% with proved guarantees
+%(\Section\ref{subsec:logic:scheduling},~\ref{subsec:logic:routing}).
 
 \subsection{Basic formulation}
 \label{subsec:logic:formulation}
@@ -47,9 +47,9 @@ can be solved efficiently and near-optimally with proved guarantees
 \hline
 \textit{$c(l)$} & Capacity of link $l$\\
 \hline
-%\textit{$\mathbb{S}^{T_k}_{b_{i,j}}$} & Set of all possible source servers of $b_{i,j}$ at $T_k$\\
-%\hline
 \textit{$\omega^{T_k}_{b_{i,j},s}$} & Binary: whether server $s$ has block $b_{i,j}$ at $T_k$\\
+\hline
+\textit{$\mathbb{S}^{T_k}_{b_{i,j}}$} & Set of all possible source servers whose $\omega^{T_k}_{b_{i,j},s}=1$\\
 \hline
 %\textit{$s_{b_{i,j}}$} & A source server for $b_{i,j}$\\
 %\hline
@@ -97,11 +97,11 @@ The constraints on the formulation include server rate limits, link capacity, bl
 
 \begin{packeditemize}
 
-\item The allocated bandwidth on path $p_{(s,s')}$ should be the minimum of three parameters: the capacity $c(l)$ of links that are in $p_{(s,s')}$, source server upload rate $R_{up}(s)$, and destination server download rate $R_{down}(s')$. For all possible source server $s$ whose $\omega^{T_k}_{b_{i,j},s}=1$.
+\item The allocated bandwidth on path $p_{(s,s')}$ should be the minimum of three parameters: the capacity $c(l)$ of links that are in $p_{(s,s')}$, source server upload rate $R_{up}(s)$, and destination server download rate $R_{down}(s')$. For all possible source servers for $b_{i,j}$ at $T_k$.
 \begin{equation}
 \begin{split}
 f_{b_{i,j},p_{(s,s')}} \leq  \displaystyle{min_{l\in p_{(s,s')}}} \{c(l),R_{up}(s),R_{down}(s')\},& \\
-\text{for }\forall b_{i,j}, T_k, \omega^{T_k}_{b_{i,j},s}=1 &%, s\in \mathbb{S}^{T_k}_{b_{i,j}}&
+\text{for }\forall b_{i,j}, T_k, s\in \mathbb{S}^{T_k}_{b_{i,j}}&%, \omega^{T_k}_{b_{i,j},s}=1 &
 %& \forall p_\lambda \in Path(s,d) \label{st:bottleneck}
 \end{split}
 \end{equation}
