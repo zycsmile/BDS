@@ -41,7 +41,9 @@ can be solved efficiently and near-optimally.% with proved guarantees
 \hline
 \textit{$\mathbb{P}$} & Set of all possible paths in $\mathbb{A}$\\
 \hline
-\textit{$p_{(s,s')}$} & A path between a source and destination pair\\
+\textit{$\mathbb{P}_{s,s'}$} & Set of paths between a source and destination pair\\
+\hline
+\textit{$p$} & A particular path\\
 \hline
 \textit{$l$} & A link on a path\\
 \hline
@@ -85,23 +87,25 @@ Table \ref{table:para} summarizes the key variables and parameters, and the prob
 Each multicast transmission, referred to as a {\em task}, is defined
 by a source DC, a set of destination DCs, and a data file chopped into
 a list of data {\em blocks}.
-The $i$th block of the $j$th task is denoted as $b_{i,j}$. Besides traffic demand, the inputs also include link capacity $c$, and
+A path between source server $s$ and destination server $s'$ ($p\in \mathbb{P}_{s,s'}$) consists of several links $l$, and $l$ is defined as any link between a pair of network devices (e.g., servers, routers).
+%The $i$th block of the $j$th task is denoted as $b_{i,j}$. Besides traffic demand, 
+Besides link capacity $c(l)$, the inputs also include 
 server upload (and download) rate limit $R_{up}$ (and $R_{down}$).
 
-\noindent(2) {\em Output.} A four-tuple for each server $n$.
-
-$\langle \mathbb{B}^{T_k}_n, \mathbb{S}_{\mathbb{B}_n}^{*T_k}, p^*_{(\mathbb{S}_{\mathbb{B}_n}^{*T_k},n)}, f^*_{\mathbb{B}^{T_k}_n,p^*_{(\mathbb{S}_{\mathbb{B}_n}^{*T_k},n)}} \rangle$, which denotes the block set transmitted in each $T_k$ (i.e., transmission order of $\mathbb{B}_n$), the optimal source of these blocks, the optimal paths, and the optimal allocated bandwidth on the paths, respectively.
+\noindent(2) {\em Output.} For each server $n$ in any time slot $T_k$, a four-tuple for each block $b_{i,j}$ in $\mathbb{B}_n^{T_k}$. $\langle b_{i,j}, \mathbb{S}^*_{b_{i,j}}, \mathbb{P}^*_{\mathbb{S}^*_{b_{i,j}},n}, f_{b_{i,j},\mathbb{P}^*_{\mathbb{S}^*_{b_{i,j}},n}} \rangle$, which denotes the block $b_{i,j}$ transmitted in $T_k$, the optimal source server of $b_{i,j}$, the optimal path, and the allocated bandwidth on the path, respectively.
+%$\langle \mathbb{B}^{T_k}_n, \mathbb{S}_{\mathbb{B}_n}^{*T_k}, p^*_{(\mathbb{S}_{\mathbb{B}_n}^{*T_k},n)}, f^*_{\mathbb{B}^{T_k}_n,p^*_{(\mathbb{S}_{\mathbb{B}_n}^{*T_k},n)}} \rangle$, which denotes the block set transmitted in each $T_k$ (i.e., transmission order of $\mathbb{B}_n$), the optimal source of these blocks, the optimal paths, and the optimal allocated bandwidth on the paths, respectively.
 
 \noindent(3) {\em Constraints.}
 The constraints on the formulation include server rate limits, link capacity, block transmission order and path selection.
 
 \begin{packeditemize}
 
-\item The allocated bandwidth on path $p_{(s,s')}$ should be the minimum of three parameters: the capacity $c(l)$ of links that are in $p_{(s,s')}$, source server upload rate $R_{up}(s)$, and destination server download rate $R_{down}(s')$. For all possible source servers for $b_{i,j}$ at $T_k$.
+\item The allocated bandwidth on path $p$ should be the minimum of three parameters: the capacity $c(l)$ of links in $p$, source server upload rate $R_{up}(s)$, and destination server download rate $R_{down}(s')$.% For all possible source servers for $b_{i,j}$ at $T_k$.
 \begin{equation}
 \begin{split}
-f_{b_{i,j},p_{(s,s')}} \leq  \displaystyle{min_{l\in p_{(s,s')}}} \{c(l),R_{up}(s),R_{down}(s')\},& \\
-\text{for }\forall b_{i,j}, T_k, s\in \mathbb{S}^{T_k}_{b_{i,j}}&%, \omega^{T_k}_{b_{i,j},s}=1 &
+%f_{b_{i,j},p} \leq  \displaystyle{min_{l\in p_{(s,s')}}} \{c(l),R_{up}(s),R_{down}(s')\},& \\
+f_{b_{i,j},p} \leq  min \{\displaystyle{min_{l\in p}c(l)},R_{up}(s),R_{down}(s')\},& \\
+\text{for }\forall b_{i,j}, p\in \mathbb{P}_{s,s'}, s\in \mathbb{S}^{T_k}_{b_{i,j}}&%, \omega^{T_k}_{b_{i,j},s}=1 &
 %& \forall p_\lambda \in Path(s,d) \label{st:bottleneck}
 \end{split}
 \end{equation}
@@ -110,8 +114,8 @@ f_{b_{i,j},p_{(s,s')}} \leq  \displaystyle{min_{l\in p_{(s,s')}}} \{c(l),R_{up}(
 
 \item At any time, the summed allocated bandwidth of a link should be no more than its capacity $c(l)$.
 \begin{equation}
-%\begin{split}
-c(l) \geq  \displaystyle{\sum_{l\in p_{(s,s')}\in \mathbb{P}}} \displaystyle{\sum_{b_{i,j} \in \mathbb{B}}} f_{b_{i,j},p_{(s,s')}} \cdot I_{b_{i,j},p_{(s,s')}}, \text{for }\forall l\\
+%\begin{split} \displaystyle{\sum_{l\in p_{(s,s')}\in \mathbb{P}}}
+c(l) \geq \displaystyle{\sum_{b_{i,j} \in \mathbb{B}}} f_{b_{i,j},p} \cdot I_{b_{i,j},p}, \text{for }\forall l\in p\\
 %& \forall p_\lambda \in Path(s,d) \label{st:capacity}
 %\end{split}
 \end{equation}
@@ -119,7 +123,7 @@ c(l) \geq  \displaystyle{\sum_{l\in p_{(s,s')}\in \mathbb{P}}} \displaystyle{\su
 \item For block set $\mathbb{B}^{T_k}_n$, the product of the allocated bandwidth and scheduling cycle $\Delta T$ should be no less than its size $\rho(\mathbb{B}^{T_k}_n)$.
 \begin{equation}
 \begin{split}
-\rho(\mathbb{B}^{T_k}_n) \leq \displaystyle{\sum_{p_{(s,s')}\in \mathbb{P}}} \displaystyle{\sum_{b_{i,j} \in \mathbb{B}^{T_k}_n}} f_{b_{i,j},p_{(s,s')}} \cdot I_{b_{i,j},p_{(s,s')}} \cdot \Delta T,& \\
+\rho(\mathbb{B}^{T_k}_n) \leq \displaystyle{\sum_{p\in \mathbb{P}}} \displaystyle{\sum_{b_{i,j} \in \mathbb{B}^{T_k}_n}} f_{b_{i,j},p} \cdot I_{b_{i,j},p} \cdot \Delta T,& \\
 \text{for }\forall T_k, \mathbb{B}^{T_k}_n &
 %& \forall B_{i,j} \in \mathbb{B} \label{st:size}\\
 \end{split}
@@ -128,7 +132,7 @@ c(l) \geq  \displaystyle{\sum_{l\in p_{(s,s')}\in \mathbb{P}}} \displaystyle{\su
 
 \item Only one path will be chosen for a particular block.
 \begin{equation}
-\displaystyle{\sum_{p_{(s,s')} \in \mathbb{P}}} I_{b_{i,j},p_{(s,s')}} = 1, \text{for }\forall b_{i,j}
+\displaystyle{\sum_{p \in \mathbb{P}}} I_{b_{i,j},p} = 1, \text{for }\forall b_{i,j}
 \end{equation}
 
 
@@ -144,7 +148,7 @@ c(l) \geq  \displaystyle{\sum_{l\in p_{(s,s')}\in \mathbb{P}}} \displaystyle{\su
 
 \begin{equation}
 \centering
-max \quad \displaystyle{\sum_{p_{(s,s')}\in \mathbb{P}}} \displaystyle{\sum_{b_{i,j} \in \mathbb{B}}} f_{b_{i,j},p_{(s,s')}} \cdot I_{b_{i,j},p_{(s,s')}}
+max \quad \displaystyle{\sum_{p\in \mathbb{P}}} \displaystyle{\sum_{b_{i,j} \in \mathbb{B}}} f_{b_{i,j},p} \cdot I_{b_{i,j},p}
 \label{equation:objective}
 \end{equation}
 
@@ -160,7 +164,7 @@ At a high level, the key insight that allows \name to update the overlay control
 to decouple the aforementioned formulation into two steps:
 a {\em scheduling} step which firstly selects a subset of blocks to be transferred in time slot $T_k$
 ($\mathbb{B}^{T_k}_n$), followed by a subsequent {\em routing}
-step which determines the residual three tuples: $\langle \mathbb{S}^*, p^*, f^* \rangle$, as described in \Section\ref{subsec:logic:formulation} {\em output}.
+step which determines the residual three tuples: $\langle \mathbb{S}^*, \mathbb{p}^*, f \rangle$, as described in \Section\ref{subsec:logic:formulation} {\em output}.
 
 On one hand, such decoupling significantly reduces the computational overhead of the centralized controller. As the scheduling step selects a subset of blocks, and only these selected blocks will be considered in the subsequent routing step, so the searching space is thus significantly reduced.
 
@@ -182,7 +186,7 @@ The key to avoid degradation in reducing the searching space is to make sure tha
 \subsection{Routing}
 \label{subsec:logic:routing}
 
-After the scheduling step selects the block set to transfer in each time slot ($\mathbb{B}^{T_k}_n$), the routing step decides the residual three tuples, $\langle \mathbb{S}^*, p^*, f^* \rangle$, for all blocks.
+After the scheduling step selects the block set to transfer in each time slot ($\mathbb{B}^{T_k}_n$), the routing step decides the residual three tuples, $\langle \mathbb{S}^*, \mathbb{p}^*, f \rangle$, for all blocks.
 
 With the constraints described in \Section\ref{subsec:logic:formulation}, this formulation in Equation \ref{equation:objective} is an integer multi-commodity flow algorithm which is known to be NP-complete \cite{garg1997primal}.
 %, and there is no known algorithm to find an optimal solution.
