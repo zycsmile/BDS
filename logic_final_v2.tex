@@ -47,7 +47,9 @@ can be solved efficiently and near-optimally with proved guarantees
 \hline
 \textit{$c(l)$} & Capacity of link $l$\\
 \hline
-\textit{$\mathbb{S}^{T_k}_{b_{i,j}}$} & Set of all possible source servers of $b_{i,j}$ at $T_k$\\
+%\textit{$\mathbb{S}^{T_k}_{b_{i,j}}$} & Set of all possible source servers of $b_{i,j}$ at $T_k$\\
+%\hline
+\textit{$\omega^{T_k}_{b_{i,j},s}$} & Binary: whether server $s$ has block $b_{i,j}$ at $T_k$\\
 \hline
 %\textit{$s_{b_{i,j}}$} & A source server for $b_{i,j}$\\
 %\hline
@@ -82,7 +84,7 @@ Table \ref{table:para} summarizes the key variables and parameters, and the prob
 \noindent(1) {\em Input.} % \jc{the formulation only consider one multicast request? No, multiple.}
 Each multicast transmission, referred to as a {\em task}, is defined
 by a source DC, a set of destination DCs, and a data file chopped into
-a list of data {\em blocks}. 
+a list of data {\em blocks}.
 The $i$th block of the $j$th task is denoted as $b_{i,j}$. Besides traffic demand, the inputs also include link capacity $c$, and
 server upload (and download) rate limit $R_{up}$ (and $R_{down}$).
 
@@ -95,11 +97,11 @@ The constraints on the formulation include server rate limits, link capacity, bl
 
 \begin{packeditemize}
 
-\item The allocated bandwidth on path $p_{(s,s')}$ should be the minimum of three parameters: the capacity $c(l)$ of links that are in $p_{(s,s')}$, source server upload rate $R_{up}(s)$, and destination server download rate $R_{down}(s')$. For all possible source servers of $b_{i,j}$ at $T_k$.
+\item The allocated bandwidth on path $p_{(s,s')}$ should be the minimum of three parameters: the capacity $c(l)$ of links that are in $p_{(s,s')}$, source server upload rate $R_{up}(s)$, and destination server download rate $R_{down}(s')$. For all possible source server $s$ whose $\omega^{T_k}_{b_{i,j},s}=1$.
 \begin{equation}
 \begin{split}
 f_{b_{i,j},p_{(s,s')}} \leq  \displaystyle{min_{l\in p_{(s,s')}}} \{c(l),R_{up}(s),R_{down}(s')\},& \\
-\text{for }\forall b_{i,j}, T_k, s\in \mathbb{S}^{T_k}_{b_{i,j}}&
+\text{for }\forall b_{i,j}, T_k, \omega^{T_k}_{b_{i,j},s}=1 &%, s\in \mathbb{S}^{T_k}_{b_{i,j}}&
 %& \forall p_\lambda \in Path(s,d) \label{st:bottleneck}
 \end{split}
 \end{equation}
@@ -132,7 +134,8 @@ c(l) \geq  \displaystyle{\sum_{l\in p_{(s,s')}\in \mathbb{P}}} \displaystyle{\su
 
 \item The destination server in the last scheduling cycle could be the source server in the next cycle.
 \begin{equation}
-\mathbb{S}^{T_{k+1}}_{b_{i,j}} = \mathbb{S}^{T_k}_{b_{i,j}} \cup s'
+%\mathbb{S}^{T_{k+1}}_{b_{i,j}} = \mathbb{S}^{T_k}_{b_{i,j}} \cup s'
+\omega^{T_{k+1}}_{b_{i,j},s'} = 1, \text{for }\forall b_{i,j}, s'
 \end{equation}
 \end{packeditemize}
 
