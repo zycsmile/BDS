@@ -104,7 +104,7 @@ We see that \name achieves 3$\times$ shorter completion time than
 Bullet and Akamai in the baseline setup, and over 4$\times$ shorter
 completion time in the large-scale and small bandwidth setups, which
 corroborates the findings in \Section\ref{subsubsec:name-vs-alg} that
-\name has more improvement when data sizes are large.
+\name has greater improvement when data sizes are large.
 
 \begin{table}[t]
 \begin{center}
@@ -144,11 +144,11 @@ To reduce the incidences of negative interference between bulk-data
 multicast traffic and latency-sensitive traffic, \company sets a
 bandwidth limit of bulk data transfers on each link by the difference
 between the link capacity and the historical peak bandwidth of
-latency-sensitive traffic. Naturally, we can minimize the incidents,
+latency-sensitive traffic. Naturally, we can minimize the conflicts,
 if \name can keep the bulk-data multicast traffic within the bandwidth
-limit. To test \name's effectiveness of separating bandwidth between
+limit. To test \name's effectiveness at maintaining differentiation between
 bulk-data multicast traffic and latency-sensitive traffic, we set an
-10GB/s bandwidth limit to bulk data transfers, and
+10GB/s bandwidth limit to bulk data transfers.
 Figure~\ref{fig:quota} shows the actual bandwidth usage of \name on
 one inter-DC link. We can see that in \name the actual bandwidth used
 by bulk data is always below 10~GB/s.
@@ -267,9 +267,9 @@ into perspective, in \company's DCs, the maximum number of simultaneous
 outstanding data blocks is around $3\times 10^5$, for which \name can
 finish updating the decisions within 300ms.
 
-\mypara{Network delay} \name works in inter-DC networks, so the network delay among DCs is a key factor in the algorithm updating process. We record the network delay of 5000 requests and present the CDF in Figure \ref{fig:scale:network}. We can see that 90\% of the network delays are below $50ms$ and the average value is about $25ms$, which is less than 1\% of the decision updating cycle (3 seconds).
+\mypara{Network delay} \name works in inter-DC networks, so the network delay among DCs is a key factor in the algorithm updating process. We recorded the network delay of 5000 requests and present the CDF in Figure \ref{fig:scale:network}. We can see that 90\% of the network delays are below $50ms$ and the average value is about $25ms$, which is less than 1\% of the decision updating cycle (3 seconds).
 
-\mypara{Feedback loop delay} For centralized algorithms, a small feedback loop delay is essential to algorithm scalability. In \name, this feedback loop consists of several procedures: status updating from agents to the controller, running of the centralized algorithm, and decision updating from the controller back to agents. We measure the delay of the whole process, show the CDF in Figure \ref{fig:scale:feedback}, and find that in most cases (over 80\%), the feedback loop delay is lower than $200ms$. So we can claim that \name demonstrates a short enough update delay and is able to scale to even larger systems.
+\mypara{Feedback loop delay} For centralized algorithms, a small feedback loop delay is essential for algorithmic scalability. In \name, this feedback loop consists of several procedures: status updating from agents to the controller, running of the centralized algorithm, and decision updating from the controller back to agents. We measure the delay of the whole process, as shown in the CDF of Figure \ref{fig:scale:feedback}, and find that in most cases (over 80\%), the feedback loop delay is lower than $200ms$. So we can claim that \name demonstrates a short enough update delay and is able to scale to even larger systems.
 
 \begin{figure*}[t]
         \centering
@@ -306,22 +306,22 @@ Here we examine the impact of the following failure scenario on the number of do
 
 \mypara{Block size} In \name, the bulk data file is split into blocks and can be transferred on bottleneck-disjoint paths. But this introduces a tradeoff between scheduling efficiency and calculation overhead. We therefore conduct two series of experiments using different block sizes (2MB and 64MB). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2MB/block scenario is 1.5 to 2 times shorter than that in the 64MB/block scenario.
 %This is because a smaller block sizes result in closer-to-optimal performance (see Appendix for the proof).
-However, this optimization introduces longer controller running time, as shown in Figure \ref{fig:scale:cpu}. We pick block size by balancing two considerations: (1) requirements on the completion time, and (2) controller's operation overhead.
+However, this optimization introduces a longer controller running time, as shown in Figure \ref{fig:scale:cpu}. We pick block size by balancing two considerations: (1) constraints on the completion time, and (2) the controller's operational overhead.
 
-\mypara{Update cycle lengths} Since any change in network environment may potentially alter the optimal overlay routing decisions, \name reacts to the changing network conditions by adjusting the routing scheme periodically. To testify the adjustment frequency, we set different cycle lengths from $0.5s$ to $95s$ to the same bulk data transfer, and Figure \ref{fig:analysis:cycleDiff} shows the completion time. Smaller cycle lengths result in shorter completion time, but the benefit diminishes when the cycle length is less than $3s$. This is because too frequent updates introduce more overhead on: (1) the information collection from agents to the controller, (2) the execution of the centralized algorithm, and (3) the re-establishment of new TCP connection. Thus, considering adjustment granularity and the corresponding overhead, we finally choose $3s$ as the default cycle length.
+\mypara{Update cycle lengths} Since any change in network environment may potentially alter the optimal overlay routing decisions, \name reacts to the changing network conditions by adjusting the routing scheme periodically. To test the adjustment frequency, we set different cycle lengths from $0.5s$ to $95s$ for the same bulk data transfer, and Figure \ref{fig:analysis:cycleDiff} shows the completion time. Smaller cycle lengths result in shorter completion time, but the benefit diminishes when the cycle length is less than $3s$. This is because updating too frequently introduces greater overhead on: (1) the information collection from agents to the controller, (2) the execution of the centralized algorithm, and (3) the re-establishment of new TCP connections. Thus, considering adjustment granularity and the corresponding overhead, we finally choose $3s$ as the default cycle length.
 
 
 \tightsubsubsection{In-depth analysis.}\label{subsubsec:evaluation:depth}
 
 \mypara{Optimization over algorithm running time} \name decouples scheduling and routing, which can significantly reduce the computational complexity. To clearly show the optimization, we measure the algorithm running time under \name and the standard linear programming (LP) solution. For the standard LP experiments, we use the \textit{linprog} library on MATLAB \cite{mathworks}, set the upper bound of the iteration number ($10^6$) if the algorithm does not converge, and record the CPU time as a function of the block number. Figure \ref{fig:further:BDSvsLP} shows that the running time of \name keeps below $25ms$ while that of standard LP grows quickly to $4s$ with only 4000 blocks. %This result illustrates \name's optimization over algorithm running time.
-\name is much faster than off-the-shelf LP solver.
+\name is much faster than an off-the-shelf LP solver.
 
 \mypara{Near-optimality of \name} To measure the near-optimality, we evaluate the data transfer completion time under the standard LP and \name: 2 DCs, 4 servers, 20MBs for server upload/download rate.
 %1 to 4000 blocks (we cannot conduct large-scale experiments due to the explosive growth of the LP calculation time).
-We vary the number of blocks from 1 to 4000, over which the LP solver can't finish in reasonable time. Figure \ref{fig:further:BDSvsLP_CT} shows the near-optimality of \name.%that the difference of completion time between \name and the optimal standard LP is about 15\%.
+We vary the number of blocks from 1 to 4000, over which the LP solver cannot finish in a reasonable time. Figure \ref{fig:further:BDSvsLP_CT} shows the near-optimality of \name.%that the difference of completion time between \name and the optimal standard LP is about 15\%.
 
 
-\mypara{Benefit of disjoint overlay paths} \Section\ref{subsec:motivation:case-for} reveals the benefits of disjoint paths on application-level overlay networks. To explore the potential benefit, we record the ratio of the number of blocks downloaded from the original source to the total number of blocks, and the CDF is shown in Figure \ref{fig:further:overlay}. For about 90\% servers, the proportion is less than 20\%, which means that more than 80\% blocks are downloaded from other DCs on the disjoint paths, demonstrating great potential of multicast overlay network.
+\mypara{Benefit of disjoint overlay paths} \Section\ref{subsec:motivation:case-for} reveals the benefits of disjoint paths on application-level overlay networks. To explore the potential benefit, we record the ratio of the number of blocks downloaded from the original source to the total number of blocks, and the CDF is shown in Figure \ref{fig:further:overlay}. For about 90\% of servers, the proportion is less than 20\%, which means that more than 80\% blocks are downloaded from other DCs on the disjoint paths, demonstrating the great potential of a multicast overlay network.
 
 %\mypara{Breakdown of feedback loop delay} \name also applies the approximation of separating data scheduling from overlay routing, which can also reduce algorithm running time. We show the measurements on algorithm running time in Figure \ref{fig:analysis:time}. At the very beginning, the running time is nearly $800ms$, but drops to $300ms$ and even less quickly. This is because the separated scheduling stage selects only a subset of blocks, making the number of blocks decrease significantly and simplifying the routing decision making process.
 
@@ -378,6 +378,7 @@ In summary, both the prototype pilot deployment and the trace-driven simulations
 %\end{itemize}
 %
 %\end{itemize}
+
 
 
 
