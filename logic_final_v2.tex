@@ -37,7 +37,7 @@ can be solved efficiently and near-optimally.% with proved guarantees
 \hline
 \textit{$\mathbb{B}^{(T_k)}_n$} & Subset of $\mathbb{B}_n$ transmitted in time slot $T_k$\\
 \hline
-\textit{$b_{i,j}$} & Block $i$ in task $j$\\
+\textit{$b$} & A block\\
 \hline
 \textit{$\mathbb{P}$} & Set of all possible paths in $\mathbb{A}$\\
 \hline
@@ -49,9 +49,9 @@ can be solved efficiently and near-optimally.% with proved guarantees
 \hline
 \textit{$c(l)$} & Capacity of link $l$\\
 \hline
-\textit{$w^{(T_k)}_{b_{i,j},s}$} & Binary: whether $s$ is chosen as destination server for $b_{i,j}$ at $T_k$\\
+\textit{$w^{(T_k)}_{b,s}$} & Binary: whether $s$ is chosen as destination server for $b$ at $T_k$\\
 \hline
-\textit{$\mathbb{S}^{T_k}_{b_{i,j}}$} & Set of all possible source servers whose $\omega^{T_k}_{b_{i,j},s}=1$\\
+\textit{$\mathbb{S}^{T_k}_{b}$} & Set of all possible source servers whose $\omega^{T_k}_{b,s}=1$\\
 \hline
 %\textit{$s_{b_{i,j}}$} & A source server for $b_{i,j}$\\
 %\hline
@@ -61,9 +61,9 @@ can be solved efficiently and near-optimally.% with proved guarantees
 %\hline
 %\textit{$p_{\lambda}$} & One particular path in $Path(s,d)$\\
 \hline
-\textit{$f^{(T_k)}_{b_{i,j},p}$} & Allocated bandwidth for $b_{i,j}$ on path $p$ at $T_k$\\
+\textit{$f^{(T_k)}_{b,p}$} & Allocated bandwidth for $b$ on path $p$ at $T_k$\\
 \hline
-\textit{$I^{(T_k)}_{b_{i,j},p}$} & Binary: whether $p$ is selected to send $b_{i,j}$ at $T_k$\\
+\textit{$I^{(T_k)}_{b,p}$} & Binary: whether $p$ is selected to send $b$ at $T_k$\\
 \hline
 %\textit{$f(l_{u,v}$)} & The allocated transmission rate on link $l_{u,v}$\\
 %\hline
@@ -92,7 +92,7 @@ A path between source server $s$ and destination server $s'$ ($p\in \mathbb{P}_{
 Besides link capacity $c(l)$, the inputs also include
 server upload (and download) rate limit $R_{up}$ (and $R_{down}$).
 
-\noindent(2) {\em Output.} For each server $n$ in any time slot $T_k$, a four-tuple for each block $b_{i,j}$ in $\mathbb{B}_n^{(T_k)}$. $\langle b_{i,j}, \mathbb{S}^*_{b_{i,j}}, \mathbb{P}^*_{\mathbb{S}^*_{b_{i,j}},n}, f_{b_{i,j},\mathbb{P}^*_{\mathbb{S}^*_{b_{i,j}},n}} \rangle$, which denotes the block $b_{i,j}$ transmitted in $T_k$, the optimal source server of $b_{i,j}$, the optimal path, and the allocated bandwidth on the path, respectively.
+\noindent(2) {\em Output.} For each server $n$ in any time slot $T_k$, a four-tuple for each block $b$ in $\mathbb{B}_n^{(T_k)}$. $\langle b, \mathbb{S}^*_{b}, \mathbb{P}^*_{\mathbb{S}^*_{b},n}, f_{b,\mathbb{P}^*_{\mathbb{S}^*_{b},n}} \rangle$, which denotes the block $b$ transmitted in $T_k$, the optimal source server of $b$, the optimal path, and the allocated bandwidth on the path, respectively.
 %$\langle \mathbb{B}^{T_k}_n, \mathbb{S}_{\mathbb{B}_n}^{*T_k}, p^*_{(\mathbb{S}_{\mathbb{B}_n}^{*T_k},n)}, f^*_{\mathbb{B}^{T_k}_n,p^*_{(\mathbb{S}_{\mathbb{B}_n}^{*T_k},n)}} \rangle$, which denotes the block set transmitted in each $T_k$ (i.e., transmission order of $\mathbb{B}_n$), the optimal source of these blocks, the optimal paths, and the optimal allocated bandwidth on the paths, respectively.
 
 \noindent(3) {\em Constraints.}
@@ -107,18 +107,18 @@ The constraints on the formulation include server rate limits, link capacity, bl
 %f_{b_{i,j},p} \leq  min \{\displaystyle{min_{l\in p}c(l)},R_{up}(s),R_{down}(s')\},& \\
 %\text{for }\forall b_{i,j}, p\in \mathbb{P}_{s,s'}, s\in \mathbb{S}^{T_k}_{b_{i,j}}&%, \omega^{T_k}_{b_{i,j},s}=1 &
 %& \forall p_\lambda \in Path(s,d) \label{st:bottleneck}
-f^{(T_k)}_{b_{i,j},p} \leq min\left(min_{l\in p} c(l), q_{b_{i,j},s}^{(T_k)}*R_{up}(s), w_{b_{i,j},s}^{(T_k)}*R_{down}(s')\right) &\\
-\text{for }\forall b_{i,j}, p\in \mathbb{P}_{s,s'} &%, s\in \mathbb{S}^{T_k}_{b_{i,j}}&%, \omega^{T_k}_{b_{i,j},s}=1
+f^{(T_k)}_{b,p} \leq min\left(min_{l\in p} c(l), q_{b,s}^{(T_k)}*R_{up}(s), w_{b,s}^{(T_k)}*R_{down}(s')\right) &\\
+\text{for }\forall b, p\in \mathbb{P}_{s,s'} &%, s\in \mathbb{S}^{T_k}_{b_{i,j}}&%, \omega^{T_k}_{b_{i,j},s}=1
 \end{split}
 \end{equation}
-where $w_{b_{i,j},s}^{(T_k)}=1$ when server $s$ is chosen, otherwise $w_{b_{i,j},s}^{(T_k)}=0$, $q_{b_{i,j},s}^{(T_{k+1})} = 1-\prod_{n\leq k} (1-w_{b_{i,j},s}^{(T_n)})$, denoting whether server $s$ has downloaded block $b_{i,j}$ before $T_{k+1}$.
+where $w_{b,s}^{(T_k)}=1$ when server $s$ is chosen, otherwise $w_{b,s}^{(T_k)}=0$, $q_{b,s}^{(T_{k+1})} = 1-\prod_{n\leq k} (1-w_{b,s}^{(T_n)})$, denoting whether server $s$ has downloaded block $b$ before $T_{k+1}$.
 %$w_{b,s}^{T_i}=1$ if server $s$ is chosen for block $b$ at $T_i$, otherwise $w_{b,s}^{T_i}=0$
 %The mentioned three constraints can then be formulated as follows:
 
 \item At any time, the summed allocated bandwidth of a link should be no more than its capacity $c(l)$.
 \begin{equation}
 %\begin{split} \displaystyle{\sum_{l\in p_{(s,s')}\in \mathbb{P}}}
-c(l) \geq \displaystyle{\sum_{b_{i,j} \in \mathbb{B}}} f^{(T_k)}_{b_{i,j},p} \cdot I^{(T_k)}_{b_{i,j},p}, \text{for }\forall l\in p\\
+c(l) \geq \displaystyle{\sum_{b \in \mathbb{B}}} f^{(T_k)}_{b,p} \cdot I^{(T_k)}_{b,p}, \text{for }\forall l\in p\\
 %& \forall p_\lambda \in Path(s,d) \label{st:capacity}
 %\end{split}
 \end{equation}
@@ -126,22 +126,22 @@ c(l) \geq \displaystyle{\sum_{b_{i,j} \in \mathbb{B}}} f^{(T_k)}_{b_{i,j},p} \cd
 \item For block set $\mathbb{B}^{(T_k)}_n$, the product of the allocated bandwidth and scheduling cycle $\Delta T$ should be no less than its size.% $\rho(\mathbb{B}^{T_k}_n)$.
 \begin{equation}
 \begin{split}
-\displaystyle{\sum_{b_{i,j}\in \mathbb{B}^{(T_k)}_n}} \rho(b_{i,j}) \leq \displaystyle{\sum_{p\in \mathbb{P}}} \displaystyle{\sum_{b_{i,j} \in \mathbb{B}^{(T_k)}_n}} f^{(T_k)}_{b_{i,j},p} \cdot I^{(T_k)}_{b_{i,j},p} \cdot \Delta T,& \\
+\displaystyle{\sum_{b\in \mathbb{B}^{(T_k)}_n}} \rho(b) \leq \displaystyle{\sum_{p\in \mathbb{P}}} \displaystyle{\sum_{b \in \mathbb{B}^{(T_k)}_n}} f^{(T_k)}_{b,p} \cdot I^{(T_k)}_{b,p} \cdot \Delta T,& \\
 \text{for }\forall T_k, \mathbb{B}^{(T_k)}_n &
 %& \forall B_{i,j} \in \mathbb{B} \label{st:size}\\
 \end{split}
 \end{equation}
-where $\rho(b_{i,j})$ is the size of block $b_{i,j}$.
+where $\rho(b)$ is the size of block $b$.
 
 
 \item Only one path will be chosen for a particular block.
 \begin{equation}
-\displaystyle{\sum_{p \in \mathbb{P}}} I^{(T_k)}_{b_{i,j},p} = 1, \text{for }\forall b_{i,j}
+\displaystyle{\sum_{p \in \mathbb{P}}} I^{(T_k)}_{b,p} = 1, \text{for }\forall b
 \end{equation}
 
 \item Finally, all the blocks should be transmitted.
 \begin{equation}
-\rho (\mathbb{B}) = \displaystyle{\sum_{k=1}^{N}} \displaystyle{\sum_{p\in P}} \displaystyle{\sum_{b_{i,j}\in \mathbb{B}}} f_{b_{i,j},p}^{(T_k)} \cdot I_{b_{i,j},p}^{(T_k)}
+\rho (\mathbb{B}) = \displaystyle{\sum_{k=1}^{N}} \displaystyle{\sum_{p\in P}} \displaystyle{\sum_{b\in \mathbb{B}}} f_{b,p}^{(T_k)} \cdot I_{b,p}^{(T_k)}
 \end{equation}
 which means that all the transmissions finish in $N$ scheduling cycles.
 %\item The destination server in the last scheduling cycle could be the source server in the next cycle.
@@ -153,11 +153,11 @@ which means that all the transmissions finish in $N$ scheduling cycles.
 
 
 %\noindent(4) {\em Objective.} To speed up the bulk data distribution, we aim at maximizing the sum of allocated bandwidth in any time slot for all the blocks over all the paths.
-\noindent(4) {\em Objective.} The objective of bulk data distribution problem is to minimize the transmission completion time, in other words, $min$ $N$. Here we try to solve an approximate problem that maximizes the sum of allocated bandwidth for all the blocks over all the paths, which can be formulated as follow:
+\noindent(4) {\em Objective.} The objective of bulk data distribution problem is to minimize the transmission completion time, in other words, $min$ $N$. Here we try to solve an approximate problem that maximizes the sum of allocated bandwidth for all the blocks over all the paths:
 
 \begin{equation}
 \centering
-max \displaystyle{\sum_{p\in P}} \displaystyle{\sum_{b_{i,j}\in \mathbb{B}}} f_{b_{i,j},p}^{(T_k)} \cdot I_{b_{i,j},p}^{(T_k)}
+max \displaystyle{\sum_{p\in P}} \displaystyle{\sum_{b\in \mathbb{B}}} f_{b,p}^{(T_k)} \cdot I_{b,p}^{(T_k)}
 \label{equation:objective}
 \end{equation}
 
