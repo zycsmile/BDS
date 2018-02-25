@@ -50,8 +50,8 @@ can be solved efficiently and near-optimally.% with proved guarantees
 \textit{$c(l)$} & Capacity of link $l$\\
 \hline
 \textit{$w^{(T_k)}_{b,s}$} & Binary: whether $s$ is chosen as destination server for $b$ at $T_k$\\
-\hline
-\textit{$\mathbb{S}^{T_k}_{b}$} & Set of all possible source servers whose $w^{T_k}_{b,s}=1$\\
+%\hline
+%\textit{$\mathbb{S}^{T_k}_{b}$} & Set of all possible source servers whose $w^{T_k}_{b,s}=1$\\
 \hline
 %\textit{$s_{b_{i,j}}$} & A source server for $b_{i,j}$\\
 %\hline
@@ -92,7 +92,7 @@ A path between source server $s$ and destination server $s'$ ($p\in \mathbb{P}_{
 Besides link capacity $c(l)$, the inputs also include
 server upload (and download) rate limit $R_{up}$ (and $R_{down}$).
 
-\noindent(2) {\em Output.} In any time slot $T_k$, a four-tuple for each block $b$. $\langle w^{(T_k)}_{b,s}, \mathbb{S}^{*(T_k)}_{b}, \mathbb{P}^{*(T_k)}_{\mathbb{S}^*_{b},n}, f_{b,\mathbb{P}^{*(T_k)}_{\mathbb{S}^{*(T_k)}_{b},n}} \rangle$, which denotes whether block $b$ is chosen to be transmitted in $T_k$, the optimal source server of $b$, the optimal path, and the allocated bandwidth on that path, respectively.
+\noindent(2) {\em Output.} In any time slot $T_k$, a five-tuple for each block $b$. $\langle w^{(T_k)}_{b,s}, s, s', p, f_{b,p}^{(T_k)} \rangle$, which denotes whether block $b$ is chosen to be transmitted in $T_k$, the optimal source server $s$, destination server $s'$, the optimal path between $s$ and $s'$, and the allocated bandwidth on that path, respectively.
 %$\langle \mathbb{B}^{T_k}_n, \mathbb{S}_{\mathbb{B}_n}^{*T_k}, p^*_{(\mathbb{S}_{\mathbb{B}_n}^{*T_k},n)}, f^*_{\mathbb{B}^{T_k}_n,p^*_{(\mathbb{S}_{\mathbb{B}_n}^{*T_k},n)}} \rangle$, which denotes the block set transmitted in each $T_k$ (i.e., transmission order of $\mathbb{B}_n$), the optimal source of these blocks, the optimal paths, and the optimal allocated bandwidth on the paths, respectively.
 
 \noindent(3) {\em Constraints.}
@@ -155,12 +155,6 @@ which means that all the transmissions finish in $N$ scheduling cycles.
 %\noindent(4) {\em Objective.} To speed up the bulk data distribution, we aim at maximizing the sum of allocated bandwidth in any time slot for all the blocks over all the paths.
 \noindent(4) {\em Objective.} The objective of bulk data distribution problem is to minimize the transmission completion time, in other words, to find the minimum integer $N$ to make the above formulation solvable.
 
-\begin{equation}
-\centering
-min \text{ } N
-\label{equation:objective}
-\end{equation}
-
 %\begin{equation}
 %\centering
 %max \displaystyle{\sum_{p\in P}} \displaystyle{\sum_{b\in \mathbb{B}}} f_{b,p}^{(T_k)} \cdot I_{b,p}^{(T_k)}
@@ -191,7 +185,7 @@ At a high level, the key insight that allows \name to make the solution practica
 to decouple the aforementioned formulation into two steps:
 a {\em scheduling} step which firstly selects the subset of blocks to be transferred in time slot $T_k$
 ($w^{(T_k)}_{b,s}$), followed by a subsequent {\em routing}
-step which determines the residual three tuples: $\langle \mathbb{S}^*, \mathbb{P}^*, f \rangle$, as described in \Section\ref{subsec:logic:formulation} {\em output}.
+step which determines the residual four tuples: $\langle s, s', p, f_{b,p}^{(T_k)}$, as described in \Section\ref{subsec:logic:formulation} {\em output}.
 
 Such decoupling significantly reduces the computational overhead of the centralized controller. As the scheduling step selects a subset of blocks, and only these selected blocks will be considered in the subsequent routing step, so the searching space is thus significantly reduced. This is the key idea that makes \name practical in realtime systems.
 Next we describe each step in more details.
@@ -207,7 +201,7 @@ Next we describe each step in more details.
 
 The scheduling step
 %tries to reduce searching space by selecting
-selects the subset of blocks to be transferred in each cycle, i.e., 
+selects the subset of blocks to be transferred in each cycle, i.e.,
 outputs $w^{(T_k)}_{b,s}$. The objective of this step is to reduce the sheer numbers of potential overlay paths and reduce the searching space of the centralized algorithm.
 
 
@@ -217,7 +211,7 @@ The key to avoid degradation in reducing the searching space is to make sure tha
 \subsection{Routing}
 \label{subsec:logic:routing}
 
-After the scheduling step selects the block set to transfer in each time slot ($w^{(T_k)}_{b,s}$), the routing step decides the residual three tuples, $\langle \mathbb{S}^*, \mathbb{P}^*, f \rangle$, for all the selected blocks.
+After the scheduling step selects the block set to transfer in each time slot ($w^{(T_k)}_{b,s}$), the routing step decides the residual four tuples, $\langle s, s', p, f_{b,p}^{(T_k)} \rangle$, for all the selected blocks.
 
 The objective of the bulk data duplication problem is to minimize the completion time, which can be realized by maximizing block transmission rate (allocated bandwidth) throughout all the scheduling cycles. The challenge here is that the optimal scheduling strategy in the next cycle is affected by the scheduling results in the last cycle. Therefore, just maximizing the allocated bandwidth for one cycle probably cannot result in the maximized bandwidth in the subsequent cycles. \name addresses this challenge by the {\em scheduling} step, which selects the optimal subset of blocks to be transferred in each cycle. Such selection is able to achieve the maximized bandwidth from the overall point of view, although it may not directly maximize the bandwidth in one particular cycle.
 
