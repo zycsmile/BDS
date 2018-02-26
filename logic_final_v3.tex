@@ -195,17 +195,22 @@ with standard techniques. Next, we present each step in more details.
 
 The scheduling step selects the subset of blocks to be transferred in
 each cycle, i.e., $w^{(T_k)}_{b,s}$.
-The key to pick the right subset of blocks is to make sure that the
-optimal routing is still retained while transferring the selected data
-blocks. We prove that {\em the optimal result occurs when the
-availability of all data blocks is balanced}, i.e., all the blocks are
-duplicated with the same amount of copies (See Appendix for the proof). Thus, a
-simple-yet-efficient way of selecting the data blocks balance block
-availability: for each cycle, \name simply picks the subset of blocks
-with the least amount of duplicates. Such a scheme is similar to
-BitTorrent's ``rarest-first'' \cite{Cohen2003Incentives}, but \name
-generalizes the rarest-first approach by selecting a set of blocks in
-each cycle, instead of a single copy of data.
+
+The key to do the scheduling (pick the subset of blocks) is to make sure that the subsequent data transmission can be done in the most efficient manner. Inspired by the ``rarest-first'' strategy in BitTorrent \cite{Cohen2003Incentives} that tries to balance block availability, \name adopts a simple-yet-efficient way of selecting the data blocks: for each cycle, \name simply picks the subset of blocks with the least amount of duplicates. In other words, \name generalizes the rarest-first approach by selecting a set of blocks in each cycle, instead of a single copy of data.
+
+%The scheduling step selects the subset of blocks to be transferred in
+%each cycle, i.e., $w^{(T_k)}_{b,s}$.
+%The key to pick the right subset of blocks is to make sure that the
+%optimal routing is still retained while transferring the selected data
+%blocks. We prove that {\em the optimal result occurs when the
+%availability of all data blocks is balanced}, i.e., all the blocks are
+%duplicated with the same amount of copies (See Appendix for the proof). Thus, a
+%simple-yet-efficient way of selecting the data blocks balance block
+%availability: for each cycle, \name simply picks the subset of blocks
+%with the least amount of duplicates. Such a scheme is similar to
+%BitTorrent's ``rarest-first'' \cite{Cohen2003Incentives}, but \name
+%generalizes the rarest-first approach by selecting a set of blocks in
+%each cycle, instead of a single copy of data.
 %\jc{I still think the proof of optimality is critical.
 %Can you try put it in the appendix or at the very least, upload a
 %technical report online which includes the proof.}
