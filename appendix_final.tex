@@ -19,6 +19,12 @@ and the expected transmission time $t_1$ can be calculated by Equation \ref{case
 \label{caseK}
 t_1 = \frac{\mathbb{S}_k}{min\{c(l),\frac{R_{up}(s)\times k}{m-k},R_{down}(s')\}}
 \end{equation}
+
+\begin{equation}
+\label{caseK}
+t_2 = \frac{n_1\times(m-k_1)\times \rho_b + n_2\times(m-k_2)\times \rho_b} {min\{c(l),\frac{R_{up}(s)\times (k_1+k_2)}{(m-k_1)+(m-k_2)},R_{down}(s')\}}
+\end{equation}
+
 where $\mathbb{S}_k=(m-k)\cdot \rho(b)$ denotes the size of the remaining blocks, and $\frac{R_{up}(s)\times k}{m-k}$ is the average upload bandwidth for a transmission. To compare $t_1$ and $t_2$, there are two situations:
 
 \begin{itemize}
