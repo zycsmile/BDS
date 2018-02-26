@@ -1,34 +1,58 @@
 \section{Appendix}
 %\subsection{Optimal result is yielded from the balance availability of blocks}
 %\subsection{Proof 1: The optimal result yields from balance availability of blocks}\label{appendix:balance}
-Assume there are $2m$ destination DCs, and the bulk data is split into $N$ blocks. 
+Assume there are $m$ destination DCs, and the bulk data is split into $N$ blocks.
 %Different scheduling strategies output different block subsets and lead to different intermediate transmission states, finally resulting in different completion time.
-Take two intermediate states as examples: 1) All of the $n$ blocks are balanced duplicated (i.e., each with $k$ duplicates); 2) Blocks are imbalanced duplicated (some have $k1$ duplicates and some have $k2$ duplicates, $(k1<k<k2)$). Let $t_1$ denote the completion time of case 1 and $t_2$ denote that of case 2. 
-%We then try to calculate the completion time.
-According to the duplication situations, we classify the $m$ DCs into two sets:
+Take two intermediate states at time $t_k$ as examples: 1) All of the $n$ blocks are balanced duplicated (i.e., each with $k$ duplicates); 2) Blocks are imbalanced duplicated (some have $k_1$ duplicates and some have $k_2$ duplicates, and $k_1<k<k_2$). Let $t_1$ denote the completion time of case 1 and $t_2$ denote that of case 2, and we then compare $t_1$ and $t_2$.
+%First we classify the $m$ DCs into two sets:
+%
+%$N_b = \{DC_i|DC_i \text{ has already downloaded block $b$}\}$
+%
+%$N'_b = \{DC_i|DC_i \text{ hasn't downloaded block $b$}\}$
 
-$N_b = \{DC_i|DC_i \text{ has already downloaded block $b$}\}$
-
-$N'_b = \{DC_i|DC_i \text{ hasn't downloaded block $b$}\}$
-where $|N_b| + |N'_b| = 2m$. In case 1, all the $N$ blocks have $k$ duplicates, so $|N_b| = k$ and $|N'_b| = 2m-k$. These $2m-k$ transmissions have $k$ optional data sources to download this block, 
-%Let $R_{up}$/$R_{down}$ denote the upload/download rate limits of each server, 
-so we can calculate $t_1$ by Equation \ref{caseK}:
+%where $|N_b| + |N'_b| = m$. 
+Take case 1 as an example, all the $N$ blocks have $k$ duplicates, so the remaining $m-k$ transmissions have $k$ optional data sources,
+%Let $R_{up}$/$R_{down}$ denote the upload/download rate limits of each server,
+and the expected transmission time $t_1$ can be calculated by Equation \ref{caseK}:
 
 \begin{equation}
 \label{caseK}
-t_1 = \frac{\mathbb{S}}{min\{c(l),\frac{R_{up}\times k}{2m-k},R_{down}\}}
+t_1 = \frac{\mathbb{S}_k}{min\{c(l),\frac{R_{up}(s)\times k}{m-k},R_{down}(s')\}}
 \end{equation}
-where $\mathbb{S}=\displaystyle{\sum_{b \in \mathbb{B}}} (1-w_{b,s}^{(T_k)}) \cdot \rho(b)$ denotes the size of the remaining data, and $c(l) > R_{up}/2m$ (server upload bandwidth is the bottleneck). This equation is a monotonically decreasing function of $k$ according to the following calculus.
+where $\mathbb{S}_k=(m-k)\cdot \rho(b)$ denotes the size of the remaining blocks, and $\frac{R_{up}(s)\times k}{m-k}$ is the average upload bandwidth for a transmission. To compare $t_1$ and $t_2$, there are two situations:
 
+\begin{itemize}
+\item when $min\{c(l),\frac{R_{up}(s)\times k}{m-k},R_{down}(s')\} = c(l)$ or $R_{down}(s')$, with $\mathbb{S}_k<\mathbb{S}_{k_1}$, so $t_1<t_2$
+    
+\item when $min\{c(l),\frac{R_{up}(s)\times k}{m-k},R_{down}(s')\} = \frac{R_{up}(s)\times k}{m-k}$, then the completion time is a monotonically decreasing function of $k$ according to the following equation:
 \begin{equation}
 \label{calculus}
 \begin{split}
-t'(k) &= \frac{d(t(k))}{d(k)} = \frac{d(\frac{\mathbb{S}\times (2m-k)}{R_{up}\times k})}{d(k)} \\
-    &= \frac{d(\frac{2m\times \mathbb{S}}{R_{up}\times k})}{d(k)} = -\frac{2m\mathbb{S}}{R_{up}\times k^2} < 0
+t'(k) &= \frac{d(t(k))}{d(k)} = \frac{d(\frac{\mathbb{S}_k\times (m-k)}{R_{up}(s)\times k})}{d(k)} \\
+    &= \frac{d(\frac{m\times (m-k)\times \rho(b)}{R_{up}(s)\times k})}{d(k)} = -\frac{\rho(b)}{R_{up}(s)} \times (1-\frac{m^2}{k^2})
 \end{split}
 \end{equation}
+As $k<m$, so $t'(k)<0$. Therefore $t_1<t_2$ due to $k>k_1$.
+\end{itemize}
 
-Therefore, in case 2, for those blocks with $k1$ ($k1<k$) duplicates, the completion time will be larger than $t_1$, i.e., $t_2 \geq t_{k1} > t_1$. Therefore, we can conclude that the optimal result is yielded from the balance availability of all data blocks.
+
+Overall $t_1\leq t_2$, we can thus conclude that the optimal result is yielded from the balance availability of all data blocks.
+
+%\begin{equation}
+%\label{caseK}
+%t_1 = \frac{\mathbb{S}}{min\{c(l),\frac{R_{up}(s)\times k}{m-k},R_{down}(s')\}}
+%\end{equation}
+%where $\mathbb{S}=\displaystyle{\sum_{b \in \mathbb{B}}} (1-w_{b,s}^{(T_k)}) \cdot \rho(b)$ denotes the size of the remaining data, and $c(l) > R_{up}/m$ (server upload bandwidth is the bottleneck). This equation is a monotonically decreasing function of $k$ according to the following calculus.
+%
+%\begin{equation}
+%\label{calculus}
+%\begin{split}
+%t'(k) &= \frac{d(t(k))}{d(k)} = \frac{d(\frac{\mathbb{S}\times (m-k)}{R_{up}\times k})}{d(k)} \\
+%    &= \frac{d(\frac{m\times \mathbb{S}}{R_{up}\times k})}{d(k)} = -\frac{m\mathbb{S}}{R_{up}\times k^2} < 0
+%\end{split}
+%\end{equation}
+%
+%Therefore, in case 2, for those blocks with $k1$ ($k1<k$) duplicates, the completion time will be larger than $t_1$, i.e., $t_2 \geq t_{k1} > t_1$. Therefore, we can conclude that the optimal result is yielded from the balance availability of all data blocks.
 
 %\subsection{Proof 2: Near Optimality of \name}\label{appendix:optimality}
 %
