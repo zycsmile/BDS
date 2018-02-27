@@ -3,46 +3,57 @@
 %\subsection{Proof 1: The optimal result yields from balance availability of blocks}\label{appendix:balance}
 Assume there are $m$ destination DCs, and the bulk data is split into $N$ blocks.
 %Different scheduling strategies output different block subsets and lead to different intermediate transmission states, finally resulting in different completion time.
-Take two intermediate states at time $t_k$ as examples: 1) All of the $n$ blocks are balanced duplicated (i.e., each with $k$ duplicates); 2) Blocks are imbalanced duplicated (some have $k_1$ duplicates and some have $k_2$ duplicates, and $k_1<k<k_2$). Let $t_1$ denote the completion time of case 1 and $t_2$ denote that of case 2, and we then compare $t_1$ and $t_2$.
+Take two intermediate states as examples: {\em A}) Balanced situation. All of the $N$ blocks are balanced duplicated with $k$ duplicates; {\em B}) Imbalanced situation. $\frac{N}{2}$ blocks have $k_1$ duplicates and $\frac{N}{2}$ blocks have $k_2$ duplicates, $k_1+k_2=2k$ and $k_1<k<k_2$. Let $t_A$ denote the completion time of case {\em A} and $t_B$ denote that of case {\em B}, and we then compare $t_A$ and $t_B$.
 %First we classify the $m$ DCs into two sets:
 %
 %$N_b = \{DC_i|DC_i \text{ has already downloaded block $b$}\}$
 %
 %$N'_b = \{DC_i|DC_i \text{ hasn't downloaded block $b$}\}$
 
-%where $|N_b| + |N'_b| = m$. 
-Take case 1 as an example, all the $N$ blocks have $k$ duplicates, so the remaining $m-k$ transmissions have $k$ optional data sources,
+Here we list some specific assumptions, although they are real cases in \company. First, different blocks are duplicated in different servers, so that the total upload bandwidth can be the sum of all $R_{up}$ of source servers. Second, the bottlenecks of the two cases are the same. Third, link capacity is much larger than the server rate limit. Therefore, the expected transmission time can be calculated by Equation \ref{equa:caseK}:
+ 
+%where $|N_b| + |N'_b| = m$.
+%For the blocks with $k$ duplicates, the remaining $m-k$ transmissions have $k$ optional data sources,
 %Let $R_{up}$/$R_{down}$ denote the upload/download rate limits of each server,
-and the expected transmission time $t_1$ can be calculated by Equation \ref{caseK}:
+%and the
 
 \begin{equation}
-\label{caseK}
-t_1 = \frac{\mathbb{S}_k}{min\{c(l),\frac{R_{up}(s)\times k}{m-k},R_{down}(s')\}}
+\label{equa:caseK}
+\begin{split}
+& t_A = \frac{\mathbb{S}}{min\{c(l),\frac{R_{up}(s)\times k}{m-k},\frac{R_{down}(s')\times k}{m-k}\}}\\
+& t_B = \frac{\mathbb{S}}{min\{c(l),\frac{R_{up}(s)\times k_1}{m-k_1},\frac{R_{up}(s)\times k2}{m-k_2},\frac{R_{down}(s')\times k_1}{m-k_1},\frac{R_{down}(s')\times k_2}{m-k_2}\}}\\
+\end{split}
 \end{equation}
+
+%\begin{equation}
+%\label{caseK}
+%t_2 = \frac{N/2\times(m-k_1)\times \rho_b + N/2\times(m-k_2)\times \rho_b} {min\{c(l),\frac{R_{up}(s)\times (k_1+k_2)}{(m-k_1)+(m-k_2)},R_{down}(s')\}}
+%\end{equation}
+
+where $\mathbb{S}=N\cdot (m-k)\cdot \rho(b)=\frac{N}{2}\cdot (m-k_1)\cdot \rho(b) + \frac{N}{2}\cdot (m-k_2)\cdot \rho(b)$, denoting the size of the remaining blocks, and $\frac{R_{up}(s)\times k}{m-k}$ is the average upload bandwidth for a $k$-duplicated transmission. Let $R=min\{R_{up}(s),R_{down}(s')\}$, then $t_A$ and $t_B$ can be simplified as follows:
 
 \begin{equation}
-\label{caseK}
-t_2 = \frac{n_1\times(m-k_1)\times \rho_b + n_2\times(m-k_2)\times \rho_b} {min\{c(l),\frac{R_{up}(s)\times (k_1+k_2)}{(m-k_1)+(m-k_2)},R_{down}(s')\}}
+\label{equa:simp}
+t_A = \frac{\mathbb{S}}{\frac{R\times k}{m-k}}, t_B = \frac{\mathbb{S}}{\frac{R\times k_1}{m-k_1}}\\
 \end{equation}
 
-where $\mathbb{S}_k=(m-k)\cdot \rho(b)$ denotes the size of the remaining blocks, and $\frac{R_{up}(s)\times k}{m-k}$ is the average upload bandwidth for a transmission. To compare $t_1$ and $t_2$, there are two situations:
-
-\begin{itemize}
-\item when $min\{c(l),\frac{R_{up}(s)\times k}{m-k},R_{down}(s')\} = c(l)$ or $R_{down}(s')$, with $\mathbb{S}_k<\mathbb{S}_{k_1}$, so $t_1<t_2$
-    
-\item when $min\{c(l),\frac{R_{up}(s)\times k}{m-k},R_{down}(s')\} = \frac{R_{up}(s)\times k}{m-k}$, then the completion time is a monotonically decreasing function of $k$ according to the following equation:
+Then the completion time is a monotonically decreasing function of $k$ according to the following equation:
 \begin{equation}
 \label{calculus}
 \begin{split}
-t'(k) &= \frac{d(t(k))}{d(k)} = \frac{d(\frac{\mathbb{S}_k\times (m-k)}{R_{up}(s)\times k})}{d(k)} \\
-    &= \frac{d(\frac{(m-k)^2\times \rho(b)}{R_{up}(s)\times k})}{d(k)} = \frac{\rho(b)}{R_{up}(s)} \times (1-\frac{m^2}{k^2})
+t'(k) &= \frac{d(t(k))}{d(k)} = \frac{d(\frac{\mathbb{S}\times (m-k)}{R\times k})}{d(k)} \\
+    &= \frac{d(\frac{N\times (m-k)^2\times \rho(b)}{R\times k})}{d(k)} = \frac{N\times \rho(b)}{R} \times (1-\frac{m^2}{k^2})
 \end{split}
 \end{equation}
-As $k<m$, so $t'(k)<0$. Therefore $t_1<t_2$ due to $k>k_1$.
-\end{itemize}
 
-
-Overall $t_1\leq t_2$, we can thus conclude that the optimal result is yielded from the balance availability of all data blocks.
+%To compare $t_1$ and $t_2$, there are two situations:
+%
+%\begin{itemize}
+%\item when $min\{c(l),\frac{R_{up}(s)\times k}{m-k},R_{down}(s')\} = c(l)$ or $R_{down}(s')$, with $\mathbb{S}_k<\mathbb{S}_{k_1}$, so $t_1<t_2$
+%
+%\item when $min\{c(l),\frac{R_{up}(s)\times k}{m-k},R_{down}(s')\} = \frac{R_{up}(s)\times k}{m-k}$, then the completion time is a monotonically decreasing function of $k$ according to the following equation:
+%
+As $k<m$, so $t'(k)<0$, thus, $t_A<t_B$ due to $k>k_1$. Therefore we can conclude that the optimal result is yielded from the balance availability of all data blocks.
 
 %\begin{equation}
 %\label{caseK}
