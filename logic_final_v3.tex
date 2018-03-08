@@ -2,8 +2,8 @@
 \label{sec:logic}
 
 At the core of \name is a centralized decision-making algorithm that
-periodically updates overlay routing decisions at scale and in near
-real-time (in the order of several seconds). \name strikes a favorable tradeoff
+periodically updates overlay routing decisions at scale in near
+real-time of several seconds. \name strikes a favorable tradeoff
 between solution optimality and near real-time updates by
 {\em decoupling} the control logic into two steps
 (\Section\ref{subsec:logic:separation}):
@@ -58,8 +58,8 @@ can be solved efficiently and near-optimally.% with proved guarantees
 \end{tabular}
 }
 \end{center}
-\vspace{-0.4cm}
-\tightcaption{Notations used in \name's decision-making logic.}
+\caption{Notations used in \name's decision-making logic.}
+\vspace{-0.2cm}
 \label{table:para}
 \end{table}
 
@@ -69,16 +69,16 @@ Table \ref{table:para} summarizes the key variables and parameters.
 
 The overlay traffic engineering in \name operates at a
 fine granularity, both spatially and temporally. To exploit the many
-overlay paths between the source and destination DCs, \name splits
-each data file into multiple data blocks (e.g., 2MB each).
-To cope with changes in the network conditions and arrivals of requests,
+overlay paths between the source and destination DCs, \name split
+each data file into multiple data blocks (e.g., 2MB).
+To cope with changes of network conditions and arrivals of requests,
 \name updates the decisions of overlay traffic engineering every
-$\Delta T$ (by default, $\Delta T=3$ seconds\footnote{We use a fixed interval of
+$\Delta T$ (by default, 3 seconds\footnote{We use a fixed interval of
 3 seconds, because it is long enough for \name to update decisions at
 a scale of \company's workload, and short enough to adapt to typical
 performance churns without noticeable impact on the completion time
 of bulk data transfers.
-More details in \Section\ref{sec:evaluation}}).
+More details in \Section\ref{sec:evaluation}}.).
 
 
 Now, the problem of multicast overlay routing can be formulated as
@@ -98,27 +98,25 @@ path $p\in\mathbb{P}_{s',s}$ destined to $s$, \name returns as output
 a 2-tuple $\langle w^{(T_k)}_{b,s}, f_{b,p}^{(T_k)} \rangle$, in which $w^{(T_k)}_{b,s}$ denotes whether server $s$ is
 selected as the destination server of block $b$ in $T_k$,
 $f_{b,p}^{(T_k)}$ denotes how much bandwidth is allocated to send
-block $b$ on path $p$ in $T_k$, and $f_{b,p}^{(T_k)}=0$ denotes 
+block $b$ on path $p$ in $T_k$, and $f_{b,p}^{(T_k)}=0$ denotes
 path $p$ is not selected to send block $b$ in $T_k$.
 
 \mypara{Constraints}
 \begin{packeditemize}
-\item The total allocated bandwidth on path $p$ must not exceed the
-%capacity of any link $l$ in $p$, as well as the 
-upload capacity of
+\item The allocated bandwidth on path $p$ must not exceed the
+capacity of any link $l$ in $p$, as well as the upload capacity of
 the source server $R_{up}(s)$, and the download capacity of the
 destination server $R_{down}(s')$.
 \begin{equation}
 \begin{split}
-% mjreed has removed first constraint in min
-f^{(T_k)}_{b,p} \leq min\left(%min_{l\in p} c(l),
+f^{(T_k)}_{b,p} \leq min\left(min_{l\in p} c(l),
 q_{b,s'}^{(T_k)}\cdot R_{up}(s'),
 w_{b,s}^{(T_k)}\cdot R_{down}(s)\right) &\\
 \text{for }\forall b, p\in \mathbb{P}_{s',s} &
 \end{split}
 \end{equation}
-where $q_{b,s^\prime}^{(T_k)} = 1-\prod_{i<k} (1-w_{b,s^\prime}^{(T_i)})$ denotes
-whether server $s^\prime$ has ever been selected to be the destination of
+where $q_{b,s}^{(T_k)} = 1-\prod_{i<k} (1-w_{b,s}^{(T_i)})$ denotes
+whether server $s$ has ever been selected to be the destination of
 block $b$ before cycle $T_k$.
 
 \item For all the paths, the summed allocated bandwidth of a link
@@ -137,7 +135,7 @@ their transfers within $\Delta T$, that is,
 \begin{split}
 \displaystyle{\sum_{b \in \mathbb{B}}} w_{b,s}^{(T_k)} \cdot \rho(b)
 \leq \displaystyle{\sum_{p\in \mathbb{P}}}
-\displaystyle{\sum_{b \in \mathbb{B}}} f^{(T_k)}_{b,p} \cdot 
+\displaystyle{\sum_{b \in \mathbb{B}}} f^{(T_k)}_{b,p} \cdot
 \Delta T,
 \text{for }\forall T_k &
 %& \forall B_{i,j} \in \mathbb{B} \label{st:size}\\
@@ -186,7 +184,7 @@ $f_{b,p}^{(T_k)}$).
 Such decoupling significantly reduces the computational overhead of
 the centralized controller. As the scheduling step selects a subset
 of blocks, and only these selected blocks are considered in the
-subsequent routing step, the search space is thus significantly
+subsequent routing step, the searching space is thus significantly
 reduced. Mathematically, by separating the scheduling step from the
 problem formulation, the routing step is reduced to a mixed-integer
 LP problem, which though is not immediately tractable, can be solved
@@ -198,7 +196,7 @@ with standard techniques. Next, we present each step in more details.
 The scheduling step selects the subset of blocks to be transferred in
 each cycle, i.e., $w^{(T_k)}_{b,s}$.
 
-The key to the scheduling (choosing the subset of blocks) is to make sure that the subsequent data transmission can be done in the most efficient manner. Inspired by the ``rarest-first'' strategy in BitTorrent \cite{Cohen2003Incentives} that tries to balance block availability, \name adopts a simple, yet efficient, manner of selecting the data blocks: for each cycle, \name picks the subset of blocks with the least number of duplicates. In other words, \name generalizes the rarest-first approach by selecting a set of blocks in each cycle, instead of a single copy of all data.
+The key to do the scheduling (pick the subset of blocks) is to make sure that the subsequent data transmission can be done in the most efficient manner. Inspired by the ``rarest-first'' strategy in BitTorrent \cite{Cohen2003Incentives} that tries to balance block availability, \name adopts a simple-yet-efficient way of selecting the data blocks: for each cycle, \name simply picks the subset of blocks with the least amount of duplicates. In other words, \name generalizes the rarest-first approach by selecting a set of blocks in each cycle, instead of a copy of a single block.
 
 %The scheduling step selects the subset of blocks to be transferred in
 %each cycle, i.e., $w^{(T_k)}_{b,s}$.
@@ -221,7 +219,7 @@ The key to the scheduling (choosing the subset of blocks) is to make sure that t
 \subsection{Routing}
 \label{subsec:logic:routing}
 
-After the scheduling step, \name selects the blocks to transfer in each
+After the scheduling step selects the block set to transfer in each
 time slot ($w^{(T_k)}_{b,s}$), the routing step decides the paths and
 allocates bandwidth to transfer the selected blocks (i.e.,
 $f_{b,p}^{(T_k)}$).
@@ -241,7 +239,7 @@ This is of course an approximation, since greedily maximixing the
 throughput in one cycle may lead to suboptimal data availability and
 lower the maximum achivable throughput in the next cycle. But in
 practice, we find that this approximation can lead to significant
-performance improvement over measured baselines, partly because the scheduling
+performance improvement over baselines, partly because the scheduling
 step, described in the last section, automatically balances the
 availability of blocks, so suboptimal data availability (e.g.,
 starvation of blocks) caused by greedy routing decisions in past
@@ -260,7 +258,16 @@ splits data into tens of thousands of fine-grained data blocks
 standard linear programming (LP) relaxation commonly used in the MCF
 problem~\cite{garg2007faster,reed2012traffic}.
 
-However, splitting tasks into a smaller set means that the number of blocks grows considerably, and consequently the computing time grows significantly. \name adopts two coping strategies: (1) it groups the blocks with the same source and destination pair to reduce the problem size (detailed in \Section\ref{subsec:system:centralized}); and (2) it uses the improved fully polynomial-time approximation schemes (FPTAS)~\cite{fleischer2000approximating, reed2012traffic} to optimize the dual problem of the original problem and find an $\epsilon$-optimal solution. These two strategies reduce the running time of this centralized algorithm to a tolerable value.
+However, when splitting tasks infinitesimally, the number of blocks
+will grow considerably large, and the computing time will be
+intolerable. \name adopts two coping strategies: (1) it groups the
+blocks with the same source and destination pair to reduce the
+problem size (detailed in \Section\ref{subsec:system:centralized});
+and (2) it uses the improved fully polynomial-time approximation
+schemes (FPTAS)~\cite{fleischer2000approximating} to optimize the
+dual problem of the original problem and works out an
+$\epsilon$-optimal solution. These two strategies further reduces the
+running time of centralized algorithm.
 
 
 

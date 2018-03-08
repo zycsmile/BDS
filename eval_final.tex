@@ -45,7 +45,7 @@ close to optimal flow completion time
 \subsection{Performance improvement over existing solutions}
 \label{subsec:evaluation:centralized}
 
-\tightsubsubsection{Methodology}
+\subsubsection{Methodology}
 
 \mypara{Baselines}
 We compare \name with three existing solutions: \alg (\company's
@@ -68,7 +68,7 @@ same topology, number of servers, and link capacities as \name, and
 replay inter-DC multicast data requests in the same chronological
 order as in the pilot deployment.
 
-\tightsubsubsection{\name vs. \alg}
+\subsubsection{\name vs. \alg}
 \label{subsubsec:name-vs-alg}
 
 We begin by evaluating \name and \alg on one service that needs to
@@ -90,7 +90,7 @@ Figure~\ref{fig:BDSvsAnon:time} shows the timeseries of the mean
 completion time of \name and \alg in one randomly chosen application,
 and we see that \name consistently outperforms \alg by 4$\times$.
 
-\tightsubsubsection{\name vs. other overlay multicast techniques}
+\subsubsection{\name vs. other overlay multicast techniques}
 
 Table~\ref{table:versusAkamai} compares \name with two other
 baselines, Bullet and Akamai's overlay network, using trace-driven
@@ -253,7 +253,7 @@ Next, we use micro-benchmarking to evaluate \name along three metrics:
 (2) fault tolerance; and
 (3) optimality of \name parameters.
 
-\tightsubsubsection{Scalability}
+\subsubsection{Scalability}
 \label{subsec:evaluation:benchmarks:scalability}
 
 \mypara{Controller running time}
@@ -297,12 +297,12 @@ finish updating the decisions within 300ms.
 \end{figure*}
 
 %\tightsubsubsection{Algorithm adaptability.}\label{subsubsec:evaluation:adaptability}
-\tightsubsubsection{Fault tolerance}
+\subsubsection{Fault tolerance}
 
 %\mypara{Fault tolerance}
 Here we examine the impact of the following failure scenario on the number of downloaded blocks per cycle. During cycles 0 to 9, \name works as usual, and one agent fails in the 10th cycle. The controller fails in the 20th cycle and recovers in the 30th cycle. Figure \ref{fig:analysis:failure} shows the average number of downloaded blocks per cycle. We find that the slight impact of agent failure only lasts for one cycle, and the system recovers in the 11th cycle. When the controller is unavailable, \name falls back to a default decentralized overlay protocol, resulting in graceful performance degradation. With the recovery of the controller, the performance recovers in the 30th cycle.
 
-\tightsubsubsection{Choosing the values of key parameters}\label{subsec:evaluation:benchmarks:parameters}
+\subsubsection{Choosing the values of key parameters}\label{subsec:evaluation:benchmarks:parameters}
 
 \mypara{Block size} In \name, the bulk data file is split into blocks and can be transferred on bottleneck-disjoint paths. But this introduces a tradeoff between scheduling efficiency and calculation overhead. We therefore conduct two series of experiments using different block sizes (2MB and 64MB). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2MB/block scenario is 1.5 to 2 times shorter than that in the 64MB/block scenario.
 %This is because a smaller block sizes result in closer-to-optimal performance (see Appendix for the proof).
