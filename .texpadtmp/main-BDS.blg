@@ -1,0 +1,78 @@
+This is BibTeX, Version 0.99d (TeX Live 2015)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: main-BDS.aux
+The style file: acm.bst
+Database file #1: ../DTplatbib.bib
+I was expecting a `,' or a `}'---line 109 of file ../DTplatbib.bib
+ : 
+ : %keywords={cloud computing;computer centres;wide area networks;Google software defined data center WAN;cloud computing;hybrid data center networks;networking as a service},
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Repeated entry---line 114 of file ../DTplatbib.bib
+ : @inproceedings{hong2013achieving
+ :                                 ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 1104 of file ../DTplatbib.bib
+ : @article{Andreev2013Designing
+ :                              ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 1157 of file ../DTplatbib.bib
+ : @inproceedings{zhang2016piebridge
+ :                                  ,
+I'm skipping whatever remains of this entry
+Warning--to sort, need author or key in golang
+Warning--to sort, need author or key in mathworks
+Warning--to sort, need author or key in Joost
+Warning--to sort, need author or key in PPStream
+Warning--to sort, need author or key in UUSee
+Warning--to sort, need author or key in oceanstore
+Warning--can't use both volume and number fields in chu2000case
+Warning--empty booktitle in Hong2012Finishing
+Warning--can't use both volume and number fields in hong2013achieving
+Warning--can't use both volume and number fields in jain2013b4
+Warning--can't use both volume and number fields in kostic2003bullet
+Warning--can't use both volume and number fields in mukerjee2014enabling
+Warning--can't use both volume and number fields in rhea2005opendht
+Warning--empty booktitle in savage1999Theend
+You've used 57 entries,
+            2253 wiz_defined-function locations,
+            847 strings with 14966 characters,
+and the built_in function-call counts, 23527 in all, are:
+= -- 2189
+> -- 1288
+< -- 0
++ -- 537
+- -- 472
+* -- 1850
+:= -- 3623
+add.period$ -- 165
+call.type$ -- 57
+change.case$ -- 404
+chr.to.int$ -- 0
+cite$ -- 71
+duplicate$ -- 888
+empty$ -- 1820
+format.name$ -- 472
+if$ -- 5017
+int.to.chr$ -- 0
+int.to.str$ -- 57
+missing$ -- 50
+newline$ -- 282
+num.names$ -- 102
+pop$ -- 509
+preamble$ -- 1
+purify$ -- 348
+quote$ -- 0
+skip$ -- 652
+stack$ -- 0
+substring$ -- 1305
+swap$ -- 298
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 226
+warning$ -- 14
+while$ -- 198
+width$ -- 59
+write$ -- 573
+(There were 4 error messages)
