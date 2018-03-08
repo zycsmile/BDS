@@ -1,9 +1,9 @@
 \section{Near-Optimal and Efficient Decision-Making Logic}
 \label{sec:logic}
 
-At the core of \name is a centralized decision-making algorithm that
+The core of \name is a centralized decision-making algorithm that
 periodically updates overlay routing decisions at scale in near
-real-time of several seconds. \name strikes a favorable tradeoff
+real-time. \name strikes a favorable tradeoff
 between solution optimality and near real-time updates by
 {\em decoupling} the control logic into two steps
 (\Section\ref{subsec:logic:separation}):
@@ -59,13 +59,13 @@ can be solved efficiently and near-optimally.% with proved guarantees
 }
 \end{center}
 \caption{Notations used in \name's decision-making logic.}
-\vspace{-0.2cm}
+\vspace{-0.8cm}
 \label{table:para}
 \end{table}
 
 %\mypara{Under fixed network capacity}
 We begin by formulating the problem of overlay traffic engineering.
-Table \ref{table:para} summarizes the key variables and parameters.
+Table \ref{table:para} summarizes the key notations.
 
 The overlay traffic engineering in \name operates at a
 fine granularity, both spatially and temporally. To exploit the many
@@ -223,7 +223,6 @@ After the scheduling step selects the block set to transfer in each
 time slot ($w^{(T_k)}_{b,s}$), the routing step decides the paths and
 allocates bandwidth to transfer the selected blocks (i.e.,
 $f_{b,p}^{(T_k)}$).
-
 To minimize the transfer completion time, \name maximizes the
 throughput (total data volume transferred) in each cycle $T_k$.
 

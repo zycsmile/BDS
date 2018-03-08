@@ -137,7 +137,7 @@ Akamai & $25m$ & $87m$ & $138m$\\
   \includegraphics[width=45mm]{images/Quota_v2.eps}%DrawLink.m
   \tightcaption{The effectiveness of bandwidth separation.}
   \label{fig:quota}
-\vspace{-0.2cm}
+\vspace{-0.4cm}
 \end{figure}
 
 To reduce the incidences of negative interference between bulk-data
@@ -269,7 +269,7 @@ finish updating the decisions within 300ms.
 
 \mypara{Network delay} \name works in inter-DC networks, so the network delay among DCs is a key factor in the algorithm updating process. We recorded the network delay of 5000 requests and present the CDF in Figure \ref{fig:scale:network}. We can see that 90\% of the network delays are below $50ms$ and the average value is about $25ms$, which is less than 1\% of the decision updating cycle (3 seconds).
 
-\mypara{Feedback loop delay} For centralized algorithms, a small feedback loop delay is essential for algorithmic scalability. In \name, this feedback loop consists of several procedures: status updating from agents to the controller, running of the centralized algorithm, and decision updating from the controller back to agents. We measure the delay of the whole process, as shown in the CDF of Figure \ref{fig:scale:feedback}, and find that in most cases (over 80\%), the feedback loop delay is lower than $200ms$. So we can claim that \name demonstrates a short enough update delay and is able to scale to even larger systems.
+\mypara{Feedback loop delay} For centralized algorithms, a small feedback loop delay is essential for algorithmic scalability. In \name, this feedback loop consists of several procedures: status updating from agents to the controller, running of the centralized algorithm, and decision updating from the controller back to agents. We measure the delay of the whole process, as shown in the CDF of Figure \ref{fig:scale:feedback}, and find that in most cases (over 80\%), the feedback loop delay is lower than $200ms$. So we claim that \name demonstrates a short enough latency and is able to scale to even larger systems.
 
 \begin{figure*}[t]
         \centering
@@ -313,7 +313,7 @@ However, this optimization introduces a longer controller running time, as shown
 
 \tightsubsubsection{In-depth analysis.}\label{subsubsec:evaluation:depth}
 
-\mypara{Optimization over algorithm running time} \name decouples scheduling and routing, which can significantly reduce the computational complexity. To clearly show the optimization, we measure the algorithm running time under \name and the standard linear programming (LP) solution. For the standard LP experiments, we use the \textit{linprog} library on MATLAB \cite{mathworks}, set the upper bound of the iteration number ($10^6$) if the algorithm does not converge, and record the CPU time as a function of the block number. Figure \ref{fig:further:BDSvsLP} shows that the running time of \name keeps below $25ms$ while that of standard LP grows quickly to $4s$ with only 4000 blocks. %This result illustrates \name's optimization over algorithm running time.
+\mypara{Optimization over algorithm running time} \name decouples scheduling and routing, which can significantly reduce the computational complexity. To clearly show the optimization, we measure the algorithm running time under \name and the standard LP solution. For the standard LP experiments, we use the \textit{linprog} library on MATLAB \cite{mathworks}, set the upper bound of the iteration number ($10^6$) if the algorithm does not converge, and record the CPU time as a function of the block number. Figure \ref{fig:further:BDSvsLP} shows that the running time of \name keeps below $25ms$ while that of standard LP grows quickly to $4s$ with only 4000 blocks. %This result illustrates \name's optimization over algorithm running time.
 \name is much faster than an off-the-shelf LP solver.
 
 \mypara{Near-optimality of \name} To measure the near-optimality, we evaluate the data transfer completion time under the standard LP and \name: 2 DCs, 4 servers, 20MBs for server upload/download rate.
