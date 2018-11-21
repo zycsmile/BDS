@@ -58,8 +58,8 @@ can be solved efficiently and near-optimally.% with proved guarantees
 \end{tabular}
 }
 \end{center}
-\vspace{-0.4cm}
 \tightcaption{Notations used in \name's decision-making logic.}
+\vspace{-0.4cm}
 \label{table:para}
 \end{table}
 
@@ -98,13 +98,13 @@ path $p\in\mathbb{P}_{s',s}$ destined to $s$, \name returns as output
 a 2-tuple $\langle w^{(T_k)}_{b,s}, f_{b,p}^{(T_k)} \rangle$, in which $w^{(T_k)}_{b,s}$ denotes whether server $s$ is
 selected as the destination server of block $b$ in $T_k$,
 $f_{b,p}^{(T_k)}$ denotes how much bandwidth is allocated to send
-block $b$ on path $p$ in $T_k$, and $f_{b,p}^{(T_k)}=0$ denotes 
+block $b$ on path $p$ in $T_k$, and $f_{b,p}^{(T_k)}=0$ denotes
 path $p$ is not selected to send block $b$ in $T_k$.
 
 \mypara{Constraints}
 \begin{packeditemize}
 \item The total allocated bandwidth on path $p$ must not exceed the
-%capacity of any link $l$ in $p$, as well as the 
+%capacity of any link $l$ in $p$, as well as the
 upload capacity of
 the source server $R_{up}(s)$, and the download capacity of the
 destination server $R_{down}(s')$.
@@ -137,7 +137,7 @@ their transfers within $\Delta T$, that is,
 \begin{split}
 \displaystyle{\sum_{b \in \mathbb{B}}} w_{b,s}^{(T_k)} \cdot \rho(b)
 \leq \displaystyle{\sum_{p\in \mathbb{P}}}
-\displaystyle{\sum_{b \in \mathbb{B}}} f^{(T_k)}_{b,p} \cdot 
+\displaystyle{\sum_{b \in \mathbb{B}}} f^{(T_k)}_{b,p} \cdot
 \Delta T,
 \text{for }\forall T_k &
 %& \forall B_{i,j} \in \mathbb{B} \label{st:size}\\
