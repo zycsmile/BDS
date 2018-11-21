@@ -32,7 +32,7 @@ inter-DC traffic then needs to be replicated in a frequent and efficient manner.
 %DCs~\cite{b4,bwe,swan,??,??,??}.
 
 
-\begin{figure}[t!]
+\begin{figure}[htbp]
 \includegraphics[width=83mm]{images/intro-example-3.pdf}
 \vspace{-0.4cm}
 \tightcaption{A simple network topology illustrating how
@@ -53,7 +53,7 @@ The circled numbers show the order for each data piece
 
 While there have been tremendous efforts towards better inter-DC
 network performance (e.g.,~\cite{savage1999Theend,jain2013b4,
-kumar2015bwe,hong2013achieving,zhang2015guarantee}), the focus has
+kumar2015bwe,hong2013achieving,zhang2015guarantee,zhang2017going}), the focus has
 been improving the performance of the wide area network (WAN) path
 between each pair of DCs. These WAN-centric approaches, however, are
 incomplete, as they fail to leverage the rich application-level
@@ -94,7 +94,7 @@ for lack of global information, or restricts itself to strictly
 structured (e.g., layered) topologies~\cite{Nygren2010The}, which
 fails to leverage all possible overlay paths. Second, even a small
 increase in the delay of latency-sensitive traffic can cause
-significant revenue loss, so the bandwidth usage of inter-DC
+significant revenue loss~\cite{zhang2017communication}, so the bandwidth usage of inter-DC
 bulk-data multicasts must be tightly controlled to avoid negative
 impact on other latency-sensitive traffic.
 %\myfootnote{Despite
