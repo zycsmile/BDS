@@ -58,10 +58,11 @@
 \newtheorem{proposition}{\noindent{\bf Proposition}}
 \newtheorem{constrain}{Constraint}
 \newtheorem{definition}{Definition}
-\newcommand{\TODO}[1]{\textcolor{red}{TODO: #1}}
+\newcommand{\NEW}[1]{{\color{red}{#1}}}
 \newcommand{\jc}[1]{{\footnotesize\color{red}{[JC: #1]}}}
 \newcommand{\fillme}{XXX\xspace}
 \newcommand{\name}{BDS\xspace}
+\newcommand{\newname}{BDS+\xspace}
 \newcommand{\company}{{Baidu}\xspace}
 \newcommand{\alg}{{Gingko}\xspace}
 \newcommand{\Section}{\S}
@@ -118,14 +119,14 @@
 
 \begin{document}
 
-\copyrightyear{2018}
-\acmYear{2018}
-\setcopyright{acmcopyright}
-\acmConference[EuroSys '18]{Thirteenth EuroSys Conference 2018}{April 23--26, 2018}{Porto, Portugal}
-\acmBooktitle{EuroSys '18: Thirteenth EuroSys Conference 2018, April 23--26, 2018, Porto, Portugal}
-\acmPrice{15.00}
-\acmDOI{10.1145/3190508.3190519}
-\acmISBN{978-1-4503-5584-1/18/04}
+%\copyrightyear{2018}
+%\acmYear{2018}
+%\setcopyright{acmcopyright}
+%\acmConference[EuroSys '18]{Thirteenth EuroSys Conference 2018}{April 23--26, 2018}{Porto, Portugal}
+%\acmBooktitle{EuroSys '18: Thirteenth EuroSys Conference 2018, April 23--26, 2018, Porto, Portugal}
+%\acmPrice{15.00}
+%\acmDOI{10.1145/3190508.3190519}
+%\acmISBN{978-1-4503-5584-1/18/04}
 
 \title[\name: A Centralized Near-Optimal Overlay Network for \\Inter-Datacenter Data Replication]{\name: A Centralized Near-Optimal Overlay Network for Inter-Datacenter Data Replication}
 
@@ -190,39 +191,42 @@
 
 
 %\input{abstract_kai}
-\input{abstract_final}
+\input{abstract_journal}
 
 \maketitle
 
 
 %\input{intro_kai}
-\input{intro_final}
+\input{intro_journal}
 
 %\input{motivation}
 %\input{motivation_junchen}
-\input{motivation_final}
+\input{motivation_journal}
 
 %\input{overview}
 %\input{overview_junchen}
 %\input{overview_new}
-\input{overview_final}
+\input{overview_journal}
 
 %\input{logic}
 %\input{logic_new}
 %\input{logic_final_v2}
-\input{logic_final_v3}
+\input{logic_journal}
+
+
+\input{dynamic_journal}
 
 %\input{system}
-\input{system_final}
+\input{system_journal}
 %
 %\input{impl}
-\input{impl_final}
+\input{impl_journal}
 %
 %\input{eval}
 %\input{eval_new}
-\input{eval_final}
+\input{eval_journal}
 %
-\input{related}
+\input{related_journal}
 
 %\ifCLASSOPTIONcompsoc
 %  % The Computer Society usually uses the plural form
@@ -240,13 +244,13 @@
 %\section{Discussion}
 
 %\section{Conclusion}
-\input{conclusion}
-\input{acknowledgment}
+\input{conclusion_journal}
+\input{acknowledgment_journal}
 
 \bibliographystyle{acm}
-\bibliography{DTplatbib}
+\bibliography{DTplatbibjournal}
 
 %\input{appendix_final_dep}
-\input{appendix_final}
+\input{appendix_journal}
 
 \end{document}
