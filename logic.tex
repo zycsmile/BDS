@@ -1,115 +1,274 @@
 \section{Near-Optimal and Efficient Decision-Making Logic}
 \label{sec:logic}
 
-At a high level, \name optimizes the data distribution performance by splitting data into fine-grained blocks so as to exploiting all available server-level overlay paths, and possible reordering of blocks to speed up the process.
-In a general case, it is indeed intractable to solve the problem in near real-time, but \name can find a near-optimal solution for our problem scale in several seconds by using applying two approximations: (1) separating the problem of data scheduling and overlay routing, and (2) using standard linear-programming relaxation to solve them efficiently.
+The core of \name is a centralized decision-making algorithm that
+periodically updates overlay routing decisions at scale in near
+real-time. \name strikes a favorable tradeoff
+between solution optimality and near real-time updates by
+{\em decoupling} the control logic into two steps
+(\Section\ref{subsec:logic:separation}):
+overlay scheduling, i.e., which data blocks to be sent
+(\Section\ref{subsec:logic:scheduling}),
+and routing, i.e., which paths to use to send each data block
+(\Section\ref{subsec:logic:routing}), each of which
+can be solved efficiently and near-optimally.% with proved guarantees
+%(\Section\ref{subsec:logic:scheduling},~\ref{subsec:logic:routing}).
 
-%\jc{In general, please avoid use of big formulations (like eq 5-10 on p6). May strike a negative impression in nsdi submissions}
-
-\subsection{Problem formulation}
+\subsection{Basic formulation}
 \label{subsec:logic:formulation}
+
 
 \begin{table}[t]
 \begin{center}
-%\resizebox{\textwidth/2}{!}{
+\resizebox{3in}{!}{
 %\begin{tabular}{p{2cm}<{\centering}|p{2cm}<{\centering}}
 \begin{tabular}{| c | l|}
 \hline
  \rowcolor[gray]{0.9}
 \textbf{Variables} & \textbf{Meaning} \\
 \hline \hline
-\textit{$\mathbb{A}$} & Set of all $(s, d)$ pair\\
-\hline
 \textit{$\mathbb{B}$} & Set of blocks of all tasks\\
 \hline
-\textit{$B_{i,j}$} & Block $i$ in Task $j$\\
+\textit{$b$} & A block\\
 \hline
-\textit{$c(l_{u,v})$} & Capacity of link $l_{u,v}$\\
+\textit{$\rho(b)$} & The size of block $b$\\
 \hline
-\textit{$Path(s,d)$} & Set of all potential paths in $\mathbb{A}$\\
+\textit{$\mathbb{P}_{s,s'}$} & Set of paths between a source and destination pair\\
 \hline
-\textit{$f_{B_{i,j},p_\lambda}$} & Allocated bandwidth for $B_{i,j}$ on path $p_\lambda$\\
+\textit{$p$} & A particular path\\
 \hline
-\textit{$I_{B_{i,j},p_\lambda}$} & 0 or 1: whether $p_\lambda$ is selected for $B_{i,j}$\\
+\textit{$l$} & A link on a path\\
+\hline
+\textit{$c(l)$} & Capacity of link $l$\\
+\hline
+\textit{$\Delta T$} & A scheduling cycle\\
+\hline
+\textit{$T_k$} & The $k$-th update cycle\\
+\hline
+\textit{$w^{(T_k)}_{b,s}$} & Binary: if $s$ is chosen as destination server for $b$ at $T_k$\\
+\hline
+\textit{$R_{up}(s)$} & Upload capacity of server $s$\\
+\hline
+\textit{$R_{down}(s)$} & Download capacity of server $s$\\
+\hline
+\textit{$f^{(T_k)}_{b,p}$} & Bandwidth allocated to send $b$ on path $p$ at $T_k$\\
+%\hline
+%\textit{$I^{(T_k)}_{b,p}$} & Binary: whether $p$ is selected to send $b$ at $T_k$\\
 \hline
 \end{tabular}
-%}
+}
 \end{center}
-\caption{Variables in \name.}
+\caption{Notations used in \name's decision-making logic.}
+\vspace{-0.8cm}
 \label{table:para}
 \end{table}
 
-The data distribution problem over inter-DC WANs is defined as follows: We are given one data source DC $S$ and sets of destinations DC $D=\{d_i\}$ in an overlay network, what's the optimal transmission strategy with shortest completion time under a serious of constraints. To formulate this problem and design the decision-making logic for the centralized controller, we should first clarify the following aspects (Table \ref{table:para} summarizes some key variables used in \name):
+%\mypara{Under fixed network capacity}
+We begin by formulating the problem of overlay traffic engineering.
+Table \ref{table:para} summarizes the key notations.
 
-(1) \textbf{Input.} The number of destination DCs: $m$, the size of data file: $\mathbb{S}$, the set of source and destination pairs: $S=\{(S,d_i)\}, 1\leq i\leq m$ (we name the transmission of data file between $(S,d_i)$ as a ``task'' $T_j$), potential paths between $S$ and $d_i$: $p(S,d_i)$ that consists of multiple links, link capacity of $l_{u,v}$: $c(l_{u,v})$, the upload/download rate of server $n$: $R_{up}(n)/R_{down}(n)$.
+The overlay traffic engineering in \name operates at a
+fine granularity, both spatially and temporally. To exploit the many
+overlay paths between the source and destination DCs, \name split
+each data file into multiple data blocks (e.g., 2MB).
+To cope with changes of network conditions and arrivals of requests,
+\name updates the decisions of overlay traffic engineering every
+$\Delta T$ (by default, 3 seconds\footnote{We use a fixed interval of
+3 seconds, because it is long enough for \name to update decisions at
+a scale of \company's workload, and short enough to adapt to typical
+performance churns without noticeable impact on the completion time
+of bulk data transfers.
+More details in \Section\ref{sec:evaluation}}.).
 
-(2) \textbf{Output.} The transmission order of blocks on server $s_i$: $\overrightarrow{o}(s_i)$ (we split one task into multiple ``blocks'' because a task is always too large to be transferred in one connection), the optimal source server for the $i$th block of $T_j$ ($B_{i,j}$): $s_{B_{i,j}}^*$, the optimal path for the block: $p_{B_{i,j}}^*$, and the optimal allocated bandwidth on this path: $f^*_{B_{i,j},p_{B_{i,j}}^*}$.
 
-(3) \textbf{Constraints.} The link capacity constraint takes effect on any arbitrary link $l_{u,v}$: the summed allocated bandwidth on this path should be no more than its capacity $c(l_{u,v})$. The path capacity constraint takes effect on path $p_\lambda$: the available capacity $c(p_\lambda)$ should be no more than the minimum capacity of the consisting links. The data size constraint takes effect on blocks: the sum of allocated bandwidth should be no less than its size. The bandwidth constraint defines the allocated bandwidth for $B_{i,j}$ on $p_\lambda$: $f^*_{B_{i,j},p_{B_{i,j}}}$ should be no more than the minimum of the following three parameters: path capacity $c(p_\lambda)$, the upload rate of source node $R_{up}(s)$ and the download rate of destination node $R_{down}(d)$.
+Now, the problem of multicast overlay routing can be formulated as
+following:
 
-(4) \textbf{Objective function.} To speed up the bulk data distribution, \name aims at maximizing the allocated weighted bandwidth for all the blocks over all the paths.
+\mypara{Input} \name takes as input the following parameters:
+the set of all data blocks $\mathbb{B}$, each block $b$ with size
+$\rho(b)$, the set of paths from server $s'$ to $s$,
+$\mathbb{P}_{s',s}$, the update cycle interval $\Delta T$, and for
+each server $s$ the upload (resp. download) capacity $R_{up}(s)$
+(resp. $R_{down}(s)$). Note that each path $p$ consists of several
+links $l$, each defined by a pair of servers or routers. We use
+$c(l)$ to denote the capacity of a link $l$.
 
-The problem can be formulated precisely according to the above definitions only when the network is static and all the conditions stay unchanged during the whole transmission period. However, it is impractical to make such assumptions because bulk data transfer and constantly changing online traffic co-exists in the network and the design choice of \name is to make dynamic bandwidth separation. Therefore, \name should react to the changing network conditions by monitoring residual bandwidth and re-configured the above formulation (By default, \name tries to update network information and resolve the problem every 3 seconds). Unfortunately, the origin problem becomes considerably complex and hard to solve when making re-formulation, because there will be multiple optional data sources for any arbitrary task. Thus, the searching space grows exponentially and it becomes impossible to find out the optimal transmission. To make it solvable, \name decouples the problem into two parts and tries to find the optimal solutions for each procedure.
+\mypara{Output} For each cycle $T_{k}$, block $b$, server $s$, and
+path $p\in\mathbb{P}_{s',s}$ destined to $s$, \name returns as output
+a 2-tuple $\langle w^{(T_k)}_{b,s}, f_{b,p}^{(T_k)} \rangle$, in which $w^{(T_k)}_{b,s}$ denotes whether server $s$ is
+selected as the destination server of block $b$ in $T_k$,
+$f_{b,p}^{(T_k)}$ denotes how much bandwidth is allocated to send
+block $b$ on path $p$ in $T_k$, and $f_{b,p}^{(T_k)}=0$ denotes
+path $p$ is not selected to send block $b$ in $T_k$.
 
-\subsection{Separation scheduling and routing}
+\mypara{Constraints}
+\begin{packeditemize}
+\item The allocated bandwidth on path $p$ must not exceed the
+capacity of any link $l$ in $p$, as well as the upload capacity of
+the source server $R_{up}(s)$, and the download capacity of the
+destination server $R_{down}(s')$.
+\begin{equation}
+\begin{split}
+f^{(T_k)}_{b,p} \leq min\left(min_{l\in p} c(l),
+q_{b,s'}^{(T_k)}\cdot R_{up}(s'),
+w_{b,s}^{(T_k)}\cdot R_{down}(s)\right) &\\
+\text{for }\forall b, p\in \mathbb{P}_{s',s} &
+\end{split}
+\end{equation}
+where $q_{b,s}^{(T_k)} = 1-\prod_{i<k} (1-w_{b,s}^{(T_i)})$ denotes
+whether server $s$ has ever been selected to be the destination of
+block $b$ before cycle $T_k$.
+
+\item For all the paths, the summed allocated bandwidth of a link
+should be no more than its capacity $c(l)$.
+\begin{equation}
+c(l) \geq \displaystyle{\sum_{b \in \mathbb{B}}}
+f^{(T_k)}_{b,p},
+\text{for }\forall l\in p\\
+%& \forall p_\lambda \in Path(s,d) \label{st:capacity}
+%\end{split}
+\end{equation}
+
+\item All blocks selected to be sent in each cycle must complete
+their transfers within $\Delta T$, that is,
+\begin{equation}
+\begin{split}
+\displaystyle{\sum_{b \in \mathbb{B}}} w_{b,s}^{(T_k)} \cdot \rho(b)
+\leq \displaystyle{\sum_{p\in \mathbb{P}}}
+\displaystyle{\sum_{b \in \mathbb{B}}} f^{(T_k)}_{b,p} \cdot
+\Delta T,
+\text{for }\forall T_k &
+%& \forall B_{i,j} \in \mathbb{B} \label{st:size}\\
+\end{split}
+\end{equation}
+
+%\item Only one path will be chosen for a particular block.
+%\begin{equation}
+%\displaystyle{\sum_{p \in \mathbb{P}}} I^{(T_k)}_{b,p} = 1, \text{for }\forall b
+%\end{equation}
+
+\item Finally, all the blocks must be transmitted at the end of all
+cycles.
+\begin{equation}
+\displaystyle{\sum_{b\in \mathbb{B}}} \rho(b) \leq
+\displaystyle{\sum_{k=1}^{N}}
+\displaystyle{\sum_{p\in \mathbb{P}}}
+\displaystyle{\sum_{b\in \mathbb{B}}}
+f_{b,p}^{(T_k)}
+\end{equation}
+\end{packeditemize}
+
+
+\mypara{Objective} We want to minimize the number of cycles needed to
+transfer all data blocks. That is, we return as output the minimum
+integer $N$ for which the above constraints have a feasible solution.
+
+Unfortunately, this formulation is intractable in practice for two
+reasons. First, it is super-linear and mixed-integer, so the
+computational overhead grows exponentially with more potential source
+servers, and data blocks. Second, to find the minimum integer $N$, we
+need to check the feasibility of the problem for different values of
+$N$.
+
+\subsection{Decoupling scheduling and routing}
 \label{subsec:logic:separation}
 
-The key insight underlying the above re-formulated problem is the separation of data scheduling and overlay routing, in other words, the data scheduling procedure aims at finding out a subset of blocks that should be transferred first, and only the blocks in this subset should be considered in the following routing process, i.e., outputting the block transmission order $\overrightarrow{o}(s_i)$ ; the overlay routing procedure aims at make optimal routing strategies (assign $s_{B_{i,j}}^*$, $p_{B_{i,j}}^*$ and $f^*_{B_{i,j},p_{B_{i,j}}^*}$) for all selected blocks $B_{i,j}$ in the overlay network.
+At a high level, the key insight behind \name is to decouple the
+aforementioned formulation into two steps: a {\em scheduling} step
+which selects the subset of blocks to be transferred each cycle
+(i.e., $w^{(T_k)}_{b,s}$), followed by a subsequent {\em routing}
+step which picks the path and allocates bandwidth to transfer the
+selected blocks (i.e.,
+$f_{b,p}^{(T_k)}$).
 
-There are two main benefits of this separation. The first one is to reduce the computational complexity on the centralized controller side. The objective of the separated scheduling stage is to select a subset of blocks, and only these selected blocks will be routed and transferred in the following routing stage. So the separated data scheduling could avoid exploring unnecessary searching spaces for those unselected blocks. The second benefit is to speed up the overall data distribution. This advantage comes from the customized block selection scheme that picks out a specific subset of blocks so as to reduce the overall completion time.
-
-To avoid introducing degradation by the separation to the origin problem, we should make sure that the optimal results does not exist in the ignored searching spaces by the subset selection. In other words, the data scheduling procedure should retain the optimal results although reducing the searching scope. In this way, the optimal routing results in the overlay routing procedure is thus equal to the optimal solution to the origin problem.
+Such decoupling significantly reduces the computational overhead of
+the centralized controller. As the scheduling step selects a subset
+of blocks, and only these selected blocks are considered in the
+subsequent routing step, the searching space is thus significantly
+reduced. Mathematically, by separating the scheduling step from the
+problem formulation, the routing step is reduced to a mixed-integer
+LP problem, which though is not immediately tractable, can be solved
+with standard techniques. Next, we present each step in more details.
 
 \subsection{Scheduling}
 \label{subsec:logic:scheduling}
 
-The data scheduling procedure tries to reduce the exploration space while still retaining the potential optimal results. \name achieves this by by selecting a subset of blocks that should be transferred first, i.e., the output of this procedure is the block transmission order $\overrightarrow{o}(s_i)$ for all the servers $s_i$, which is also the input of the next routing procedure.
+The scheduling step selects the subset of blocks to be transferred in
+each cycle, i.e., $w^{(T_k)}_{b,s}$.
 
-Assume the origin bulk data in the source DC is split into $n$ blocks, and there are $2m$ DCs in the WAN. Different scheduling strategies will select different block subsets and lead to different intermediate transmission states, finally resulting in different completion time. Take two intermediate states as examples: 1) All of the $n$ blocks has $k$ duplicates; 2) Some of these $n$ blocks have $k1$ $(k1<k)$ duplicates and other blocks have $k2$ $(k2>k)$ duplicates. Let $t_1$ denote the completion time of case 1 and $t_2$ denote that of case 2, we have: $t_2 > t_1$. (See Appendix for the proof)
+The key to do the scheduling (pick the subset of blocks) is to make sure that the subsequent data transmission can be done in the most efficient manner. Inspired by the ``rarest-first'' strategy in BitTorrent \cite{Cohen2003Incentives} that tries to balance block availability, \name adopts a simple-yet-efficient way of selecting the data blocks: for each cycle, \name simply picks the subset of blocks with the least amount of duplicates. In other words, \name generalizes the rarest-first approach by selecting a set of blocks in each cycle, instead of a copy of a single block.
 
-So in the data scheduling stage, \name will firstly pick out the subset of blocks with the least downloaded duplicates, so as to reduce the overall completion time.
+%The scheduling step selects the subset of blocks to be transferred in
+%each cycle, i.e., $w^{(T_k)}_{b,s}$.
+%The key to pick the right subset of blocks is to make sure that the
+%optimal routing is still retained while transferring the selected data
+%blocks. We prove that {\em the optimal result occurs when the
+%availability of all data blocks is balanced}, i.e., all the blocks are
+%duplicated with the same amount of copies (See Appendix for the proof). Thus, a
+%simple-yet-efficient way of selecting the data blocks balance block
+%availability: for each cycle, \name simply picks the subset of blocks
+%with the least amount of duplicates. Such a scheme is similar to
+%BitTorrent's ``rarest-first'' \cite{Cohen2003Incentives}, but \name
+%generalizes the rarest-first approach by selecting a set of blocks in
+%each cycle, instead of a single copy of data.
+%\jc{I still think the proof of optimality is critical.
+%Can you try put it in the appendix or at the very least, upload a
+%technical report online which includes the proof.}
 
-For efficient selection, \name keeps a counter $c_i$ in the controller for each block and updates it once receiving finish notifications from receivers. The scheduling stage always gives priority to the smallest $c_i$. For efficient processing, \name keeps all the counters $c_i$ in a doubly linked list in an ascending order of their values. For each download, the controller selects the top item in the list (the smallest value) to be downloaded. The controller listens and serves an HTTP port, once receiving a transmission completion signal from receivers, it updates the corresponding block's counter value and adjusts its position in the linked list for further processing.
 
 \subsection{Routing}
 \label{subsec:logic:routing}
 
-In the overlay routing stage, \name routes and transfers blocks according to $\overrightarrow{o}(s_i)$, the output of data scheduling stage, and then tries to make optimal routing strategy (assign $s_{B_{i,j}}^*$, $p_{B_{i,j}}^*$ and $f^*_{B_{i,j},p_{B_{i,j}}^*}$) for each block $B_{i,j}$.
-
-To speed up data distribution, \name aims at maximizing the allocated weighted bandwidth for all the selected blocks, so the formulation of the objective can be described as:
+After the scheduling step selects the block set to transfer in each
+time slot ($w^{(T_k)}_{b,s}$), the routing step decides the paths and
+allocates bandwidth to transfer the selected blocks (i.e.,
+$f_{b,p}^{(T_k)}$).
+To minimize the transfer completion time, \name maximizes the
+throughput (total data volume transferred) in each cycle $T_k$.
 
 \begin{equation}
 \centering
-max \quad \displaystyle{\sum_{(s,d)\in \mathbb{A}}} \displaystyle{\sum_{B_{i,j} \in \mathbb{B}}} \displaystyle{\sum_{p_{\lambda}\in Path(s,d)}} w(B_{i,j})\cdot f_{B_{i,j},p_\lambda} \cdot I_{B_{i,j},p_\lambda}
-\end{equation}
-where $w(B_{i,j}) = \frac{pr_j}{2^{D_j-t}}$ is the weight of $B_{i,j}$, similar to \cite{zhang2015guaranteeing}, $pr_j$ is the priority of Task $j$, $D_j$ is the deadline and $t$ is the current time, so $2^{D_j-t}$ could represent the urgency. $I_{B_{i,j},p_\lambda}$ denotes whether $p_\lambda$ is selected for $B_{i,j}$. Note that there are multiple potential data sources for each block in the multicast overlay network, so the objective of routing is to select the most efficient data source and assign intermediate paths to all blocks, and then calculate the bandwidth allocation on those selected paths.
-
-The mentioned three constraints can then be formulated as follows:
-
-Link capacity constraint:
-\begin{equation}
-\begin{split}
-c(p_\lambda) \geq & \displaystyle{\sum_{(s,d)\in \mathbb{A}}} \displaystyle{\sum_{B_{i,j} \in \mathbb{B}}} f_{B_{i,j},p_\lambda} \cdot I_{B_{i,j},p_\lambda}\\
-& \forall p_\lambda \in Path(s,d) \label{st:capacity}
-\end{split}
+max \displaystyle{\sum_{p\in \mathbb{P}}}
+\displaystyle{\sum_{b\in \mathbb{B}}}
+f_{b,p}^{(T_k)}
+%\label{equation:BDS}
 \end{equation}
 
-Data size constraint:
-\begin{equation}
-\begin{split}
-\mathbb{S}(B_{i,j}) \leq & \displaystyle{\sum_{(s,d)\in \mathbb{A}}} \displaystyle{\sum_{p_{\lambda}\in Path(s,d)}} f_{B_{i,j},p_\lambda} \cdot I_{B_{i,j},p_\lambda} \cdot \Delta T\\
-& \forall B_{i,j} \in \mathbb{B} \label{st:size}\\
-\end{split}
-\end{equation}
+This is of course an approximation, since greedily maximixing the
+throughput in one cycle may lead to suboptimal data availability and
+lower the maximum achivable throughput in the next cycle. But in
+practice, we find that this approximation can lead to significant
+performance improvement over baselines, partly because the scheduling
+step, described in the last section, automatically balances the
+availability of blocks, so suboptimal data availability (e.g.,
+starvation of blocks) caused by greedy routing decisions in past
+cycles happens rarely.
 
-Bandwidth constraint:
-\begin{equation}
-\begin{split}
-f_{B_{i,j},p_\lambda} \leq & min \{c(p_\lambda),R_{up}(s),R_{down}(d)\}\\
-& \forall p_\lambda \in Path(s,d) \label{st:bottleneck}
-\end{split}
-\end{equation}
+This formulation, together with the constraints from
+\Section\ref{subsec:logic:formulation} is essentially an integer
+multi-commodity flow (MCF) algorithm, which is known to be
+NP-complete \cite{garg1997primal}. To make this problem tractable in
+practice, the standard approximation assumes each data file can be
+infinitesimally split and transferred simultaneously on a set of
+possible paths between the source and the destination. \name's actual
+routing step closely resembles this approximation as \name also
+splits data into tens of thousands of fine-grained data blocks
+(though not infinitesimally), and it can be solved efficiently by
+standard linear programming (LP) relaxation commonly used in the MCF
+problem~\cite{garg2007faster,reed2012traffic}.
 
-Besides, there is another limitation on path selection: $\displaystyle{\sum_{p_\lambda \in Path(s,d)}} I_{B_{i,j},p_\lambda} = 1$, which means only one path will be chosen for a particular block.
+However, when splitting tasks infinitesimally, the number of blocks
+will grow considerably large, and the computing time will be
+intolerable. \name adopts two coping strategies: (1) it groups the
+blocks with the same source and destination pair to reduce the
+problem size (detailed in \Section\ref{subsec:system:centralized});
+and (2) it uses the improved fully polynomial-time approximation
+schemes (FPTAS)~\cite{fleischer2000approximating} to optimize the
+dual problem of the original problem and works out an
+$\epsilon$-optimal solution. These two strategies further reduces the
+running time of centralized algorithm.
 
-The integer program (IP) is a multi-commodity flow algorithm which is known to be NP-complete \cite{garg1997primal} due to the fact that they are integer flows, and there is no known algorithm to find an optimal solution. To make this problem solvable, we look into it from a different perspective. As the size of a task is dozens of TBs to PBs, while each block is just about several MBs, we can approximate tasks although they are infinitesimally split and can be transferred to a set of possible paths between the source DC and the destination DC. So it is possible to solve this IP problem by a linear programming (LP) relaxation \cite{garg2007faster,reed2012traffic}, and the relaxed problem aims at transferring a fraction of each transmission. However, the number of blocks will thus grow considerably large when splitting tasks infinitesimally, and this will lead to intolerable computing time on the controller side. There are two coping strategies on this problem: on one hand, \name has a merge scheme before each transmission cycle, and this step merges blocks with the same (s,d) pair into one subtask so as to reduce task number; on the other hand, \name adopts the improved fully polynomial-time approximation schemes (FPTAS) by Fleischer \cite{fleischer2000approximating} to work out an $\epsilon$-optimal solution with $\alpha' \geq \alpha_\epsilon \geq \alpha'(1-\epsilon)^{-3}$. This algorithm optimizes the dual problem of the relaxed LP problem by proceeding in phases and iterations (see Appendix for the proof of near optimality of \name).
+
+
+
+

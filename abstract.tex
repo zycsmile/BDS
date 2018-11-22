@@ -1,100 +1,20 @@
 \begin{abstract}
 
-For large-scale online service providers, one of the most 
-common communication patterns of inter-datacenter (DC)
-workload is {\em bulk-data inter-DC multicast}: 
-replicating bulk data from one DC to multiple DCs. 
-While recent work has sought to improve bulk-data 
-transfers by optimizing WAN performance, it is necessarily 
-incomplete, as it falls short of fully exploring servers' 
-capability to store-and-forward data, as well as 
-the disjoint inter-DC paths existing in abundance.
-%Inspired by the early success of multicast overlay networks, 
-Instead, we argue that an optimal application-level multicast 
-overlay network is needed to utilize these unexplored 
-opportunities by dynamically scheduling and routing inter-DC 
-data transfers via overlay paths.
-Despite these promises, building an optimal overlay network 
-for inter-DC multicast poses two challenges:
-(1) the sheer amounts of servers and overlay paths 
-render it untenable to select optimal overlay paths 
-in real-time, and (2) it must prevent delay of 
-latency-sensitive traffic caused by bulk-data multicasts on
-any multicast overlay paths. 
-We present {\em \name}, a simple yet near-optimal overlay network
-for bulk-data inter-DC multicasts. 
-Contrary to the intuition that servers must retain the capability 
-to adapt locally (and thus suboptimally) 
-in order to scale out, \name demonstrates the 
-feasibility and practical benefits of fully centralizing the
-control of the overlay network.
-The key insight underlying this centralized design is the 
-observation that bulk-data transfers tend to last on coarse 
-timescales so they can 
-tolerate a slight delay of centralized decision-making 
-in the hope of getting
-a closer-to-optimal overlay routing.
-Moreover, centralized bandwidth allocation on the granularity
-of each data transfer proves efficient in eliminating 
-interference of bulk-data transfers on latency-sensitive traffic.
-%\name is built on design choices:
-%(a) fully centralized decision-making in near real-time, and 
-%(b) enforcing a clean, dynamic separation of bandwidth.
-%While both design choices introduce costs on performance 
-%(\name is unable to update decisions in real time or achieve 
-%full link utilization), we believe these costs are outweighed by 
-%the benefits, such as centralized optimization driven by a global 
-%view.
-A pilot deployment of \name in one of the largest online
-service providers shows that \name achieves 3-5$\times$
-speedup over the provider's existing systems, as well
-as several widely used overlay routing systems.
-
-
-%Distributing bulk data across datacenters (DCs) in a timely and
-%cost-effective manner is critical to large-scale online service
-%providers.
-%While recent research has significantly improved the WAN performance
-%between DCs, we argue that a multicast overlay network that optimally
-%schedules and delivers data in a way that fully exploits available
-%overlay paths is essential to achieving desirable performance.
-%Drawing on the experience of a large online service providers, we
-%observe two requirements of an inter-DC multicast overlay network:
-%(1) overlay routing and scheduling needs to be driven by an
-%up-to-date global view of data delivery status at all servers, and
-%(2) it must prevent delay of latency-sensitive
-%traffic caused by bulk data transfers.
-%
-%This paper presents \name, a near-optimal inter-DC multicast overlay
-%network that distributing bulk data.
-%At the core of \name are two design choices.
-%First, decision making in \name is fully centralized; the \name
-%controller directly orchestrates servers to split, reorder, and
-%deliver data dynamically along overlay paths, in order to
-%circumvent inter-/intra-DC bottlenecks.
-%Second, \name enforces a dynamic separation of bandwidth allocated
-%for bulk data transfers and latency-sensitive traffic.
-%While both design choices introduce costs in performance (i.e.,
-%\name is unable to update decisions in real time or achieve full
-%link utilization), our design philosophy is that these costs are
-%outweighed by the benefits of centralized optimization driven
-%by a global view.
-%Using a pilot deployment of \name in one of the largest search
-%engine service providers, we show that \name achieves 3-5$\times$
-%speedup over the provider's existing systems and the techniques
-%widely used in today's content delivery networks.
-
-
-%Drawing on lessons from the decade-long evolution of similar systems in Baidu,
-%\name take a centralized approach, which uses a controller to maintains the
-%data delivery status in all servers, and update the scheduling and overlay routing
-%decisions in near real time by solving a multicommodity flow problem using a
-%near-optimal yet efficient algorithm.
-%The key insight underlying \name's centralized architecture is the observation that
-%the cost of not being able to adapt to network conditions in real time (such as in
-%a decentralized system) is greatly outweighed by the benefits of centralized
-%control to optimally update overlay routing and scheduling even at a coarse
-%timescale (every few seconds), as well as the resulting system that has less
-%complexity.
+Many important cloud services require replicating massive data from
+one datacenter (DC) to multiple DCs. While the performance of pair-wise
+inter-DC data transfers has been much improved, prior solutions
+are insufficient to optimize bulk-data multicast, as they fail to
+explore the capability of servers to store-and-forward data, as well as
+the rich inter-DC overlay paths that exist in geo-distributed DCs.
+To take advantage of these opportunities, we present {\em \name}, an
+application-level multicast overlay network for large-scale inter-DC data replication. At the core of \name is a {\em fully centralized}
+architecture, allowing a central controller to maintain an up-to-date
+global view of data delivery status of intermediate servers, in
+order to fully utilize the available overlay paths. 
+\NEW{To speeds up the computation of the control algorithm, \name decouples the origin algorithm into selection of overlay paths and scheduling of data transfers, each can be optimized efficiently. This enables \name to update overlay routing decisions at the scale of multicasting hundreds of TB data over tens of thousands of overlay paths. Further, to enable \name can be mix-deployed/implemented together with online services in the dynamic network with workload churns, we present an enhanced version called \newname that can realize dynamic bandwidth separation by predicting online traffic and then adjust bandwidth allocation accordingly.
+}
+A pilot deployment in one of the largest online service providers shows that \name can
+achieve 3-5$\times$ speedup over the provider's existing system and
+several well-known overlay routing baselines \NEW{ while \newname can further reduce the completion time by up to XXX times by dynamically sharing the residual bandwidth}.
 
 \end{abstract}

@@ -1,98 +1,122 @@
 \section{Evaluation}
 \label{sec:evaluation}
-
-To evaluate \name, we integrated our end-to-end prototype in \company, and ran a pilot deployment across the above network to serve 70 TB data per day per hour  over a period of 7 days.
-The evaluation results of the pilot deployment, together with trace-driven simulation and microbenchmarks, show that:
-\begin{enumerate}
-\item \name achieves 3-5$\times$ speedup over \company's existing solution, as well as other industry-standard solutions.
-\item \name can update decisions every 3 seconds over a WAN of the same size as Google, is lightweight in terms of CPU, bandwidth consumed, and can gracefully degrate to decentralized protocols.
-\end{enumerate}
-
 \begin{figure*}[t]
         \centering
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
-                \includegraphics[width=\textwidth]{images/BDSvsAnon_overall.eps}
-                \caption{The completion time.}
+                \includegraphics[width=\textwidth]{images/BDSvsAnon_overall_v2.eps}
+                \caption{Distribution of completion time.}
                 \label{fig:BDSvsAnon:overall}
         \end{subfigure}
         \begin{subfigure}[b]{0.3\textwidth}%@X:\6 PieBridge\simulation\beijing\3 Applications\plot
                 \centering
-                \includegraphics[width=\textwidth]{images/BDS_VS_ANON_v3.eps}
+                \includegraphics[width=\textwidth]{images/BDS_VS_ANON_v2.eps}
                 \caption{Comparison by application types.}
                 \label{fig:BDSvsAnon:FCT}
         \end{subfigure}
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
-                \includegraphics[width=\textwidth]{images/BDSvsAnon_time.eps}
-                \caption{Comparison by timeseris.}
+                \includegraphics[width=\textwidth]{images/BDSvsAnon_time_v2.eps}
+                \caption{Comparison by completion time.}
                 \label{fig:BDSvsAnon:time}
         \end{subfigure}
-        \caption{[\name vs. \company] Results from pilot deployments.}
+        \tightcaption{[\name vs. \alg (\company's existing solution)] Results from pilot deployments.}
         \label{fig:BDSvsAnon}
 \vspace{-0.4cm}
 \end{figure*}
-\begin{figure*}[t] %@X:\6 PieBridge\simulation\DrawFig
-        \centering
-        \begin{subfigure}[b]{0.3\textwidth}
-                \centering
-                \includegraphics[width=50mm]{images/Test1.eps}
-                \caption{Baseline experiment.}
-                \label{fig:cdn:baseline}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.3\textwidth}
-                \centering
-                \includegraphics[width=50mm]{images/Test2.eps}
-                \caption{Large scale experiments.}
-                \label{fig:cdn:scale}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.3\textwidth}
-                \centering
-                \includegraphics[width=50mm]{images/Test3.eps}
-                \caption{Small bandwidth experiments.}
-                \label{fig:cdn:bw}
-        \end{subfigure}
-        \caption{[\name versus Bullet] Comparisons under different network scenarios.}
-        \label{fig:versusCDN}
-\vspace{-0.4cm}
-\end{figure*}
+
+%To evaluate \name, we integrated our end-to-end prototype in
+%\company, and ran a pilot deployment of \name.
+Using a combination of pilot deployment in \company's DCs,
+trace-driven simulation, and microbenchmarking, we show that:
+\begin{packedenumerate}
+\item \name completes inter-DC multicast 3-5$\times$ faster than
+\company's existing solutions, as well as other baselines used in
+industry (\Section\ref{subsec:evaluation:centralized}).
+
+\NEW{ DELETE:
+\item \name significantly reduces the incidents of interferences
+between bulk-data multicast traffic and latency-sensitive traffic
+(\Section\ref{subsec:evaluation:separation}).
+}
+
+\item \name can scale to the traffic demand of a large online
+service provider, tolerate various failure scenarios, and achieves
+close to optimal flow completion time
+(\Section\ref{subsec:evaluation:benchmarks}).
 
 
-\subsection{Benefits of centralized control}
+\NEW{ADD: 
+\item \newname can: 1. further complete inter-DC multicast XXX$\times$ faster than \name, 2. predict the bandwidth utilization of online traffic with XXX\% accuracy, 3. increase bandwidth utilization when online traffic is in valley, 4. reduces the incidents of interferences caused on bulk-data multicast traffic when online traffic bursts, 5. achieve near real-time scheduling with quite low computation overhead 
+(\Section\ref{subsec:evaluation:improvements}).
+}
+\end{packedenumerate}
+
+\subsection{Performance improvement over existing solutions}
 \label{subsec:evaluation:centralized}
 
-To evaluate the benefits of centralized control, we conduct two series of experiments: the comparisons with \company's existing solution based on the pilot deployments, and the comparisons with other overlay multicast techniques using trace-driven simulations.
+\subsubsection{Methodology}
 
-\textbf{\name vs. \company's existing solution.}
-
-We measure \name's performance versus \company's existing solution that has already run for more than 5 years. In this series of experiments, we choose a 70~TB data file that is distributed stored in the source DC (with 1000 servers) at the very beginning, and each of the other DCs announces a downloading requirement and stores the file in the same way with 1000 servers.
-
-%First of all, we present the completion time of destination servers under \name and \company in Figure
-
-To intuitively present the overall improvements by \name, we draw the CDF of the completion time in Figure \ref{fig:BDSvsAnon:overall}, from which we can see that the completion time under \company's existing solution is about 200 minutes while that of \name is less than 40 minutes, 5 times shorter completion time.
-
-For detailed illustration, we pick three applications whose data volumes are large, medium and small, and draw a bar chart of three pairs of bars in Figure \ref{fig:BDSvsAnon:FCT}, each representing \name's and \company's mean (stddev) completion time for one application. These bars show that for small data volume, \name outperforms 1.6$\times$ than \company, but raises up to more than 3$\times$ than \company for large data volume. In other words, the benefit of \name will increase along with the data volumes.
-
-To prove that this is not a special case, we repeat the experiments during the 7 days, and draw the average completion time of both \name and \company in Figure \ref{fig:BDSvsAnon:time}. \name is quite stable during the 7 days while \company illustrates some volatilities. But in general, \name achieves about 4.5$\times$ shorter completion time than \company.
-%\item \name vs. \company's existing solution (pilot deployment)
-%\begin{itemize}
-%\item Overall improvement: A CDF with two lines to show the aggregated flow completion time
-%\item By applications: Pick three applications whose data volumes are large, medium, and small respectively. Draw a bar chart of three pairs of bars, each representing \name's and \company's mean (stddev) flow completion time for an application.
-%\item By time: Timeseris of two lines, each representing \name's and \company's mean (stddev) of flow completion time.
-%\end{itemize}
-
-\textbf{\name vs. other overlay multicast techniques.}
-
-As we cannot implement other experimental systems in our real online network just as comparisons, we conduct a series of simulations using trace-driven simulations in this section, and compare \name's performance versus Bullet \cite{kostic2003bullet} and a CDN-based solution \cite{Andreev2013Designing} adopted by Akamai.
-
-We use the same topology with 12 DCs (1 DC acts as the source DC), 1000 servers per DC for all simulations, and set the parameters all the same as the real network, including data file size $\mathbb{S}$, set of source and destination pairs $S=(s,d_i),1\leq i \leq 11$, path $p_\lambda$, link capacities $c(l_{u,v})$ and server upload/download rate $R_{up}(n)/R_{down}(n)$.
-
-Bullet \cite{kostic2003bullet} is a distributed algorithm that works on an overlay mesh network, it enables geo-spread nodes to self-organize into a overlay mesh. Specifically, each node uses RanSub \cite{Rodriguez2003Using} to distribute summary tickets information to other nodes, and receives disjoint data from his sending peers. The most obvious difference between \name and Bullet lies in the control scheme, i.e., \name is centralized method, who can maximize total system traffic, while Bullet is a decentralized scheme and each node makes decision according to his obtained information. We conduct three series of experiments and show the results in Figure \ref{fig:versusCDN}: baseline \ref{fig:cdn:baseline}, large scale \ref{fig:cdn:scale} and small bandwidth experiments \ref{fig:cdn:bw}. We find \name achieves 3$\times$ shorter completion time than Bullet in the baseline experiments, and more than 4$\times$ improvement in the large scale experiments and small bandwidth experiments.
+\mypara{Baselines}
+We compare \name with three existing solutions: \alg (\company's
+existing decentralized inter-DC multi-cast strategy),
+Bullet~\cite{kostic2003bullet}, and Akamai's overlay
+network~\cite{Andreev2013Designing} (a centralized strategy for
+multicasting live videos).
 
 
-Akamai design a 3-layer overlay network for delivering live streams \cite{Andreev2013Designing}, where a source forwards its streams to reflectors, and a reflector sends outgoing streams to the final stage sinks. Things \name and Akamai have in common is that both of them are designed for data distribution on overlay multicast networks. There are two main differences  between Akamai and \name: (1) Akamai adopts a 3-layer topology where an edgeserver receives data from the parent reflectors, while \name could explore more potential searching space without layer limitation. (2) A sink in Akamai receives must receive data in sequential order because it serves for the live streaming application, but \name does care about blocks arriving order. Thus, to achieve optimal scheduling results, \name should also solve the scheduling problem so as to work out the optimal block download order $\overrightarrow{o}(s_i)$. The comparison results of Akamai and \name are shown in Table \ref{table:versusAkamai}, which shows that \name achieves 4-8$\times$ speedup over Akamai's layered solution.
+\mypara{Pilot deployment}
+We choose several services with different data sizes, and run
+A/B testing in which we run \name instead of \company's default
+solution \alg for the same hours in several randomly chosen days.
 
-\begin{table}[htbp]
+\mypara{Trace-driven simulation}
+Complementary to the pilot deployment on real traffic, we also use
+trace-driven simulation to evaluate \name on a larger scale.
+We simulate the other two overlay multicast techniques using the
+same topology, number of servers, and link capacities as \name, and
+replay inter-DC multicast data requests in the same chronological
+order as in the pilot deployment.
+
+\subsubsection{\name vs. \alg}
+\label{subsubsec:name-vs-alg}
+
+We begin by evaluating \name and \alg on one service that needs to
+distribute 70~TB data from one source DC to ten destination DCs.
+Figure~\ref{fig:BDSvsAnon:overall} shows the cumulative distribution
+function (CDF) of the completion time on each destination server. We can
+see that the median completion time of \name is 35 minutes,
+$5\times$ faster than \alg, where most DCs takes 190 minutes to
+get the data.
+
+To generalize the finding, we pick three applications whose data
+volumes are large, medium and small, and compare \name's and \alg's
+mean (and standard deviation) of completion time for each application
+in Figure~\ref{fig:BDSvsAnon:FCT}.
+We see that \name consistently outperforms \alg, and has less
+performance variance. We also see that \name has greater improvement
+in applications with larger data sizes. Finally,
+Figure~\ref{fig:BDSvsAnon:time} shows the timeseries of the mean
+completion time of \name and \alg in one randomly chosen application,
+and we see that \name consistently outperforms \alg by 4$\times$.
+
+\subsubsection{\name vs. other overlay multicast techniques}
+
+Table~\ref{table:versusAkamai} compares \name with two other
+baselines, Bullet and Akamai's overlay network, using trace-driven
+simulation. We show the results in three setups. In the baseline evaluations,
+we send 10TB data from one DC to 11 DCs, each has 100 servers, and
+the upload and download link capacities are set to be 20MBs. In the
+large-scale evaluations, we send 100TB data between the same DCs, each with
+1000 servers. In the rate-limited evaluations, the setup is the same as that in the baseline experiments
+except the server upload and download rate limit set to be 5MBs.
+We see that \name achieves 3$\times$ shorter completion time than
+Bullet and Akamai in the baseline setup, and over 4$\times$ shorter
+completion time in the large-scale and small bandwidth setups, which
+corroborates the findings in \Section\ref{subsubsec:name-vs-alg} that
+\name has greater improvement when data sizes are large.
+
+\begin{table}[t]
 \begin{center}
 \resizebox{3in}{!}{
 %\begin{tabular}{p{2cm}<{\centering}|p{2cm}<{\centering}}
@@ -101,65 +125,70 @@ Akamai design a 3-layer overlay network for delivering live streams \cite{Andree
  \rowcolor[gray]{0.9}
 \textbf{Solution} & \textbf{Baseline} & \textbf{Large Scale} & \textbf{Rate Limit} \\
 \hline \hline
-Akamai & $75m$ & $742m$ & $447m$\\
+Bullet & $28m$ & $82m$ & $171m$\\
 \hline
-\name & $9.41m$ & $171.33m$ & $128.25m$\\
+Akamai & $25m$ & $87m$ & $138m$\\
+\hline
+\name & $9.41m$ & $20.33m$ & $38.25m$\\
 \hline
 \end{tabular}
 }
 \end{center}
-\vspace{-0.4cm}
-\caption{Completion time of PieBridge and Akamai.}
+\tightcaption{[\name vs. Bullet \cite{kostic2003bullet}, Akamai \cite{Andreev2013Designing}] Completion time of the three solutions in  trace-driven simulation.}
+%\caption{Average completion time of Bullet \cite{kostic2003bullet}, Akamai \cite{Andreev2013Designing} and \name.}
 \label{table:versusAkamai}
+\vspace{-0.4cm}
 \end{table}
 
-%\begin{itemize}
-%\item \name vs. other overlay multicast techniques
-%\begin{itemize}
-%\item Begin with the methodology of trace-driven simulation.
-%\item Briefly explain these techniques: Akamai (3-layer), Bullet (full mesh)
-%\item Show a CDF that has three lines, representing \name, Akamai, and Bullet.
-%\end{itemize}
-%\end{itemize}
-
-\subsection{Benefits of bandwidth separation}
+\subsection{Benefits of coordinated bandwidth allocation}
 \label{subsec:evaluation:separation}
 \begin{figure}[t]
   \centering
-  \includegraphics[width=45mm]{images/Quota.eps}
-  \caption{The effectiveness of bandwidth separation.}
+  \includegraphics[width=45mm]{images/Quota_v2.eps}%DrawLink.m
+  \tightcaption{\color{red}{DELETE: The effectiveness of bandwidth separation.}}
   \label{fig:quota}
+\vspace{-0.4cm}
 \end{figure}
-\vspace{-0.4cm}
 
-To test the effectiveness of bandwidth separation and check whether the bulk data transfer will reserve bandwidth for latency-sensitive traffic according to the separation quota, we set the upper bound of available bandwidth for bulk data transfer to 10~Gbps, and then monitor the real usage of one inter-DC link. The results are shown in Figure \ref{fig:quota}, from which we can see the real bandwidth usage stays below the upper bound (10~Gbps) throughout the whole transmission process, verifying that the separation does take effects on link bandwidth usage and thus can reduce the incidents of delay on latency-sensitive traffic caused by bulk data transfers.
+To reduce the incidences of negative interference between bulk-data
+multicast traffic and latency-sensitive traffic, \company sets a
+bandwidth limit of bulk data transfers on each link by the difference
+between the link capacity and the historical peak bandwidth of
+latency-sensitive traffic. Naturally, we can minimize the conflicts,
+if \name can keep the bulk-data multicast traffic within the bandwidth
+limit. To test \name's effectiveness at maintaining differentiation between
+bulk-data multicast traffic and latency-sensitive traffic, we set an
+10GB/s bandwidth limit to bulk data transfers.
+Figure~\ref{fig:quota} shows the actual bandwidth usage of \name on
+one inter-DC link. We can see that in \name the actual bandwidth used
+by bulk data is always below 10~GB/s.
 
-\begin{table}[t]
-\begin{center}
-%\resizebox{\textwidth/2}{!}{
-%\begin{tabular}{p{2cm}<{\centering}|p{2cm}<{\centering}}
-\begin{tabular}{| c | c | c | c | c |}
-\hline
- \rowcolor[gray]{0.9}
-\textbf{System} & \textbf{Source DC} & \textbf{$l_1$} & \textbf{$l_2$} & \textbf{$l_3$}\\
-\hline \hline
-\company & 69.82\% & 53.09\% & 57.98\% & 63.01\% \\
-\hline
-\name & 70.55\% & 62.46\% & 63.23\% & 64.24\% \\
-\hline
-\end{tabular}
+%\begin{table}[t]
+%\begin{center}
+%\resizebox{3in}{!}{%
+%%\begin{tabular}{p{2cm}<{\centering}|p{2cm}<{\centering}}
+%\begin{tabular}{| c | c | c | c | c |}
+%\hline
+% \rowcolor[gray]{0.9}
+%\textbf{System} & \textbf{Source DC egress link} & \textbf{$l_1$} & \textbf{$l_2$} & \textbf{$l_3$}\\
+%\hline \hline
+%\alg & 69.82\% & 53.09\% & 57.98\% & 63.01\% \\
+%\hline
+%\name & 70.55\% & 62.46\% & 63.23\% & 64.24\% \\
+%\hline
+%\end{tabular}
 %}
-\end{center}
-\caption{Average link utilizations under \company and \name.}
-\label{table:usage}
-\vspace{-0.4cm}
-\end{table}
+%\end{center}
+%\tightcaption{Average link utilizations of the source DC egress link and 3 inter-DC links ($l_1$, $l_2$, $l_3$) under \alg and \name.}
+%\label{table:usage}
+%\vspace{-0.4cm}
+%\end{table}
 
 \begin{figure*}[t]
         \centering
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
-                \includegraphics[width=50mm]{images/CPUvsBlk.eps}%CDFofComputationDelay -> Calculation.m
+                \includegraphics[width=50mm]{images/CPUvsBlk_v3.eps}% cpu.m replaced by running_time.m
                 \caption{The controller running time.}
                 \label{fig:scale:cpu}
         \end{subfigure}
@@ -175,7 +204,7 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
                 \caption{Feedback loop delay.}
                 \label{fig:scale:feedback}
         \end{subfigure}
-        \caption{Scalability of \name.}
+        \tightcaption{[System scalability] Measurements on (a) controller running time, (b) network delay, (c) Feedback loop delay.}
         \label{fig:scale}
 \vspace{-0.4cm}
 \end{figure*}
@@ -184,29 +213,42 @@ To test the effectiveness of bandwidth separation and check whether the bulk dat
         \centering
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
-                \includegraphics[width=50mm]{images/blkSize.eps}
+                \includegraphics[width=50mm]{images/failure_v2.eps}%fail.m
+                \caption{Average number of downloaded blocks per cycle under failures.}
+                \label{fig:analysis:failure}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=50mm]{images/blkSize_v2.eps} %plotTCT_IDC.m
                 \caption{Completion time under different block sizes.}
                 \label{fig:analysis:blksize}
         \end{subfigure}
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
-                \includegraphics[width=50mm]{images/cycle.eps} %calculation_origin
-                \caption{Reduction on algorithm running time due to approximation.}
-                \label{fig:analysis:time}
+                \includegraphics[width=50mm]{images/cycleDiff.eps}%cycleDiff.m
+                \caption{Completion time under different cycle lengths.}
+                \label{fig:analysis:cycleDiff}
         \end{subfigure}
-        \begin{subfigure}[b]{0.3\textwidth}
-                \centering
-                \includegraphics[width=50mm]{images/overlay.eps}
-                \caption{The proportion of blocks downloaded from the original source.}
-                \label{fig:analysis:overlay}
-        \end{subfigure}
-        \caption{In-depth analysis on (1) block size, (2) optimization of approximation algorithms, and (3) inter-DC multicast overlay.}
+%        \begin{subfigure}[b]{0.3\textwidth}
+%                \centering
+%                \includegraphics[width=50mm]{images/cycle.eps} %calculation_origin
+%                \caption{Reduction on algorithm running time due to approximation.}
+%                \label{fig:analysis:time}
+%        \end{subfigure}
+%        \begin{subfigure}[b]{0.3\textwidth}
+%                \centering
+%                \includegraphics[width=50mm]{images/overlay.eps}
+%                \caption{The proportion of blocks downloaded from the original source.}
+%                \label{fig:analysis:overlay}
+%        \end{subfigure}
+        \tightcaption{\name's (a) fault tolerance, (b) sensitivity to different block sizes, and (c) different cycle lengths.}
         \label{fig:analysis}
 \vspace{-0.4cm}
 \end{figure*}
 
 
-As \name implements strict bandwidth separation between latency-sensitive traffic and bulk data transfer while still showing shorter completion time, does \name increase link utilization significantly? To answer this question, we record the average utilizations of: (1) the egress link of the source DC, and (2) 3 randomly selected inter-DC links, denoted as $l_1,l_2$ and $l_3$. Results are shown in Table \ref{table:usage}, which shows that link utilizations do not change much with \name or with \company. This is because \name can make disjoint data transfers to different receivers and thus avoids transferring repeated data compared the self-organized \company's solution.
+%\jc{i'm totally lost... what's the point of this para?}
+%As \name implements strict bandwidth separation between latency-sensitive traffic and bulk data transfers while still showing shorter completion time, does it occupy too much bandwidth on inter-DC links? To answer this question, we record the average utilizations of the egress link of the source DC and 3 randomly selected inter-DC links, denoted as $l_1,l_2$ and $l_3$. The result in Table \ref{table:usage} shows that link utilizations do not change much with \name. This is because \name spreads data transfers over bottleneck-disjoint paths, so it avoids transferring the same data on the same link.
 
 %\begin{itemize}
 %\item Draw a graph (what graph can you get on this?) to show with bandwidth separation, \name can reduce the incidents of delay on latency-sensitive traffic caused by bulk data transfers.%DrawLink.m
@@ -216,25 +258,149 @@ As \name implements strict bandwidth separation between latency-sensitive traffi
 \subsection{Micro-benchmarks}
 \label{subsec:evaluation:benchmarks}
 
-This section focuses on some benchmarks of \name. On one hand, as \name adopts centralized control, the running time of controller and the scalability of the algorithm are key concerns. On the other hand, \name applies two approximations on the origin problem, and the resulting benefits and tradeoffs need to be clarified.
+Next, we use micro-benchmarking to evaluate \name along three metrics:
+(1) scalability of the centralized control;
+(2) fault tolerance; and
+(3) optimality of \name parameters.
 
-\textbf{Scalability of centralized control.}
+\subsubsection{Scalability}
+\label{subsec:evaluation:benchmarks:scalability}
 
-Controller Running Time. As the controller needs to select optimal $s_{B_{i,j}}^*$, $p_{B_{i,j}}^*$ and assign $f^*_{B_{i,j},p_{B_{i,j}}^*}$ for all blocks $B_{i,j}$, the algorithm running time is thus related to the number of blocks. We show the relationship in Figure \ref{fig:scale:cpu}, from which we can see that even when there are $3\times 10^5$ blocks, the controller running time is still lower than $300ms$. Further, the block merging and non-blocking update schemes described in \Section\ref{subsec:system:centralized} also help to mask the algorithm running time.
+\mypara{Controller running time}
+As the controller needs to decide the scheduling and routing of each
+data block, the running time of the control logic naturally scales
+with the number of blocks. Figure~\ref{fig:scale:cpu} shows the
+running time as a function of the total number of blocks. We can see
+that the centralized \name controller can update the scheduling and
+routing decision within 800ms with $10^6$ blocks. To put this number
+into perspective, in \company's DCs, the maximum number of simultaneous
+outstanding data blocks is around $3\times 10^5$, for which \name can
+finish updating the decisions within 300ms.
 
-Network delay. \name works in inter-DC networks, so the network delay among DCs is another key factor that can not be ignored in the algorithm updating process. We add timestamps on particular requests, calculate network latency and present the results of 5000 requests in Figure \ref{fig:scale:network}, from which we can see that most of the delay is below $40ms$ and the average latency is about 27 $ms$, which is less than 1\% of the decision updating cycle (3 seconds).
+\mypara{Network delay} \name works in inter-DC networks, so the network delay among DCs is a key factor in the algorithm updating process. We recorded the network delay of 5000 requests and present the CDF in Figure \ref{fig:scale:network}. We can see that 90\% of the network delays are below $50ms$ and the average value is about $25ms$, which is less than 1\% of the decision updating cycle (3 seconds).
 
-Feedback loop delay. The feedback loop delay of centralized algorithms is essential to the algorithm scalability. In \name, this loop delay consists of several processes: controller collects update information from agents, runs the centralized algorithm, and then updates control messages to local agents. We measure the delay of the whole process, show the CDF in Figure \ref{fig:scale:feedback}, and find that in most cases (over 80\%), the feedback loop delay is lower than $200ms$. So we can claim that \name demonstrates a short enough update delay and thus enjoys good scalability to even larger systems.
+\mypara{Feedback loop delay} For centralized algorithms, a small feedback loop delay is essential for algorithmic scalability. In \name, this feedback loop consists of several procedures: status updating from agents to the controller, running of the centralized algorithm, and decision updating from the controller back to agents. We measure the delay of the whole process, as shown in the CDF of Figure \ref{fig:scale:feedback}, and find that in most cases (over 80\%), the feedback loop delay is lower than $200ms$. So we claim that \name demonstrates a short enough latency and is able to scale to even larger systems.
 
-\textbf{In-depth analysis.}
+\begin{figure*}[t]
+        \centering
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=50mm]{images/BDSvsLP_v2.eps} % BDSvsLP.m
+                \caption{The reduction on algorithm running time of \name over standard LP.}
+                \label{fig:further:BDSvsLP}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=50mm]{images/BDSvsLP_CT.eps}%BDSvsLP_CT -> Communication.m
+                \caption{The near-optimality of \name to standard LP in small scale.}
+                \label{fig:further:BDSvsLP_CT}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=50mm]{images/overlay.eps}
+                \caption{The proportion of blocks downloaded from the original source.}
+                \label{fig:further:overlay}
+        \end{subfigure}
+        \tightcaption{[In-depth analysis] on (a) reduction on algorithm running time, (b) near-optimality, and (c) effects of overlay transmission.}
+        \label{fig:further}
+\vspace{-0.4cm}
+\end{figure*}
 
-Block size. In \name, the bulk data file is split into blocks so that can be transferred from multiple sources on disjoint paths. But this introduces a tradeoff caused by different block sizes. We therefore conduct two series of experiments using different block sizes (2M and 64M). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2M/block scenario is 1.5-2$\times$ shorter than that in the 64M/block scenario. This is because smaller block size leads to less degeneration on the theoretical optimum (see Appendix 2 for the proof). However, this optimization introduces longer controller running time, as shown in Figure \ref{fig:scale:cpu}, there will be 32$\times$ more blocks in 2M/block scenario. Overall, block size decisions depend on: (1) requirements on the completion time, and (2) controller's running time.
+%\tightsubsubsection{Algorithm adaptability.}\label{subsubsec:evaluation:adaptability}
+\subsubsection{Fault tolerance}
 
-Algorithm running time. \name also applies the approximation of separating data scheduling from overlay routing, which can also reduce algorithm running time. We show the measurements on algorithm running time in Figure \ref{fig:analysis:time}. At the very beginning, the running time is nearly $800ms$, but drops to $300ms$ and even less quickly. This is because the separated scheduling stage selects only a subset of blocks, making the number of blocks decrease significantly and simplifying the routing decision making process.
+%\mypara{Fault tolerance}
+Here we examine the impact of the following failure scenario on the number of downloaded blocks per cycle. During cycles 0 to 9, \name works as usual, and one agent fails in the 10th cycle. The controller fails in the 20th cycle and recovers in the 30th cycle. Figure \ref{fig:analysis:failure} shows the average number of downloaded blocks per cycle. We find that the slight impact of agent failure only lasts for one cycle, and the system recovers in the 11th cycle. When the controller is unavailable, \name falls back to a default decentralized overlay protocol, resulting in graceful performance degradation. With the recovery of the controller, the performance recovers in the 30th cycle.
 
-Inter-DC multicast overlay. \Section\ref{subsec:motivation:case-for} reveals the observation that the benefits of application-level overlay networks depend critically on if there exist disjoint paths between two nodes. To explore the potential benefit, we record the ratio of the number of blocks downloaded from the original source to the total number of blocks, and the CDF is shown in Figure \ref{fig:analysis:overlay}. For about 90\% servers, the proportion of blocks downloaded from the original source is less than 20\%, which means that more than 80\% blocks are downloaded from other DCs on the disjoint paths, demonstrating great potential of multicast overlay network.
+\subsubsection{Choosing the values of key parameters}\label{subsec:evaluation:benchmarks:parameters}
 
-In summary, both the prototype pilot deployed on \company network and the trace-driven simulations of \name achieve 3-5$\times$ speedup over existing solutions, with good scalability, fast algorithm convergence and lightweight resource consumption.
+\mypara{Block size} In \name, the bulk data file is split into blocks and can be transferred on bottleneck-disjoint paths. But this introduces a tradeoff between scheduling efficiency and calculation overhead. We therefore conduct two series of experiments using different block sizes (2MB and 64MB). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2MB/block scenario is 1.5 to 2 times shorter than that in the 64MB/block scenario.
+%This is because a smaller block sizes result in closer-to-optimal performance (see Appendix for the proof).
+However, this optimization introduces a longer controller running time, as shown in Figure \ref{fig:scale:cpu}. We pick block size by balancing two considerations: (1) constraints on the completion time, and (2) the controller's operational overhead.
+
+\mypara{Update cycle lengths} Since any change in network environment may potentially alter the optimal overlay routing decisions, \name reacts to the changing network conditions by adjusting the routing scheme periodically. To test the adjustment frequency, we set different cycle lengths from $0.5s$ to $95s$ for the same bulk data transfer, and Figure \ref{fig:analysis:cycleDiff} shows the completion time. Smaller cycle lengths result in shorter completion time, but the benefit diminishes when the cycle length is less than $3s$. This is because updating too frequently introduces greater overhead on: (1) the information collection from agents to the controller, (2) the execution of the centralized algorithm, and (3) the re-establishment of new TCP connections. Thus, considering adjustment granularity and the corresponding overhead, we finally choose $3s$ as the default cycle length.
+
+
+\tightsubsubsection{In-depth analysis.}\label{subsubsec:evaluation:depth}
+
+\mypara{Optimization over algorithm running time} \name decouples scheduling and routing, which can significantly reduce the computational complexity. To clearly show the optimization, we measure the algorithm running time under \name and the standard LP solution. For the standard LP experiments, we use the \textit{linprog} library on MATLAB \cite{mathworks}, set the upper bound of the iteration number ($10^6$) if the algorithm does not converge, and record the CPU time as a function of the block number. Figure \ref{fig:further:BDSvsLP} shows that the running time of \name keeps below $25ms$ while that of standard LP grows quickly to $4s$ with only 4000 blocks. %This result illustrates \name's optimization over algorithm running time.
+\name is much faster than an off-the-shelf LP solver.
+
+\mypara{Near-optimality of \name} To measure the near-optimality, we evaluate the data transfer completion time under the standard LP and \name: 2 DCs, 4 servers, 20MBs for server upload/download rate.
+%1 to 4000 blocks (we cannot conduct large-scale experiments due to the explosive growth of the LP calculation time).
+We vary the number of blocks from 1 to 4000, over which the LP solver cannot finish in a reasonable time. Figure \ref{fig:further:BDSvsLP_CT} shows the near-optimality of \name.%that the difference of completion time between \name and the optimal standard LP is about 15\%.
+
+
+\mypara{Benefit of disjoint overlay paths} \Section\ref{subsec:motivation:case-for} reveals the benefits of disjoint paths on application-level overlay networks. To explore the potential benefit, we record the ratio of the number of blocks downloaded from the original source to the total number of blocks, and the CDF is shown in Figure \ref{fig:further:overlay}. For about 90\% of servers, the proportion is less than 20\%, which means that more than 80\% blocks are downloaded from other DCs on the disjoint paths, demonstrating the great potential of a multicast overlay network.
+
+%\mypara{Breakdown of feedback loop delay} \name also applies the approximation of separating data scheduling from overlay routing, which can also reduce algorithm running time. We show the measurements on algorithm running time in Figure \ref{fig:analysis:time}. At the very beginning, the running time is nearly $800ms$, but drops to $300ms$ and even less quickly. This is because the separated scheduling stage selects only a subset of blocks, making the number of blocks decrease significantly and simplifying the routing decision making process.
+
+
+%\begin{figure*}[t]
+%        \centering
+%        \begin{subfigure}[b]{0.3\textwidth}
+%                \centering
+%                \includegraphics[width=50mm]{images/BDSvsLP.eps} % BDSvsLP.m
+%                \caption{Algorithm running time of \name and standard LP.}
+%                \label{fig:further:BDSvsLP}
+%        \end{subfigure}
+%        \begin{subfigure}[b]{0.3\textwidth}
+%                \centering
+%                \includegraphics[width=50mm]{images/cycleDiff.eps}%cycleDiff.m
+%                \caption{Completion time under different cycle lengths.}
+%                \label{fig:further:cycleDiff}
+%        \end{subfigure}
+%        \begin{subfigure}[b]{0.3\textwidth}
+%                \centering
+%                \includegraphics[width=50mm]{images/failure.eps}%fail.m
+%                \caption{Average number of downloaded blocks per cycle under failures.}
+%                \label{fig:further:failure}
+%        \end{subfigure}
+%        \caption{Further analysis on (1) running time, (2) cycle length, and (3) fault tolerance.}
+%        \label{fig:further}
+%\vspace{-0.4cm}
+%\end{figure*}
+\NEW{
+\subsection{\newname's dynamic bandwidth separation}
+\label{subsec:evaluation:improvements}
+Evaluations between \newname and \name.
+
+1. further complete inter-DC multicast XXX$\times$ faster than \name, 
+
+2. predict the bandwidth utilization of online traffic with XXX\% accuracy, 
+
+3. increase bandwidth utilization when online traffic is in valley, 
+
+4. reduces the incidents of interferences caused on bulk-data multicast traffic when online traffic bursts, 
+
+5. achieve near real-time scheduling with quite low computation overhead
+
+\subsubsection{Completion time}
+
+\subsubsection{Accuracy of the prediction algorithm}
+
+\subsubsection{Bandwidth utilization}
+
+Show that we can use much more bandwidth when online traffic is in valley.
+
+Can show the number of additional blocks that are transferred in each big scheduling cycle. 
+
+\subsubsection{Reduces the incidents}
+
+Show that we can reduce bandwidth that is allocated to bulk-data transfer when online traffic bursts.
+
+Can show the number of blocks that are cancelled in each big scheduling cycle. 
+
+\subsubsection{Computation overhead}
+
+Show the rate of links that are affected by the predicted algorithm (i.e., on which links the bandwidth can be increased/reduced).
+
+Show the computation latency of the bandwidth adjustment algorithm.
+
+}
+
+In summary, both the prototype pilot deployment and the trace-driven simulations of \name show 3-5$\times$ speedup over existing solutions, with good scalability and reliability, and near-optimal scheduling results \NEW{ while \newname can work harmoniously with online traffic and further completes inter-DC multicast XXX times faster}.
+
 
 %\begin{itemize}
 %\item Scalability of centralized control:
@@ -258,6 +424,7 @@ In summary, both the prototype pilot deployed on \company network and the trace-
 %\end{itemize}
 %
 %\end{itemize}
+
 
 
 
