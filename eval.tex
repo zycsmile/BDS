@@ -376,9 +376,23 @@ Evaluations between \newname and \name.
 5. achieve near real-time scheduling with quite low computation overhead
 
 \subsubsection{Completion time}
-
+\label{subsec:evaluation:completaiontime}
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=80mm]{images/bds+/average_downloaded_blk_per_cycle.pdf}
+  \tightcaption{Average downloaded block number in each cycle.}
+  \label{fig:quota}
+\vspace{-0.4cm}
+\end{figure}
 \subsubsection{Accuracy of the prediction algorithm}
-
+\label{subsec:evaluation:algaccuracy}
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=80mm]{images/bds+/alg_accuracy.pdf}
+  \tightcaption{The accuracy distribution of prediction algorithm.}
+  \label{fig:quota}
+\vspace{-0.4cm}
+\end{figure}
 \subsubsection{Bandwidth utilization}
 
 Show that we can use much more bandwidth when online traffic is in valley.
@@ -398,7 +412,14 @@ Show the rate of links that are affected by the predicted algorithm (i.e., on wh
 Show the computation latency of the bandwidth adjustment algorithm.
 
 }
-
+\label{subsec:evaluation:computationoverhead}
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=80mm]{images/bds+/alg_overhead.pdf}
+  \tightcaption{Computation overhead of prediction algorithm}
+  \label{fig:quota}
+\vspace{-0.4cm}
+\end{figure}
 In summary, both the prototype pilot deployment and the trace-driven simulations of \name show 3-5$\times$ speedup over existing solutions, with good scalability and reliability, and near-optimal scheduling results \NEW{ while \newname can work harmoniously with online traffic and further completes inter-DC multicast XXX times faster}.
 
 
