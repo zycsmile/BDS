@@ -46,8 +46,8 @@ close to optimal flow completion time
 (\Section\ref{subsec:evaluation:benchmarks}).
 
 
-\NEW{ADD: 
-\item \newname can: 1. further complete inter-DC multicast XXX$\times$ faster than \name, 2. predict the bandwidth utilization of online traffic with XXX\% accuracy, 3. increase bandwidth utilization when online traffic is in valley, 4. reduces the incidents of interferences caused on bulk-data multicast traffic when online traffic bursts, 5. achieve near real-time scheduling with quite low computation overhead 
+\NEW{ADD:
+\item \newname can: 1. further complete inter-DC multicast XXX$\times$ faster than \name, 2. predict the bandwidth utilization of online traffic with XXX\% accuracy, 3. increase bandwidth utilization when online traffic is in valley, 4. reduces the incidents of interferences caused on bulk-data multicast traffic when online traffic bursts, 5. achieve near real-time scheduling with quite low computation overhead
 (\Section\ref{subsec:evaluation:improvements}).
 }
 \end{packedenumerate}
@@ -56,6 +56,7 @@ close to optimal flow completion time
 \label{subsec:evaluation:centralized}
 
 \subsubsection{Methodology}
+\ 
 
 \mypara{Baselines}
 We compare \name with three existing solutions: \alg (\company's
@@ -80,6 +81,7 @@ order as in the pilot deployment.
 
 \subsubsection{\name vs. \alg}
 \label{subsubsec:name-vs-alg}
+\ 
 
 We begin by evaluating \name and \alg on one service that needs to
 distribute 70~TB data from one source DC to ten destination DCs.
@@ -101,13 +103,14 @@ completion time of \name and \alg in one randomly chosen application,
 and we see that \name consistently outperforms \alg by 4$\times$.
 
 \subsubsection{\name vs. other overlay multicast techniques}
+\ 
 
 Table~\ref{table:versusAkamai} compares \name with two other
 baselines, Bullet and Akamai's overlay network, using trace-driven
 simulation. We show the results in three setups. In the baseline evaluations,
-we send 10TB data from one DC to 11 DCs, each has 100 servers, and
+we send 1TB data from one DC to 11 DCs, each has 100 servers, and
 the upload and download link capacities are set to be 20MBs. In the
-large-scale evaluations, we send 100TB data between the same DCs, each with
+large-scale evaluations, we send 10TB data between the same DCs, each with
 1000 servers. In the rate-limited evaluations, the setup is the same as that in the baseline experiments
 except the server upload and download rate limit set to be 5MBs.
 We see that \name achieves 3$\times$ shorter completion time than
@@ -206,7 +209,7 @@ by bulk data is always below 10~GB/s.
         \end{subfigure}
         \tightcaption{[System scalability] Measurements on (a) controller running time, (b) network delay, (c) Feedback loop delay.}
         \label{fig:scale}
-\vspace{-0.4cm}
+%\vspace{-0.4cm}
 \end{figure*}
 
 \begin{figure*}[t]
@@ -243,7 +246,7 @@ by bulk data is always below 10~GB/s.
 %        \end{subfigure}
         \tightcaption{\name's (a) fault tolerance, (b) sensitivity to different block sizes, and (c) different cycle lengths.}
         \label{fig:analysis}
-\vspace{-0.4cm}
+%\vspace{-0.4cm}
 \end{figure*}
 
 
@@ -265,6 +268,7 @@ Next, we use micro-benchmarking to evaluate \name along three metrics:
 
 \subsubsection{Scalability}
 \label{subsec:evaluation:benchmarks:scalability}
+\ 
 
 \mypara{Controller running time}
 As the controller needs to decide the scheduling and routing of each
@@ -303,16 +307,18 @@ finish updating the decisions within 300ms.
         \end{subfigure}
         \tightcaption{[In-depth analysis] on (a) reduction on algorithm running time, (b) near-optimality, and (c) effects of overlay transmission.}
         \label{fig:further}
-\vspace{-0.4cm}
+%\vspace{-0.4cm}
 \end{figure*}
 
 %\tightsubsubsection{Algorithm adaptability.}\label{subsubsec:evaluation:adaptability}
 \subsubsection{Fault tolerance}
+\ 
 
 %\mypara{Fault tolerance}
 Here we examine the impact of the following failure scenario on the number of downloaded blocks per cycle. During cycles 0 to 9, \name works as usual, and one agent fails in the 10th cycle. The controller fails in the 20th cycle and recovers in the 30th cycle. Figure \ref{fig:analysis:failure} shows the average number of downloaded blocks per cycle. We find that the slight impact of agent failure only lasts for one cycle, and the system recovers in the 11th cycle. When the controller is unavailable, \name falls back to a default decentralized overlay protocol, resulting in graceful performance degradation. With the recovery of the controller, the performance recovers in the 30th cycle.
 
 \subsubsection{Choosing the values of key parameters}\label{subsec:evaluation:benchmarks:parameters}
+\ 
 
 \mypara{Block size} In \name, the bulk data file is split into blocks and can be transferred on bottleneck-disjoint paths. But this introduces a tradeoff between scheduling efficiency and calculation overhead. We therefore conduct two series of experiments using different block sizes (2MB and 64MB). Figure \ref{fig:analysis:blksize} shows that the completion time in the 2MB/block scenario is 1.5 to 2 times shorter than that in the 64MB/block scenario.
 %This is because a smaller block sizes result in closer-to-optimal performance (see Appendix for the proof).
@@ -321,7 +327,8 @@ However, this optimization introduces a longer controller running time, as shown
 \mypara{Update cycle lengths} Since any change in network environment may potentially alter the optimal overlay routing decisions, \name reacts to the changing network conditions by adjusting the routing scheme periodically. To test the adjustment frequency, we set different cycle lengths from $0.5s$ to $95s$ for the same bulk data transfer, and Figure \ref{fig:analysis:cycleDiff} shows the completion time. Smaller cycle lengths result in shorter completion time, but the benefit diminishes when the cycle length is less than $3s$. This is because updating too frequently introduces greater overhead on: (1) the information collection from agents to the controller, (2) the execution of the centralized algorithm, and (3) the re-establishment of new TCP connections. Thus, considering adjustment granularity and the corresponding overhead, we finally choose $3s$ as the default cycle length.
 
 
-\tightsubsubsection{In-depth analysis.}\label{subsubsec:evaluation:depth}
+\subsubsection{In-depth analysis.}\label{subsubsec:evaluation:depth}
+\ 
 
 \mypara{Optimization over algorithm running time} \name decouples scheduling and routing, which can significantly reduce the computational complexity. To clearly show the optimization, we measure the algorithm running time under \name and the standard LP solution. For the standard LP experiments, we use the \textit{linprog} library on MATLAB \cite{mathworks}, set the upper bound of the iteration number ($10^6$) if the algorithm does not converge, and record the CPU time as a function of the block number. Figure \ref{fig:further:BDSvsLP} shows that the running time of \name keeps below $25ms$ while that of standard LP grows quickly to $4s$ with only 4000 blocks. %This result illustrates \name's optimization over algorithm running time.
 \name is much faster than an off-the-shelf LP solver.
@@ -360,50 +367,107 @@ We vary the number of blocks from 1 to 4000, over which the LP solver cannot fin
 %        \label{fig:further}
 %\vspace{-0.4cm}
 %\end{figure*}
+\begin{figure*}[t]
+        \centering
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=50mm]{images/cdf_of_machine_completion_time.pdf}
+                \caption{CDF of server completion time.}
+                \label{fig:bdsplus:server}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=50mm]{images/cdf_of_machine_completion_time.pdf}
+                \caption{Comparison at different periods.}
+                \label{fig:bdsplus:periods}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=50mm]{images/improvement_vs_bds.pdf}
+                \caption{CDF of improvement.}
+                \label{fig:bdsplus:vs}
+        \end{subfigure}
+        \tightcaption{[\newname vs. \name] Further improvements from \newname.}
+        \label{fig:bdsplus}
+%\vspace{-0.4cm}
+\end{figure*}
+
+\begin{figure*}[t]
+        \centering
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=50mm]{images/real_bw_and_estimate_bw.pdf}
+                \caption{Real online traffic and the predicted value.}
+                \label{fig:pred:real}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=50mm]{images/bw_prediction_accuracy.pdf}
+                \caption{CDF of algorithm prediction accuracy.}
+                \label{fig:pred:accurancy}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=50mm]{images/alg_overhead.pdf}
+                \caption{Running time of the prediction algorithm.}
+                \label{fig:pred:overhead}
+        \end{subfigure}
+        \tightcaption{[\newname's prediction algorithm] Evaluations on (a) predicted value, (b) algorithm accuracy, (c) running time.}
+        \label{fig:pred}
+%\vspace{-0.4cm}
+\end{figure*}
+
 \NEW{
 \subsection{\newname's dynamic bandwidth separation}
 \label{subsec:evaluation:improvements}
+
+\name reserves fixed size of bandwidth for online traffic (e.g., $20\%$), which is usually higher than the peak value. But lots of real traces show that online traffic rarely reaches the peak and is far below that in most cases. Thus, \newname adopts dynamic bandwidth seperation between online traffic and offline traffic, allowing offline traffic (bulk data transfer) to use more bandwidth when online traffic is below the threshold. \newname achieves this by an online traffic prediction algorithm, and this section shows the results of improved performance of \newname.
+
+In the following experiments, we send 1TB data from one DC to 11 DCs, each has 100 servers, and the upload and download link capacities are set to be 20MBs. The online traffic is set according to the cluster trace (machine\_usage) from Ali \cite{datatrace}.
+
+\subsubsection{Further improvements from \newname.}
+\label{subsubsec:bdsplus:improvements}
+\ 
+
+\mypara{Completion time}
+We start the bulk data transfer at ***(time) on 27, Jan, 2019. Figure~\ref{fig:bdsplus:server} shows the CDF of the completion time on each destination server. We can see that the median completion time of \newname is *** minutes, even the straggler server finishes transfer within *** minutes, while most servers under \name takes more than *** minutes.
+
+\mypara{Improvements over \name}
+To make the results more general, we further conduct a series of experiments during different time periods, in other words, once per 15 minutes. We compare the completion time of both \newname and \name and show the results in Figure~\ref{fig:bdsplus:periods}. We can see that the improvements of \newname over \name changes with time, specifically, the improvements during midnight is significantly higher than that during the day, especially at ***(time), when online traffic is at its peak. These results show that \newname can make full use of the idle bandwidth that is not used by online traffic. Overall, the CDF of improvements is shown in Figure~\ref{fig:bdsplus:vs}, which means that \newname can bring at least 20\% improvement in more than 60\% cases.
+
+\subsubsection{\newname's prediction algorithm.}
+\label{subsubsec:bdsplus:predict}
+\ 
+
+\mypara{Algorithm accuracy}
+
+
+\mypara{Algorithm overhead}
+
 Evaluations between \newname and \name.
 
-1. further complete inter-DC multicast XXX$\times$ faster than \name, 
+1. further complete inter-DC multicast XXX$\times$ faster than \name,
 
-2. predict the bandwidth utilization of online traffic with XXX\% accuracy, 
+2. predict the bandwidth utilization of online traffic with XXX\% accuracy,
 
-3. increase bandwidth utilization when online traffic is in valley, 
+3. increase bandwidth utilization when online traffic is in valley,
 
-4. reduces the incidents of interferences caused on bulk-data multicast traffic when online traffic bursts, 
+4. reduces the incidents of interferences caused on bulk-data multicast traffic when online traffic bursts,
 
 5. achieve near real-time scheduling with quite low computation overhead
 
-\subsubsection{Completion time}
-\label{subsec:evaluation:completaiontime}
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=80mm]{images/bds+/average_downloaded_blk_per_cycle.pdf}
-  \tightcaption{Average downloaded block number in each cycle.}
-  \label{fig:quota}
-\vspace{-0.4cm}
-\end{figure}
-\subsubsection{Accuracy of the prediction algorithm}
-\label{subsec:evaluation:algaccuracy}
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=80mm]{images/bds+/alg_accuracy.pdf}
-  \tightcaption{The accuracy distribution of prediction algorithm.}
-  \label{fig:quota}
-\vspace{-0.4cm}
-\end{figure}
+
 \subsubsection{Bandwidth utilization}
 
 Show that we can use much more bandwidth when online traffic is in valley.
 
-Can show the number of additional blocks that are transferred in each big scheduling cycle. 
+Can show the number of additional blocks that are transferred in each big scheduling cycle.
 
 \subsubsection{Reduces the incidents}
 
 Show that we can reduce bandwidth that is allocated to bulk-data transfer when online traffic bursts.
 
-Can show the number of blocks that are cancelled in each big scheduling cycle. 
+Can show the number of blocks that are cancelled in each big scheduling cycle.
 
 \subsubsection{Computation overhead}
 
@@ -413,13 +477,7 @@ Show the computation latency of the bandwidth adjustment algorithm.
 
 }
 \label{subsec:evaluation:computationoverhead}
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=80mm]{images/bds+/alg_overhead.pdf}
-  \tightcaption{Computation overhead of prediction algorithm}
-  \label{fig:quota}
-\vspace{-0.4cm}
-\end{figure}
+
 In summary, both the prototype pilot deployment and the trace-driven simulations of \name show 3-5$\times$ speedup over existing solutions, with good scalability and reliability, and near-optimal scheduling results \NEW{ while \newname can work harmoniously with online traffic and further completes inter-DC multicast XXX times faster}.
 
 
