@@ -290,8 +290,11 @@ compared with that of the ideal solution. }
 \vspace{-0.4cm}
 \end{figure}
 
-\noindent{\bf Limitation 2:
-Interaction with latency-sensitive traffic.}
+
+\NEW{
+\noindent{\bf Limitation 2: High computation overhead.} To obtain a global view and achieve optimal scheduling protocols, the existing centralized protocols suffers from high computation overhead. Most formulations are super-linear, so the computational overhead of centralized protocols always grows exponentially, making them intractable in practice.
+
+\noindent{\bf Limitation 3: Interaction with latency-sensitive traffic.}
 The existing multicast overlay network shares the same inter-DC WAN
 with latency-sensitive traffic. Despite using standard QoS techniques,
 and giving the lowest priority to bulk data transfers, we still see
@@ -303,20 +306,7 @@ The blue line denotes the outgoing bandwidth, and the green line
 denotes the incoming bandwidth. We can see that the
 bulk data transfer caused excessive link utilization (i.e., exceeding
 the safety threshold of 80\%), and as a result, the latency-sensitive
-online traffic experienced over 30$\times$ delay inflation.
-
-\NEW{
-\noindent{\bf Limitation 2: Low computation overhead.}
-
-Decoupling of scheduling and routing.
-}
-
-\NEW{
-\noindent{\bf Limitation 3: Real-time dynamic bandwidth separation.}
-
-Prediction of online traffic.
-
-Fine-granularity and near real-time schedule adjustment.
+online traffic experienced over 30$\times$ delay inflation. Therefore, an algorithm should be able to dynamically interact with latency-sensitive traffic.
 }
 
 
@@ -343,7 +333,7 @@ between geo-distributed DCs.
 {\em suboptimal performance} and {\em negative impact on
 online traffic}.
 \NEW{
-\item {\em Real-time dynamic bandwidth separation} can be achieved if: online traffic can be predicted accurately and fine-granularity bandwidth adjustment can be conducted.
+\item {\em Real-time dynamic bandwidth separation} can be achieved if: online traffic can be predicted accurately and rescheduling can be conducted accordingly.
 }
 \end{packeditemize}
 

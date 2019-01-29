@@ -34,11 +34,11 @@ trace-driven simulation, and microbenchmarking, we show that:
 \company's existing solutions, as well as other baselines used in
 industry (\Section\ref{subsec:evaluation:centralized}).
 
-\NEW{ DELETE:
-\item \name significantly reduces the incidents of interferences
-between bulk-data multicast traffic and latency-sensitive traffic
-(\Section\ref{subsec:evaluation:separation}).
-}
+%\NEW{ DELETE:
+%\item \name significantly reduces the incidents of interferences
+%between bulk-data multicast traffic and latency-sensitive traffic
+%(\Section\ref{subsec:evaluation:separation}).
+%}
 
 \item \name can scale to the traffic demand of a large online
 service provider, tolerate various failure scenarios, and achieves
@@ -46,8 +46,8 @@ close to optimal flow completion time
 (\Section\ref{subsec:evaluation:benchmarks}).
 
 
-\NEW{ADD:
-\item \newname can: 1. further complete inter-DC multicast XXX$\times$ faster than \name, 2. predict the bandwidth utilization of online traffic with XXX\% accuracy, 3. increase bandwidth utilization when online traffic is in valley, 4. reduces the incidents of interferences caused on bulk-data multicast traffic when online traffic bursts, 5. achieve near real-time scheduling with quite low computation overhead
+\NEW{
+\item \newname can: 1. further complete inter-DC multicast 1.2 to 1.3 times faster than \name, 2. predict the bandwidth utilization of online traffic with about 95\% accuracy, 3. increase bandwidth utilization when online traffic is in valley, while reduces the bulk data transfer when online traffic bursts, 4. achieve near real-time scheduling with quite low computation overhead
 (\Section\ref{subsec:evaluation:improvements}).
 }
 \end{packedenumerate}
@@ -143,28 +143,28 @@ Akamai & $25m$ & $87m$ & $138m$\\
 %\vspace{-0.4cm}
 \end{table}
 
-\subsection{Benefits of coordinated bandwidth allocation}
-\label{subsec:evaluation:separation}
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=45mm]{images/Quota_v2.eps}%DrawLink.m
-  \tightcaption{\color{red}{DELETE: The effectiveness of bandwidth separation.}}
-  \label{fig:quota}
-\vspace{-0.4cm}
-\end{figure}
-
-To reduce the incidences of negative interference between bulk-data
-multicast traffic and latency-sensitive traffic, \company sets a
-bandwidth limit of bulk data transfers on each link by the difference
-between the link capacity and the historical peak bandwidth of
-latency-sensitive traffic. Naturally, we can minimize the conflicts,
-if \name can keep the bulk-data multicast traffic within the bandwidth
-limit. To test \name's effectiveness at maintaining differentiation between
-bulk-data multicast traffic and latency-sensitive traffic, we set an
-10GB/s bandwidth limit to bulk data transfers.
-Figure~\ref{fig:quota} shows the actual bandwidth usage of \name on
-one inter-DC link. We can see that in \name the actual bandwidth used
-by bulk data is always below 10~GB/s.
+%\subsection{Benefits of coordinated bandwidth allocation}
+%\label{subsec:evaluation:separation}
+%\begin{figure}[t]
+%  \centering
+%  \includegraphics[width=45mm]{images/Quota_v2.eps}%DrawLink.m
+%  \tightcaption{\color{red}{DELETE: The effectiveness of bandwidth separation.}}
+%  \label{fig:quota}
+%\vspace{-0.4cm}
+%\end{figure}
+%
+%To reduce the incidences of negative interference between bulk-data
+%multicast traffic and latency-sensitive traffic, \company sets a
+%bandwidth limit of bulk data transfers on each link by the difference
+%between the link capacity and the historical peak bandwidth of
+%latency-sensitive traffic. Naturally, we can minimize the conflicts,
+%if \name can keep the bulk-data multicast traffic within the bandwidth
+%limit. To test \name's effectiveness at maintaining differentiation between
+%bulk-data multicast traffic and latency-sensitive traffic, we set an
+%10GB/s bandwidth limit to bulk data transfers.
+%Figure~\ref{fig:quota} shows the actual bandwidth usage of \name on
+%one inter-DC link. We can see that in \name the actual bandwidth used
+%by bulk data is always below 10~GB/s.
 
 %\begin{table}[t]
 %\begin{center}

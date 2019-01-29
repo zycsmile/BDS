@@ -71,19 +71,16 @@ to get better routing decisions from a centralized controller which
 maintains a global view of data delivery and is capable of orchestrating
 all overlay servers.
 
-\item {\em Strict traffic isolation:}
+\NEW{
+\item {\em Flexible traffic isolation:}
 As observed in \Section\ref{subsec:motivation:baseline}, it is vital
 that inter-DC multicasts avoid hotspots and excessive bandwidth usage
 that negatively impact the latency of delay-sensitive traffic, but
 it is difficult to prevent such situations without any coordination
-across overlay servers. In contrast, it is simpler to
+across overlay servers. In contrast, if any network changes are detected, it is simpler to
 allocate bandwidth of each data transfer by controlling the
-sending rate at all servers in a centralized fashion
+sending rate at all servers in a centralized fashion (nomatter to reserve more bandwidth when traffic burst or to reduce transfer when traffic valley)
 (\Section\ref{sec:system}).
-
-\NEW{
-\item {\em Dynamic traffic isolation:}
-predict online traffic and adjust the available bandwidth for offline bulk data transfer. Two-fold: make full use of idle bandwidth when online traffic is in valley, avoidance when online traffic bursts.
 }
 
 \item {\em Lower engineering complexity:}
@@ -106,7 +103,7 @@ glance, this is indeed intractable. For the workload at a scale of
 \company, the centralized overlay routing algorithm must pick the next
 hops for $10^5$ of data blocks from $10^4$ servers. This operates at a scale that
 could grow exponentially when we consider the growth in the number of possible
-overlay paths that go through these servers and with  finer grained
+overlay paths that go through these servers and with finer grained
 block partitioning. With the standard routing formulation and linear
 programming solvers, it could be completely unrealistic to make
 near-optimal solutions by exploring such a large decision space
@@ -114,8 +111,8 @@ near-optimal solutions by exploring such a large decision space
 
 \NEW{
 \mypara{The key to realizing dynamic bandwidth separation}
-Online traffic prediction. enable small cycles to make scheduling adjustment.
+Dynamic bandwidth separation raises two requirements, one is to reserve enough bandwidth for delay-sensitive traffic so as to avoid negative impacts on these services, and the other is to make full use of the residual bandwidth so as to reduce the completion time of bulk data transfer. With the traditional strict safety threshold and decentralized protocols, it could be impossible to make efficient bandwidth usage in the dynamic and hybrid deployed network (\Section\ref{subsec:evaluation:improvements}).
 }
 
-The next section will present how \name addresses this challenge.
+The following two section will present how \name and \newname addresses these challenges.
 
