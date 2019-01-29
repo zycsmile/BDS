@@ -397,7 +397,7 @@ We vary the number of blocks from 1 to 4000, over which the LP solver cannot fin
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
                 \includegraphics[width=50mm]{images/real_bw_and_estimate_bw.pdf}
-                \caption{Real online traffic and the predicted value.}
+                \caption{Available bandwidth and the predicted value.}
                 \label{fig:pred:real}
         \end{subfigure}
         \begin{subfigure}[b]{0.3\textwidth}
@@ -439,47 +439,15 @@ To make the results more general, we further conduct a series of experiments dur
 \label{subsubsec:bdsplus:predict}
 \ 
 
-\mypara{Algorithm accuracy}
+The improvement of \newname mainly comes from the prediction of online traffic, so in this subsection, we evaluate the accuracy of the prediction algorithm, and then analyze the overhead incurred in achieving such improvements.
 
+\mypara{Algorithm accuracy} The online traffic is set according to the cluster trace (machine\_usage) from Ali \cite{datatrace}, the real residual bandwidth (the difference between server I/O and online traffic) is shown in black in Figure~\ref{fig:pred:real}, where the predicted value is shown in red. As we can see that the red line is smooth and quite close to the real bandwidth, indicating that \newname can predict online traffic precisely. The exact figures are shown in Figure~\ref{fig:pred:accurancy}, which indicates that the accuracy of about 90\% predictions is greater than 6\%. What's more, only in ***\% cases, \newname shows some aggressiveness by gives a little bit higher predicted value (where the x-axis is below zero). In this way, \newname can not only increases bandwidth utilization when online traffic is in valley, but also reduces the incidents of interferences caused by bulk-data transfer.
 
 \mypara{Algorithm overhead}
+Although \newname bring performance improvements by making use of the residual bandwidth, it introduce some overhead on algorithm running time. So here we evaluate the additional time spent on making predictions on online traffic. Figure~\ref{fig:pred:overhead} shows the running time during a complete bulk data transfer. We can see that it takes less than $10ms$ for \newname to make predictions in more than 80\% cases. What's more, this overhead does not increase with system scale, because the prediction on each server is independent of each other and thus can be executed simultaneously.
 
-Evaluations between \newname and \name.
-
-1. further complete inter-DC multicast XXX$\times$ faster than \name,
-
-2. predict the bandwidth utilization of online traffic with XXX\% accuracy,
-
-3. increase bandwidth utilization when online traffic is in valley,
-
-4. reduces the incidents of interferences caused on bulk-data multicast traffic when online traffic bursts,
-
-5. achieve near real-time scheduling with quite low computation overhead
-
-
-\subsubsection{Bandwidth utilization}
-
-Show that we can use much more bandwidth when online traffic is in valley.
-
-Can show the number of additional blocks that are transferred in each big scheduling cycle.
-
-\subsubsection{Reduces the incidents}
-
-Show that we can reduce bandwidth that is allocated to bulk-data transfer when online traffic bursts.
-
-Can show the number of blocks that are cancelled in each big scheduling cycle.
-
-\subsubsection{Computation overhead}
-
-Show the rate of links that are affected by the predicted algorithm (i.e., on which links the bandwidth can be increased/reduced).
-
-Show the computation latency of the bandwidth adjustment algorithm.
-
+In summary of all the above experiments, both the prototype pilot deployment and the trace-driven simulations of \name show 3-5$\times$ speedup over existing solutions, with good scalability and reliability, and near-optimal scheduling results. While the enhanced version \newname can work harmoniously with online traffic and further reduce the completion time of inter-DC multicasts, by making dynamic bandwidth separation.
 }
-\label{subsec:evaluation:computationoverhead}
-
-In summary, both the prototype pilot deployment and the trace-driven simulations of \name show 3-5$\times$ speedup over existing solutions, with good scalability and reliability, and near-optimal scheduling results \NEW{ while \newname can work harmoniously with online traffic and further completes inter-DC multicast XXX times faster}.
-
 
 %\begin{itemize}
 %\item Scalability of centralized control:
