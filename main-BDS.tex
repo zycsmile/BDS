@@ -8,7 +8,8 @@
 %\documentclass{sig-alternate-10pt}
 %\IEEEoverridecommandlockouts
 %\documentclass[preprint]{sigplanconf-eurosys}
-\documentclass[10pt,sigconf]{acmart}
+%\documentclass[10pt,sigconf]{acmart}
+\documentclass[10pt,journal,compsoc]{IEEEtran}
 
 \usepackage{fancyhdr}
 %\usepackage{algpseudocode}
@@ -129,71 +130,37 @@
 %\acmISBN{978-1-4503-5584-1/18/04}
 
 %\title[\name: A Centralized Near-Optimal Overlay Network for \\Inter-Datacenter Data Replication]{\name: A Centralized Near-Optimal Overlay Network for Inter-Datacenter Data Replication}
-\title{\newname: A Centralized Near-Optimal Overlay Network with Dynamic Bandwidth Seperation}
+\title{\newname: A Centralized Near-Optimal Overlay Network with Dynamic Bandwidth Separation}
 
-\author{Yuchao Zhang}
-\affiliation{\institution{HKUST}}
-%\email{zyc@ust.hk}
-
-\author{Junchen Jiang}
-\affiliation{\institution{The University of Chicago}}
-%\email{junchenj@uchicago.edu}
-
-\author{Ke Xu}
-\affiliation{\institution{Tsinghua University}}
-%\email{xuke@tsinghua.edu.cn}
-
-\author{Xiaohui Nie}
-\affiliation{\institution{Tsinghua University}}
-%\email{nxh15@mails.tsinghua.edu.cn}
-
-\author{Martin J. Reed}
-\affiliation{\institution{University of Essex}}
-%\email{mjreed@essex.ac.uk}
-
-\author{Haiyang Wang}
-\affiliation{\institution{University of Minnesota at Duluth}}
-%\email{haiyang@d.umn.edu}
-
-\author{Guang Yao}
-\affiliation{\institution{Baidu}}
-%\email{yaoguang@baidu.com}
-
-\author{Miao Zhang}
-\affiliation{\institution{Baidu}}
-%\email{zhangmiao02@baidu.com}
-
-\author{Kai Chen}
-\affiliation{\institution{HKUST}}
-%\email{kaichen@cse.ust.hk}
-
-%\author{
-%Yuchao Zhang$^1$,
-%Junchen Jiang$^2$,
-%Ke Xu$^3$,
-%Xiaohui Nie$^3$,\\
-%Martin J. Reed$^4$,
-%Haiyang Wang$^5$,
-%Guang Yao$^6$,
-%Miao Zhang$^6$,
-%Kai Chen$^1$,
-%\\
-%$^1$ SING Lab@HKUST
-%$^2$ The University of Chicago
-%$^3$ Tsinghua University \\
-%$^4$ University of Essex
-%$^5$ University of Minnesota at Duluth
-%$^6$ Baidu \\
-%
-%zyc@ust.hk, junchenj@uchicago.edu, xuke@tsinghua.edu.cn, \\
-%nxh15@mails.tsinghua.edu.cn, mjreed@essex.ac.uk, haiyang@d.umn.edu, \\
-%\{yaoguang,zhangmiao02\}@baidu.com, kaichen@cse.ust.hk
-%}
+\author{Yuchao~Zhang*,~\IEEEmembership{Member,~IEEE,}
+        Xiaohui~Nie*,~\IEEEmembership{Student Member,~IEEE,}
+        Junchen~Jiang,~\IEEEmembership{Member,~IEEE,}
+        Wendong~Wang,~\IEEEmembership{Member,~IEEE,}
+        Youjian~Zhao,~\IEEEmembership{Member,~IEEE,}
+        Ke~Xu,~\IEEEmembership{Member,~IEEE,}
+        Guang~Yao,
+        and~Miao~Zhang% <-this % stops a space
+\IEEEcompsocitemizethanks{\IEEEcompsocthanksitem Yuchao Zhang is with the School of Software Engineering at the Beijing University of Post and Telecommunication. Wendong Wang is with the State Key Laboratory of Networking and Switching Technology at the Beijing University of Post and Telecommunication. Beijing, China.\protect\\
+E-mail: yczhang@bupt.edu.cn, wdwang@bupt.edu.cn
+\IEEEcompsocthanksitem Xiaohui Nie, Youjian Zhao and Ke Xu are with the Department of Computer Science and Technology, Tsinghua University, Beijing, China.\protect\\
+E-mail: nxh15@mails.tsinghua.edu.cn, zhaoyoujian@tsinghua.edu.cn, xuke@tsinghua.edu.cn
+\IEEEcompsocthanksitem Junchen Jiang is with the Department of Computer Science at The University of Chicago, Chicago, US.\protect\\
+E-mail: junchenj@uchicago.edu
+\IEEEcompsocthanksitem Guang Yao and Miao Zhang are with Baidu Company, Beijing, China.\protect\\
+E-mail: yaoguang@baidu.com, zhangmiao02@baidu.com
+}% <-this % stops an unwanted space
+\thanks{*Yuchao Zhang and Xiaohui Nie contribute equally to this paper.}
+\thanks{Corresponding author: Yuchao Zhang.}
+%\thanks{Manuscript received April 19, 2005; revised August 26, 2015.}
+}
 
 
+\IEEEtitleabstractindextext{%
 %\input{abstract_kai}
 \input{abstract}
-
+\begin{IEEEkeywords}
+Overlay Network, Data Replication, Centralized Control, Dynamic Bandwidth Separation.
+\end{IEEEkeywords}}
 \maketitle
 
 
@@ -248,11 +215,48 @@
 \input{conclusion}
 \input{acknowledgment}
 
-\bibliographystyle{acm}
+\bibliographystyle{IEEEtran}
 \bibliography{DTplatbibjournal}
 
 %\input{appendix_final_dep}
 \input{appendix}
 
+\newpage
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/yczhang.pdf}}]
+{Yuchao Zhang} received her PhD degree from Computer Science Department at Tsinghua University in 2017. Before that, she received B.S. degree in Computer Science and Technology at Jilin University in 2012. Her research interests include large scale datacenter network (DCN), content delivery network (CDN), data-driven network (DDN) and edge computing (EC). She is currently working in Beijing University of Post and Telecommunication as an assistant professor, leading the DANCE group (Data And Network CoordinatE).
+\end{IEEEbiography}
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/xiaohui.pdf}}]
+{Xiaohui Nie} received the B.S. degree from Jilin University in 2013. He is currently pursuing the Ph.D. degree with the Department of Computer Science, Tsinghua University, Beijing, China. His current research interests include web service monitoring and management.
+\end{IEEEbiography}
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/junchen.pdf}}]
+{Junchen Jiang} received his PhD degree from Computer Science Department at Carnegie Mellon University in 2017. Before that, he received Bachelor degree in Computer Science from Yao Class at Tsinghua in 2011. He is currently an Assistant Professor in the University of Chicago.
+\end{IEEEbiography}
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/wendong.pdf}}]
+{Wendong Wang} (M'05) received his B.E. and M.E. degrees both from the Beijing University of Posts and Telecommunications, China, in 1985 and 1991, respectively, where he is currently a Full Professor in State Key Laboratory of Networking and Switching Technology. He has published over 200 of papers in various journals and conference proceedings. His current research interests are the next generation net- work architecture, network resources management and QoS, and mobile Internet. He is a member of IEEE.
+\end{IEEEbiography}
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/zhao.pdf}}]
+{Youjian Zhao} received the B.S. degree from Tsinghua University in 1991, the M.S. degree from the Shenyang Institute of Computing Technology, Chinese Academy of Sciences, in 1995, and the Ph.D. degree in computer science from Northeastern University, China, in 1999. He is currently a Professor with the Computer Science Department, Tsinghua University. His research interests include high speed Internet architecture, switching and routing, and high-speed network equipment.
+\end{IEEEbiography}
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/xu.pdf}}]
+{Ke Xu} (M'02-SM'09) received his Ph.D. from the Department of Computer Science and Technology of Tsinghua University, where he serves as full professor. He serves as Associate Editor of IEEE Internet of Things Journal and has guest edited several special issues in IEEE and Springer Journals. His research interests include next generation Internet, P2P systems, Internet of Things, network virtualization, and network economics. He is a member of IEEE and ACM.
+\end{IEEEbiography}
+
+%\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/yao.pdf}}]
+\begin{IEEEbiographynophoto}
+{Guang Yao} is currently a Engineer with Baidu. His research interests include large-scale distributed system and site reliability engineering.
+\end{IEEEbiographynophoto}
+%\end{IEEEbiography}
+
+%\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/miao.pdf}}]
+\begin{IEEEbiographynophoto}
+{Miao Zhang} is currently a Engineer with Baidu. His research interests include large-scale distributed system and site reliability engineering.
+\end{IEEEbiographynophoto}
+%\end{IEEEbiography}
 \end{document}
 
