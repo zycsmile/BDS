@@ -6,12 +6,20 @@ inter-DC data transfers has been much improved, prior solutions
 are insufficient to optimize bulk-data multicast, as they fail to
 explore the capability of servers to store-and-forward data, as well as
 the rich inter-DC overlay paths that exist in geo-distributed DCs.
-To take advantage of these opportunities, we present {\em \name}, an
+To take advantage of these opportunities, we present {\em \name}, 
+\jc{need to pitch BDS+ as the main contribution. otherwise, just drop BDS+, and keep BDS all alone. } an
 application-level multicast overlay network for large-scale inter-DC data replication. At the core of \name is a {\em fully centralized}
 architecture, allowing a central controller to maintain an up-to-date
 global view of data delivery status of intermediate servers, in
 order to fully utilize the available overlay paths.
-\NEW{To speeds up the computation of the control algorithm, \name decouples the origin algorithm into selection of overlay paths and scheduling of data transfers, each can be optimized efficiently. This enables \name to update overlay routing decisions at the scale of multicasting hundreds of TB data over tens of thousands of overlay paths. Further, to enable \name can be mix-deployed/implemented together with online services in the dynamic network with workload churns, we present an enhanced version called \newname that can realize dynamic bandwidth separation by predicting online traffic and then adjust bandwidth allocation accordingly.
+\NEW{To speed up the computation of the control algorithm, \name decouples 
+its centralized algorithm into two steps---selection of overlay paths and 
+scheduling of data transfers---each can be efficiently optimized in isolation. 
+This enables \name to update the overlay routing decisions for hundreds of TB 
+data over tens of thousands of overlay paths. Further, \name shares
+bandwidth efficiently between bulk-data multicasts and latency-sensitive online traffic 
+by constantly estimating the bandwidth need of each traffic type and maintaining a dynamic 
+bandwidth separation between them.
 }
 A pilot deployment in one of the largest online service providers shows that \name can
 achieve 3-5$\times$ speedup over the provider's existing system and

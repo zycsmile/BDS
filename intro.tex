@@ -133,7 +133,12 @@ $10^5$ data blocks simultaneously along $10^4$ disjoint
 overlay paths).
 
 \NEW{
-\newname addresses the real-time dynamic bandwidth separation problem by predicting the bandwidth utilization of online traffic and rescheduling.
+To deploy \name in practice, one also needs to share the bandwidth dynamically 
+and efficiently between bulk-data multicast (under centrallly controlled routing) and online traffic
+(latency sensitive and mostly short flows).
+\name addresses this practical challenge by by predicting the bandwidth utilization of online traffic and rescheduling 
+\jc{rescheduling what?}
+%\newname addresses the real-time dynamic bandwidth separation problem by predicting the bandwidth utilization of online traffic and rescheduling.
 }
 
 We have implemented a prototype of \name and integrated it in
