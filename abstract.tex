@@ -4,25 +4,18 @@ Many important cloud services require replicating massive data from
 one datacenter (DC) to multiple DCs. While the performance of pair-wise
 inter-DC data transfers has been much improved, prior solutions
 are insufficient to optimize bulk-data multicast, as they fail to
-explore the capability of servers to store-and-forward data, as well as
-the rich inter-DC overlay paths that exist in geo-distributed DCs.
-To take advantage of these opportunities, we present {\em \name}, 
-\jc{need to pitch BDS+ as the main contribution. otherwise, just drop BDS+, and keep BDS all alone. } an
-application-level multicast overlay network for large-scale inter-DC data replication. At the core of \name is a {\em fully centralized}
-architecture, allowing a central controller to maintain an up-to-date
-global view of data delivery status of intermediate servers, in
-order to fully utilize the available overlay paths.
-\NEW{To speed up the computation of the control algorithm, \name decouples 
-its centralized algorithm into two steps---selection of overlay paths and 
-scheduling of data transfers---each can be efficiently optimized in isolation. 
-This enables \name to update the overlay routing decisions for hundreds of TB 
-data over tens of thousands of overlay paths. Further, \name shares
-bandwidth efficiently between bulk-data multicasts and latency-sensitive online traffic 
-by constantly estimating the bandwidth need of each traffic type and maintaining a dynamic 
-bandwidth separation between them.
-}
-A pilot deployment in one of the largest online service providers shows that \name can
-achieve 3-5$\times$ speedup over the provider's existing system and
-several well-known overlay routing baselines \NEW{ while \newname can further reduce the completion time by 1.2 to 1.3 times by dynamically sharing the residual bandwidth}.
+explore the rich inter-DC overlay paths that exist in geo-distributed DCs,\NEW{ as well as the remaining bandwidth reserved for online traffic under fixed bandwidth separation scheme.
+To take advantage of these opportunities, we present {\em \newname},
+%\jc{need to pitch BDS+ as the main contribution. otherwise, just drop BDS+, and keep BDS all alone. } 
+a near-optimal overlay network with dynamic bandwidth separation for large-scale inter-DC data replication. \newname is based on \name, which is an application-level multicast overlay network {\em fully centralized} architecture, allowing a central controller to maintain an up-to-date
+global view of data delivery status of intermediate servers, in order to fully utilize the available overlay paths. The improvement of \newname over \name is the dynamic bandwidth separation, which makes use of the remaining available bandwidth reserved for online traffic, by constantly estimating online traffic and rescheduling the bulk-data transfer accordingly, this enables \newname to further speed up the massive data multicast.
+%To speed up the computation of the control algorithm, \name decouples
+%its centralized algorithm into two steps---selection of overlay paths and
+%scheduling of data transfers---each can be efficiently optimized in isolation.
+%This enables \name to update the overlay routing decisions for hundreds of TB
+%data over tens of thousands of overlay paths. Further, \name shares
+%bandwidth efficiently between bulk-data multicasts and latency-sensitive online traffic
+A pilot deployment in one of the largest online service providers, together with large-scale real-trace simulations, show that \name can achieve 3-5$\times$ speedup over the provider's existing system and
+several well-known overlay routing baselines while \newname can further reduce the completion time by 1.2 to 1.3 times by dynamically sharing the residual bandwidth}.
 
 \end{abstract}
