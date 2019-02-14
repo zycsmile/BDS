@@ -1,11 +1,8 @@
-\section{Overview of \name}
+\NEW{
+\section{System Overview}
 \label{sec:overview}
-
-To optimize inter-DC multicasts, while minimizing interference with
-latency-sensitive traffic, we present {\em \name}, a {\em fully centralized}
-near-optimal application-level overlay network for inter-DC multicast.
-Before presenting \name in detail, we first highlight the intuitions
-behind its design choices, and the challenges to make it practical.
+To optimize inter-DC multicasts, while dynamically separated with
+latency-sensitive traffic, we present {\em \newname} (based on {\em \name}), a {\em fully centralized} near-optimal application-level overlay network with dynamic bandwidth separation for inter-DC multicast.} Before presenting the details, we first highlight the intuitions behind the design choices, the challenges to make it practical.
 
 
 \mypara{Centralized control}
@@ -20,17 +17,17 @@ view or orchestration.
 %shows the feasibility of combining
 %local adaptation with a centralized logic operating
 %on coarse timescales.
-In contrast, \name takes an explicit stance that it is practical to
+In contrast, \name/\newname takes an explicit stance that it is practical to
 fully centralize the control of wide-area overlay networks and
 still achieve near-optimal performance in the setting of inter-DC
-multicasts. The design of \name coincides other recents works of centralizing
+multicasts. This design coincides other recents works of centralizing
 management of large-scale distributed systems, e.g.,~\cite{gog2016firmament}
-At a high level, \name uses a centralized controller that
+At a high level, \name/\newname uses a centralized controller that
 periodically pulls information (e.g., data delivery status) from all
 servers, updates the decisions regarding overlay routing, and pushes
 them to agents running locally on servers
 (Figure~\ref{fig:framework}).
-Note that when the controller fails or is unreachable, \name will
+Note that when the controller fails or is unreachable, the system will
 fall back to a decentralized control scheme to ensure graceful
 performance degradation to local adaptation
 (\Section\ref{subsec:system:fault}).
@@ -45,7 +42,7 @@ performance degradation to local adaptation
 \vspace{-0.4cm}
 \end{figure}
 
-\name's centralized design is driven by several empirical observations:
+Our centralized design is driven by several empirical observations:
 \begin{packedenumerate}
 
 \item {\em Large decision space:}
@@ -66,13 +63,14 @@ last on much coarser timescales.
 %Thus, it is a necessary requirement to be continously adaptive to
 %any transient network dynamics.
 %In this context, the tradeoff between a centralized design and a decentralized one is that centralized control essentially trades real-time responsiveness to network dynamics for closer-to-optimal control decisions driven by a global view of data delivery. Here,
-Therefore, \name can tolerate a short delay (of a few seconds) in order
+Therefore, \name/\newname can tolerate a short delay (of a few seconds) in order
 to get better routing decisions from a centralized controller which
 maintains a global view of data delivery and is capable of orchestrating
 all overlay servers.
 
 \NEW{
-\item {\em Flexible traffic isolation:}
+\item {\em Flexible traffic control:}
+To 
 As observed in \Section\ref{subsec:motivation:baseline}, it is vital
 that inter-DC multicasts avoid hotspots and excessive bandwidth usage
 that negatively impact the latency of delay-sensitive traffic, but
@@ -80,7 +78,7 @@ it is difficult to prevent such situations without any coordination
 across overlay servers. In contrast, if any network changes are detected, it is simpler to
 allocate bandwidth of each data transfer by controlling the
 sending rate at all servers in a centralized fashion (nomatter to reserve more bandwidth when traffic burst or to reduce transfer when traffic valley)
-(\Section\ref{sec:system}).
+(\Section\ref{sec:deployment}).
 }
 
 \item {\em Lower engineering complexity:}
@@ -111,7 +109,7 @@ near-optimal solutions by exploring such a large decision space
 
 \NEW{
 \mypara{The key to realizing dynamic bandwidth separation}
-Dynamic bandwidth separation raises two requirements, one is to reserve enough bandwidth for delay-sensitive traffic so as to avoid negative impacts on these services, and the other is to make full use of the residual bandwidth so as to reduce the completion time of bulk data transfer. With the traditional strict safety threshold and decentralized protocols, it could be impossible to make efficient bandwidth usage in the dynamic and hybrid deployed network (\Section\ref{subsec:evaluation:improvements}).
+Dynamic bandwidth separation raises two requirements, one is to reserve enough bandwidth for latency-sensitive traffic so as to avoid negative impacts on these services, and the other is to make full use of the residual bandwidth so as to reduce the completion time of bulk data transfer. With the traditional strict safety threshold and decentralized protocols, it could be impossible to make efficient bandwidth usage in the dynamic and hybrid deployed network (\Section\ref{subsec:evaluation:improvements}).
 }
 
 The following two section will present how \name and \newname addresses these challenges.
