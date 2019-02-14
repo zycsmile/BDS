@@ -297,7 +297,7 @@ overlay paths.
 
 \begin{figure}[t!]
         \center
-        \includegraphics[width=3in]{images/nj02-M2A_0212-0216_v3.pdf}
+        \includegraphics[width=3in]{images/nj02-M2A_0212-0216_v3.eps}
         \tightcaption{The utilization of the inter-DC link in two days: \NEW{ The traffic valley on the 1st day results in nearly 50\% bandwidth waste. }Inter-DC bulk data transfer on the 2nd day caused severe interference on latency-sensitive traffic.}
         \label{fig:lesson2}
 \vspace{-0.4cm}
@@ -318,7 +318,7 @@ compared with that of the ideal solution. }
 \noindent{\bf Limitation 2: High computation overhead.} To obtain a global view and achieve optimal scheduling protocols, the existing centralized protocols suffers from high computation overhead. Most formulations are super-linear, so the computational overhead of centralized protocols always grows exponentially, making them intractable in practice.
 
 \noindent{\bf Limitation 3: Fixed bandwidth separation.}
-As shown in Figure~\ref{fig:lesson2}, a fixed threshold of link utilization would results in both excessive utilization and underutilization
+As shown in Figure~\ref{fig:lesson2}, a fixed separation of link utilization would results in both excessive utilization and underutilization. Ideally, if we can make full use of the available bandwidth left by online traffic, then the green line would be infinitely close to the threshold. In this particular example, about 18.75\% bandwidth was wasted in those two days (while still caused excessive utilization case).
 %multicast overlay network shares the same inter-DC WAN
 %with latency-sensitive traffic. Despite using standard QoS techniques,
 %and giving the lowest priority to bulk data transfers, we still see
