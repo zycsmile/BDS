@@ -1,19 +1,19 @@
-\section{A case for application-level inter-DC multicast overlays}
+\NEW{
+\section{Motivation of \name/\newname design}
 \label{sec:motivation}
-
+}
 We start by providing a case for an application-level multicast
 overlay network. We first characterize the inter-DC multicast
 workload in \company, a global-scale online service provider
 (\Section\ref{subsec:motivation:multicast-traffic}). We then show
 the opportunities of improving multicast performance by leveraging
 disjoint application-level overlay paths available in geo-distributed
-DCs (\Section\ref{subsec:motivation:case-for}). Finally, we examine
-\company's current solution of inter-DC multicast (\alg), and draw
-lessons from real-world incidents to inform the design of \name
-(\Section\ref{subsec:motivation:baseline}). The findings are based on
+DCs, \NEW{and by leveraging dynamic bandwidth separation} (\Section\ref{subsec:motivation:case-for}). Finally, we examine \company's current solution of inter-DC multicast (\alg), and draw
+lessons from real-world incidents to inform the design of \name and \newname
+(\Section\ref{subsec:motivation:baseline}). \NEW{We conclude all these observations, which are based on
 a dataset of \company's inter-DC traffic collected in a duration of
 seven days. The dataset comprises of about 1265 multicast transfers
-among 30+ geo-distributed DCs.
+among 30+ geo-distributed DCs. (\Section\ref{subsec:motivation:observation})}
 
 
 \subsection{\company's inter-DC multicast workload}
@@ -227,7 +227,22 @@ We can see that more than 95\% pairs of $A$$\rightarrow$$b$$\rightarrow$$C$
 and $A$$\rightarrow$$C$ have different end-to-end throughput, i.e.,
 they are bottleneck disjoint.
 
-
+\NEW{
+\mypara{Interaction with latency-sensitive traffic}
+The existing multicast overlay network shares the same inter-DC WAN
+with latency-sensitive traffic. Despite using standard QoS techniques,
+and giving the lowest priority to bulk data transfers, we still see
+negative impacts on latency-sensitive traffic by bursty arrivals of
+bulk-data multicast requests, and inefficiency on bulk-data transfer when latency-sensitive traffic is in ite valley. Figure~\ref{fig:lesson2} shows the
+bandwidth utilization of an inter-DC link in two days during which a
+6-hour long bulk data transfer started at 11:00pm on the second day.
+The blue line denotes the outgoing bandwidth, and the green line
+denotes the incoming bandwidth. We can see that the
+bulk data transfer caused excessive link utilization (i.e., exceeding
+the safety threshold of 80\%), and as a result, the latency-sensitive
+online traffic experienced over 30$\times$ delay inflation. Also, at 4:00-5:00am in the first day, near 50\% of the bandwidth was being wasted.
+Therefore, an algorithm should be able to dynamically interact with latency-sensitive traffic.
+}
 \subsection{Limitations of existing solutions}
 \label{subsec:motivation:baseline}
 
@@ -280,6 +295,14 @@ individual servers would still create potential hotspots and congestion on
 overlay paths.
 
 
+\begin{figure}[t!]
+        \center
+        \includegraphics[width=3in]{images/nj02-M2A_0212-0216_v3.eps}
+        \tightcaption{The utilization of the inter-DC link in two days: \NEW{ The traffic valley on the 1st day results in nearly 50\% bandwidth waste. }Inter-DC bulk data transfer on the 2nd day caused severe interference on latency-sensitive traffic.}
+        \label{fig:lesson2}
+\vspace{-0.4cm}
+\end{figure}
+
 \begin{figure}[t]
   \centering
   \includegraphics[width=1.5in]{images/SEvsIdeal.eps}
@@ -294,34 +317,28 @@ compared with that of the ideal solution. }
 \NEW{
 \noindent{\bf Limitation 2: High computation overhead.} To obtain a global view and achieve optimal scheduling protocols, the existing centralized protocols suffers from high computation overhead. Most formulations are super-linear, so the computational overhead of centralized protocols always grows exponentially, making them intractable in practice.
 
-\noindent{\bf Limitation 3: Interaction with latency-sensitive traffic.}
-The existing multicast overlay network shares the same inter-DC WAN
-with latency-sensitive traffic. Despite using standard QoS techniques,
-and giving the lowest priority to bulk data transfers, we still see
-negative impacts on latency-sensitive traffic by bursty arrivals of
-bulk-data multicast requests. Figure~\ref{fig:lesson2} shows the
-bandwidth utilization of an inter-DC link in two days during which a
-6-hour long bulk data transfer started at 11:00pm on the second day.
-The blue line denotes the outgoing bandwidth, and the green line
-denotes the incoming bandwidth. We can see that the
-bulk data transfer caused excessive link utilization (i.e., exceeding
-the safety threshold of 80\%), and as a result, the latency-sensitive
-online traffic experienced over 30$\times$ delay inflation. Therefore, an algorithm should be able to dynamically interact with latency-sensitive traffic.
+\noindent{\bf Limitation 3: Fixed bandwidth separation.}
+As shown in Figure~\ref{fig:lesson2}, a fixed threshold of link utilization would results in both excessive utilization and underutilization
+%multicast overlay network shares the same inter-DC WAN
+%with latency-sensitive traffic. Despite using standard QoS techniques,
+%and giving the lowest priority to bulk data transfers, we still see
+%negative impacts on latency-sensitive traffic by bursty arrivals of
+%bulk-data multicast requests. Figure~\ref{fig:lesson2} shows the
+%bandwidth utilization of an inter-DC link in two days during which a
+%6-hour long bulk data transfer started at 11:00pm on the second day.
+%The blue line denotes the outgoing bandwidth, and the green line
+%denotes the incoming bandwidth. We can see that the
+%bulk data transfer caused excessive link utilization (i.e., exceeding
+%the safety threshold of 80\%), and as a result, the latency-sensitive
+%online traffic experienced over 30$\times$ delay inflation. Therefore, an algorithm should be able to dynamically interact with latency-sensitive traffic.
 }
 
 
 %The reason is that although all the servers worked under the standard QoS requirements, the excessive bandwidth usage of the inter-DC link still cannot be prevented due to lack of global coordination.
 
 
-\begin{figure}[t!]
-        \center
-        \includegraphics[width=3in]{images/nj02-M2A_0212-0216_v3.eps}
-        \tightcaption{The utilization of the inter-DC link in two days. Inter-DC bulk data transfer on the 2nd day caused severe interference on latency-sensitive traffic.}
-        \label{fig:lesson2}
-\vspace{-0.4cm}
-\end{figure}
-
 \subsection{Key observations}
+\label{subsec:motivation:observation}
 The key observations from this section are following:
 \begin{packeditemize}
 \item {\em Inter-DC multicasts} amount to a substantial fraction of
