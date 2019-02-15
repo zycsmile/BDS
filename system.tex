@@ -1,8 +1,7 @@
 \section{System Design}
 \label{sec:system}
 
-This section presents the system design and implemetation of
-\name.
+This section presents the system design and implemetation of \NEW{\name/\newname.}
 
 \subsection{Centralized control of \name}
 \label{subsec:system:centralized}
@@ -67,43 +66,43 @@ the input of the centralized logic.
 \end{itemize}
 
 \NEW{
-\subsection{Dynamic bandwidth separation}
-}
+\subsection{Dynamic bandwidth separation of \newname}
 \label{subsec:system:separation}
 
-To guarantee clean separation of bandwidth between inter-DC
-bulk-data multicasts and delay-sensitive traffic, \name Network
-Monitor monitors the aggregated bandwidth usage of all
+To guarantee dynamic bandwidth separation between inter-DC
+bulk-data multicasts and delay-sensitive traffic, \newname Network
+Change Monitor detects any changes of the aggregated bandwidth usage of all
 latency-sensitive flows on each inter-/intra-DC link, and
-dynamically allocates the bandwidth of each inter-DC multicast
-transfer. To protect delay-sensitive flows from being negatively
-affected by bursty bulk-data transfers, \name uses 80\% link
-utilization as a ``safety threshold'', i.e., the total bandwidth
-consumption of bulk-data transfers cannot exceed 80\% of the link
-capacity on any link, and dynamically decides the sending rate
-of each data transfer.
+dynamically allocates the bandwidth for bulk-data multicast
+transfer accordingly. To protect delay-sensitive flows from being negatively
+affected by bursty bulk-data transfers, \newname is designed to be sensitive to network changes by using a sliding k in the traffic prediction algorithm. In other words, it puts more importance to sudden increases or decreases when online traffic oscillates (to be sensitive), while refers to history information when online traffic isn't changing much (to be stable).
+%set an upper bound K for the EWMA algorithm, k is set to be
+%K when there is no change points, and will be reset to 0 once a
+%change point is detected, and then gradually increase to K.
+%\name uses 80\% link
+%utilization as a ``safety threshold'', i.e., the total bandwidth
+%consumption of bulk-data transfers cannot exceed 80\% of the link
+%capacity on any link, and dynamically decides the sending rate
+%of each data transfer.
 
-The key advantage of \name's dynamic bandwidth separation is that it
-efficiently allocates bandwidth in a centralized manner,
-similar~\cite{kumar2015bwe} in the transport layer. The traditional
+\newname's dynamic bandwidth separation also takes advantage of the centralized logic of \name. The traditional
 techniques (e.g.,~\cite{kumar2015bwe}) that gives higher priority to
 online latency-sensitive traffic can still have bandwidth wastage or
 performance interference in the presence of dynamic network
-environments~\cite{wang2017toward}. \name, in contrast, dynamically monitors the aggregated
-bandwidth of delay-sensitive applications, and calculates the
-residual bandwidth to be used by inter-DC multicast while meeting the
-safety link utilization threshold. Finally, note that \name optimizes
+environments~\cite{wang2017toward}. \newname, in contrast, dynamically predicts the
+bandwidth usage of latency-sensitive applications, and calculates the
+residual bandwidth that can be used by inter-DC multicast. Finally, note that \newname optimizes
 the application-level overlay, and is thus complementary to
 network-layer techniques that improve the WAN performance and
 fairness~\cite{chen2012design, kavulya2010analysis, mishra2010towards, reiss2012heterogeneity}.
-
+}
 
 \subsection{Fault tolerance}
 \label{subsec:system:fault}
-Next we describe how \name handles the following failures.
+Next we describe how \name/\newname handles the following failures.
 
 \begin{packedenumerate}
-\item \emph{Controller failure:} The \name controller is
+\item \emph{Controller failure:} The controller is
 replicated~\cite{lamport1998part}: if the master controller fails,
 another replica will be elected as the new controller. If all
 controller replicas are not available (e.g., a network partition
