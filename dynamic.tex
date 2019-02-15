@@ -12,7 +12,7 @@
 %\vspace{-0.4cm}
 \end{figure}
 
-\name performs well under strict network limitations, but will results in low bandwidth utilizations when online traffic reduces. The strict separation between online and offline traffic suffers from inefficient bandwidth usage in the hybrid deployment situations: when online traffic and offline traffic shares the same server I/O, bulk data transfer will not occupy any more bandwidth than the safety threshold even when online traffic is far below the reserved bandwidth (see \Section\ref{subsec:motivation:baseline}).
+\name performs well under strict network limitations, but will results in low bandwidth utilizations when online traffic reduces. The strict separation between online and offline traffic suffers from inefficient bandwidth usage in the mixed deployment situations: when online traffic and offline traffic shares the same server I/O, bulk data transfer will not occupy any more bandwidth than the safety threshold even when online traffic is far below the reserved bandwidth (see \Section\ref{subsec:motivation:baseline}).
 
 In this section, we present an enhanced version of \name, called \newname, which achieves dynamic bandwidth separation with online traffic in a real-time manner, by continuously predicting online traffic changes and automatically adjusting the scheduling decisions to fully utilize network bandwidth accordingly. In this way, \newname automatically adjust the scheduling results under different network conditions: if online traffic encounters its peak, \newname would shirk its occupies bandwidth to avoid congestions, while online traffic encounters its valley, \newname would aggressively use more bandwidth to make full use of the residual bandwidth.
 
@@ -25,7 +25,7 @@ In order to detect online traffic changes and adjust configurations in time seri
 
 \subsection{Design of \newname}
 \subsubsection{Online traffic prediction algorithm}
-\ 
+\
 
 %\mypara{Change point detection algorithms}
 \newname combines the above two approaches together, namely, a change point detection algorithm \cite{adams2007bayesian} with a $k-sigma$ algorithm. But it encounters a new challenge when predicting the available bandwidth: When we put more importance to the recent values as a reference (i.e., $k$ is small), there will be an obvious oscillation in the predicted value, which introduces unnecessary reschedules. When we put more importance to the historical values as references (i.e., $k$ is large), the predicted value will not be affected even when a change point is detected, so that the system can not detect network changes. In \newname, we address this problem by designing a sliding $k$. To be specific, we set an upper bound $\textsc{K}$ for the EWMA algorithm, $k$ is set to be $\textsc{K}$ when there is no change points, and will be reset to $0$ when a change point is detected, and then gradually increase to $\textsc{K}$. We implemented our customized algorithm based on \cite{adams2007bayesian} (with code can be found in \cite{BOCDcode}) into the Network Change Monitor.
@@ -33,7 +33,7 @@ In order to detect online traffic changes and adjust configurations in time seri
 %chooses a change point detection algorithm to predict online traffic for two reasons. First, the agent of \name generates a sequence of observations per cycle, which is naturally non-overlapping states that are independent and identically distributed. This aligns well with the way change point detection algorithm works. Second, such algorithms require no prior knowledge, matching our scenario where we re-calculate the bulk multicast overlay routing problem periodically. Therefore,
 
 \subsubsection{Integrated to \name}
-\ 
+\
 
 \mypara{Traffic Prediction}
 During a scheduling cycle $\Delta T_k$ in \name, Network Change Monitor is continually fed with a series of agent observations of server throughput (bandwidth usage), which is used to predict the available bandwidth in the next scheduling cycle. To get the bandwidth usage, the Network Change Monitor periodically reads the record in process activity monitor on servers. For particular servers, they continuously log process activities (including throughput) and send the sampled summed throughput to the Network Change Monitor. In this way, any network changes occurred during the bulk data downloading can be detected.
