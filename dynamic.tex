@@ -1,5 +1,5 @@
 \NEW{
-\section{\newname: Dynamic Bandwidth Separation with Online Traffic}
+\section{\newname: \name with Dynamic Bandwidth Separation}
 \label{sec:dynamic}
 
 \begin{figure}[t]
@@ -7,39 +7,37 @@
   %\includegraphics[width=2in]{images/framework.eps}
   \includegraphics[width=3.4in]{images/Bayes.pdf}
     \vspace{-0.2cm}
-  \tightcaption{\NEW{Logical diagram of \newname's online prediction.}}
+  \tightcaption{\NEW{Logical diagram of \newname's dynamic bandwidth separation.}}
   \label{fig:bayes}
 %\vspace{-0.4cm}
 \end{figure}
 
-\name performs well under strict network limitations, but will results in low bandwidth utilizations when online traffic reduces. The strict separation between online and offline traffic suffers from inefficient bandwidth usage in the mixed deployment situations: when online traffic and offline traffic shares the same server I/O, bulk data transfer will not occupy any more bandwidth than the safety threshold even when online traffic is far below the reserved bandwidth (see \Section\ref{subsec:motivation:baseline}).
+\name performs well under fixed network separation, but in the mixed deployment situations where online traffic and offline traffic shares the same server I/O, it will results in low link utilizations when online traffic reduces: bulk data transfer will never occupy any bandwidth exceeds the safety threshold even though online traffic is far below the reserved bandwidth (see \Section\ref{subsec:motivation:baseline}).
 
-In this section, we present an enhanced version of \name, called \newname, which achieves dynamic bandwidth separation with online traffic in a real-time manner, by continuously predicting online traffic changes and automatically adjusting the scheduling decisions to fully utilize network bandwidth accordingly. In this way, \newname automatically adjust the scheduling results under different network conditions: if online traffic encounters its peak, \newname would shirk its occupies bandwidth to avoid congestions, while online traffic encounters its valley, \newname would aggressively use more bandwidth to make full use of the residual bandwidth.
+So we further present an enhanced version of \name, called \newname, which achieves dynamic bandwidth separation with online traffic in a real-time manner, by continuously predicting online traffic changes and automatically adjusting the scheduling decisions, to fully utilize network bandwidth accordingly. To be specific, \newname automatically adjust the scheduling results under different network conditions: if online traffic encounters its peak, \newname shirks its occupied bandwidth to avoid congestions, while online traffic encounters its valley, \newname aggressively uses more bandwidth to make full use of the residual bandwidth.
 
-To achieve this, \newname uses an online traffic prdiction algorithm, which identifies the changes of server bandwidth usage, and triggers re-scheduling to adjust bandwidth allocation. \newname's Network Change Monitor (Figure~\ref{fig:bayes}) reads the agent observations (bandwidth usage) and executes a change point detection algorithm. The Reconfig Engine is responsible for updating the changes based on agent observations and the detection results, reporting the changes to \name controller and enforcing the subsequent bandwidth adjustment.
+To achieve this, \newname adopts a customized online traffic prdiction algorithm, which identifies the changes of server bandwidth usage, and triggers re-scheduling to adjust bandwidth allocation to the bulk-data transfer. Figure~\ref{fig:bayes} shows the logical diagram of \newname's dynamic bandwidth separation. The Network Change Monitor reads the agent observations (bandwidth usage) and executes a change point detection algorithm. The Reconfig Engine is responsible for updating the changes based on agent observations and the detection results, reporting the changes to \newname controller and enforcing the subsequent bandwidth adjustment.
 
-\subsection{Approaches to Online traffic prediction}
+\subsection{Design Logic}
 \label{subsec:dynamic:prediction}
 %\mypara{Approaches to detect online traffic changes}
-In order to detect online traffic changes and adjust configurations in time series, there are two widely adopted approaches. 1) One is the change point detection algorithm, which is the identifications of abrupt changes of sequential data. Such algorithms offers both online and offline processing methods, while offline methods \cite{smith1975bayesian,stephens1994bayesian,barry1993bayesian,green1995reversible} require the complete data in full time series to generate samples from the posterior distribution over change point locations, online methods \cite{page1955test,desobry2005online,lorden1971procedures} can generate an accurate distribution of the next unseen data with only already observed data. 2) The other is the exponentially weighted moving average (EWMA) control scheme \cite{roberts1959control,lucas1990exponentially}, which calculates the mean and standard deviation of agent observations. Such approaches sometimes result in continual reconfigurations even when the network is (statistically) stationary (since samples may vary in time series).
-
-\subsection{Design of \newname}
-\subsubsection{Online traffic prediction algorithm}
-\
+In order to detect online traffic changes and dynamically adjust configurations, there are two widely adopted approaches. 1) One is the change point detection algorithm, which is the identifications of abrupt changes of sequential data. Such algorithms offers both online and offline processing methods, while offline methods \cite{smith1975bayesian,stephens1994bayesian,barry1993bayesian,green1995reversible} require the complete data in full time series to generate samples from the posterior distribution over change point locations, online methods \cite{page1955test,desobry2005online,lorden1971procedures} can generate an accurate distribution of the next unseen data with only already observed data. 2) The other is the exponentially weighted moving average (EWMA) control scheme \cite{roberts1959control,lucas1990exponentially}, which calculates the mean and standard deviation of agent observations. Such approaches sometimes result in continual reconfigurations even when the network is (statistically) stationary (since samples may vary in time series).
 
 %\mypara{Change point detection algorithms}
-\newname combines the above two approaches together, namely, a change point detection algorithm \cite{adams2007bayesian} with a $k-sigma$ algorithm. But it encounters a new challenge when predicting the available bandwidth: When we put more importance to the recent values as a reference (i.e., $k$ is small), there will be an obvious oscillation in the predicted value, which introduces unnecessary reschedules. When we put more importance to the historical values as references (i.e., $k$ is large), the predicted value will not be affected even when a change point is detected, so that the system can not detect network changes. In \newname, we address this problem by designing a sliding $k$. To be specific, we set an upper bound $\textsc{K}$ for the EWMA algorithm, $k$ is set to be $\textsc{K}$ when there is no change points, and will be reset to $0$ when a change point is detected, and then gradually increase to $\textsc{K}$. We implemented our customized algorithm based on \cite{adams2007bayesian} (with code can be found in \cite{BOCDcode}) into the Network Change Monitor.
+\newname combines the above two approaches together, namely, a change point detection algorithm \cite{adams2007bayesian} with a $k-sigma$ algorithm. But it encounters a new challenge when predicting the available bandwidth: When we put more importance to the recent values as a reference (i.e., $k$ is small), there will be an obvious oscillation in the predicted value, which introduces unnecessary reschedules. When we put more importance to the historical values as references (i.e., $k$ is large), the predicted value will not be affected timely when a change point is suddenly detected, so that the system becomes insensitive to network changes. In \newname, we address this problem by designing a sliding $k$. Specifically, we set an upper bound $\textsc{K}$ for the EWMA algorithm, $k$ is set to be $\textsc{K}$ when there is no change points, and will be reset to $0$ once a change point is detected, and then gradually increase to $\textsc{K}$. We implemented our customized algorithm based on \cite{adams2007bayesian} (with code can be found in \cite{BOCDcode}) into the Network Change Monitor.
+
+\subsection{Integrated to \name}
+\subsubsection{Online traffic prediction algorithm}
+
+
+%\mypara{Traffic Prediction}
+During a scheduling cycle $\Delta T_k$ in \name, Network Change Monitor is continually fed with a series of agent observations of server throughput (bandwidth usage), which is used to predict the available bandwidth in the next scheduling cycle. To get the bandwidth usage, the Network Change Monitor periodically reads the record in process activity monitor on servers. For particular servers, they continuously log processing activities (including throughput) and send the sampled summed throughput to the Network Change Monitor. In this way, any network changes occurred during the bulk data downloading can be timely detected.
 
 %chooses a change point detection algorithm to predict online traffic for two reasons. First, the agent of \name generates a sequence of observations per cycle, which is naturally non-overlapping states that are independent and identically distributed. This aligns well with the way change point detection algorithm works. Second, such algorithms require no prior knowledge, matching our scenario where we re-calculate the bulk multicast overlay routing problem periodically. Therefore,
 
-\subsubsection{Integrated to \name}
-\
+\subsubsection{Dynamic Bandwidth Separation}
 
-\mypara{Traffic Prediction}
-During a scheduling cycle $\Delta T_k$ in \name, Network Change Monitor is continually fed with a series of agent observations of server throughput (bandwidth usage), which is used to predict the available bandwidth in the next scheduling cycle. To get the bandwidth usage, the Network Change Monitor periodically reads the record in process activity monitor on servers. For particular servers, they continuously log process activities (including throughput) and send the sampled summed throughput to the Network Change Monitor. In this way, any network changes occurred during the bulk data downloading can be detected.
-
-
-\mypara{Reschedule} When a change point is detected, the Reconfig Engine signals the change and the updated available bandwidth to the Controller, triggering rescheduling in \newname to make bandwidth adjustments in the next scheduling cycle. Shown in Table~\ref{table:adjustment}, such adjustment can be two-fold (assume the affected path by the online traffic change is $\hat{P}$):
+When a change point is detected, the Reconfig Engine signals the change and the updated available bandwidth to the Controller, triggering rescheduling in \newname to make bandwidth adjustments in the next scheduling cycle. Shown in Table~\ref{table:adjustment}, such adjustment can be two-fold (assume the affected path by the online traffic change is $\hat{P}$):
 
 \begin{table}[t]
 \begin{center}
@@ -63,9 +61,9 @@ Online Traffic $\downarrow$ & $w^{(T_k)}_{b,s}$ + & $f_{b,p\in \hat{P}}^{(T_k)} 
 \end{table}
 
 \begin{packeditemize}
-\item When online traffic usage exceeds the pre-configured safety threshold (80\% in the example in \Section\ref{subsec:motivation:baseline}), \newname can make corrections on both scheduling and routing steps: 1. cancel some blocks that were scheduled in the current scheduling cycle $\Delta T$ but not yet transferred, 2. reduce the allocated bandwidth $f_{b,p}^{(T_k)}$ for block $b$ on path $p\in \hat{P}$ in $T_k$, to reduce bandwidth usage.
+\item When online traffic usage exceeds the pre-configured safety threshold (80\% in the example in \Section\ref{subsec:motivation:baseline}), \newname shirks its occupies bandwidth on both scheduling and routing steps to avoid congestions: 1. cancel some blocks that were scheduled in the current scheduling cycle $\Delta T$ but not yet transferred, 2. reduce the allocated bandwidth $f_{b,p}^{(T_k)}$ for block $b$ on path $p\in \hat{P}$ in $T_k$.
 
-\item When online traffic usage falls below the safety threshold, \newname makes corrections on scheduling and routing steps: 1. transfer some additional blocks that were not scheduled in the current scheduling cycle $\Delta T$ by using the detected available bandwidth, 2. increase the allocated bandwidth $f_{b,p}^{(T_k)}$ for block $b$ on path $p\in \hat{P}$ in $T_k$, to make full use of the residual bandwidth detected by the online traffic prediction.
+\item When online traffic usage encounters its valley and falls below the safety threshold, \newname aggressively occupies more bandwidth on scheduling and routing steps: 1. transfer some additional blocks that were not scheduled in the current scheduling cycle $\Delta T$ by using the detected available bandwidth, 2. increase the allocated bandwidth $f_{b,p}^{(T_k)}$ for block $b$ on path $p\in \hat{P}$ in $T_k$, to make full use of the residual bandwidth detected by the online traffic prediction.
 \end{packeditemize}
 
 
