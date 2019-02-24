@@ -2,7 +2,7 @@
 \section{System Overview}
 \label{sec:overview}
 To optimize inter-DC multicasts, while dynamically separated with
-latency-sensitive traffic, we present {\em \newname} (based on {\em \name} \cite{zhang2018bds}), a {\em fully centralized} near-optimal application-level overlay network with dynamic bandwidth separation for inter-DC multicast.} Before presenting the details, we first highlight the intuitions behind the design choices, the challenges to make it practical.
+latency-sensitive traffic, we present {\em \name}, a {\em fully centralized} near-optimal network system with dynamic bandwidth separation for data inter-DC multicast.} Before presenting the details, we first highlight the intuitions behind the design choices, the challenges to make it practical.
 
 
 \mypara{Centralized control}
@@ -17,12 +17,12 @@ view or orchestration.
 %shows the feasibility of combining
 %local adaptation with a centralized logic operating
 %on coarse timescales.
-In contrast, \name/\newname takes an explicit stance that it is practical to
+In contrast, \name takes an explicit stance that it is practical to
 fully centralize the control of wide-area overlay networks and
 still achieve near-optimal performance in the setting of inter-DC
 multicasts. This design coincides other recents works of centralizing
 management of large-scale distributed systems, e.g.,~\cite{gog2016firmament}
-At a high level, \name/\newname uses a centralized controller that
+At a high level, \name uses a centralized controller that
 periodically pulls information (e.g., data delivery status) from all
 servers, updates the decisions regarding overlay routing, and pushes
 them to agents running locally on servers
@@ -63,14 +63,14 @@ last on much coarser timescales.
 %Thus, it is a necessary requirement to be continously adaptive to
 %any transient network dynamics.
 %In this context, the tradeoff between a centralized design and a decentralized one is that centralized control essentially trades real-time responsiveness to network dynamics for closer-to-optimal control decisions driven by a global view of data delivery. Here,
-Therefore, \name/\newname can tolerate a short delay (of a few seconds) in order
+Therefore, \name can tolerate a short delay (of a few seconds) in order
 to get better routing decisions from a centralized controller which
 maintains a global view of data delivery and is capable of orchestrating
 all overlay servers.
 
 \NEW{
 \item {\em Flexible traffic control:}
-Different with the static separation scheme where there is a fixed boundary between online and offline traffic (the case in \name), the enhanced version \newname is with dynamic bandwidth separation, so it should know the bandwidth utilization in a global view, in order to dynamically adjust the amount of available bandwidth that can be used for bulk-data transfer. Once any network changes are detected, \newname could easily adjust bandwidth for each data transfer by controlling the sending rate at all servers in a centralized fashion (nomatter to reserve more bandwidth when online traffic burst, or to reduce transfer rate when online traffic is in valley).
+Previous works~\cite{Andreev2013Designing,Repantis2010Scaling,Huang2014A,mukerjee2014enabling} use the static separation scheme where there is a fixed boundary between online and offline traffic, here \name proposes to use dynamic bandwidth separation, so it should know the bandwidth utilization in a global view, in order to dynamically adjust the amount of available bandwidth that can be used for bulk-data transfer. Once any network changes are detected, \name could easily adjust bandwidth for each data transfer by controlling the sending rate at all servers in a centralized fashion (nomatter to reserve more bandwidth when online traffic burst, or to reduce transfer rate when online traffic is in valley).
 (\Section\ref{sec:deployment}).
 }
 
@@ -105,5 +105,5 @@ near-optimal solutions by exploring such a large decision space
 Dynamic bandwidth separation raises two requirements, one is to reserve enough bandwidth for latency-sensitive online traffic so as to avoid negative impacts on these services, and the other is to make full use of the residual bandwidth so as to reduce the completion time of bulk data transfer. With the traditional strict safety threshold and decentralized protocols, it could be impossible to make efficient bandwidth usage in the dynamic and mixed deployed network (\Section\ref{subsec:evaluation:improvements}).
 }
 
-The following two section will present how \name and \newname works.
+The following two section will present how \name works.
 

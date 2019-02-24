@@ -46,7 +46,7 @@ close to optimal flow completion time
 
 
 \NEW{
-\item \newname can: 1. further complete inter-DC multicast 1.2 to 1.3 times faster than \name, 2. predict the bandwidth utilization of online traffic with about 95\% accuracy, 3. increase bandwidth utilization when online traffic is in valley, while reduces the bulk data transfer when online traffic bursts, 4. achieve near real-time scheduling with quite low computation overhead
+\item \name can: 1. further complete inter-DC multicast 1.2 to 1.3 times faster than \name, 2. predict the bandwidth utilization of online traffic with about 95\% accuracy, 3. increase bandwidth utilization when online traffic is in valley, while reduces the bulk data transfer when online traffic bursts, 4. achieve near real-time scheduling with quite low computation overhead
 (\Section\ref{subsec:evaluation:improvements}).
 }
 \end{packedenumerate}
@@ -381,7 +381,7 @@ We vary the number of blocks from 1 to 4000, over which the LP solver cannot fin
                 \caption{CDF of improvement.}
                 \label{fig:bdsplus:vs}
         \end{subfigure}
-        \tightcaption{[\newname vs. \name] Further improvements from \newname.}
+        \tightcaption{[\name vs. \name] Further improvements from \name.}
         \label{fig:bdsplus}
 %\vspace{-0.4cm}
 \end{figure*}
@@ -406,16 +406,16 @@ We vary the number of blocks from 1 to 4000, over which the LP solver cannot fin
                 \caption{Running time of the prediction algorithm.}
                 \label{fig:pred:overhead}
         \end{subfigure}
-        \tightcaption{[\newname's prediction algorithm] Evaluations on: (a) predicted value, (b) algorithm accuracy, (c) running time.}
+        \tightcaption{[\name's prediction algorithm] Evaluations on: (a) predicted value, (b) algorithm accuracy, (c) running time.}
         \label{fig:pred}
 %\vspace{-0.4cm}
 \end{figure*}
 
 \NEW{
-\subsection{\newname's performance improvement}
+\subsection{\name's performance improvement}
 \label{subsec:evaluation:improvements}
 
-\name reserves fixed size of bandwidth for online traffic (e.g., $20\%$), but lots of real traces show that online traffic rarely reaches the peak and is far below that in most cases. Thus, \newname adopts dynamic bandwidth seperation between online traffic and offline traffic, allowing offline traffic (bulk data transfer) to use more bandwidth when online traffic is below the threshold. \newname achieves this by designing an online traffic prediction algorithm, and this section shows the results of improved performance of \newname.
+\name reserves fixed size of bandwidth for online traffic (e.g., $20\%$), but lots of real traces show that online traffic rarely reaches the peak and is far below that in most cases. Thus, \name adopts dynamic bandwidth seperation between online traffic and offline traffic, allowing offline traffic (bulk data transfer) to use more bandwidth when online traffic is below the threshold. \name achieves this by designing an online traffic prediction algorithm, and this section shows the results of improved performance of \name.
 
 In the following experiments, we send 1TB data from one DC to 11 DCs, each has 100 servers, and the upload and download link capacities are set to be 20MBs. The online traffic is set according to the cluster trace (machine\_usage) from Ali \cite{datatrace}.
 
@@ -423,22 +423,22 @@ In the following experiments, we send 1TB data from one DC to 11 DCs, each has 1
 \label{subsubsec:bdsplus:improvements}
 
 \mypara{Completion time}
-We start the bulk data transfer at 23:00 on 27, Jan, 2019. Figure~\ref{fig:bdsplus:server} shows the CDF of the completion time on each destination server. We can see that the average completion time of \newname is $150ms$, while that under \name is more than $200ms$.
+We start the bulk data transfer at 23:00 on 27, Jan, 2019. Figure~\ref{fig:bdsplus:server} shows the CDF of the completion time on each destination server. We can see that the average completion time of \name is $150ms$, while that under \name is more than $200ms$.
 
 \mypara{Improvements over \name}
-To make the results more general, we further conduct a series of experiments during different time periods, in other words, once per 30 minutes. We compare the completion time of \newname and \name, and show the results in Figure~\ref{fig:bdsplus:periods}. We can see that the improvements of \newname changes with time, specifically, the improvements during midnight is much higher than that during the day, especially at 05:30, when online traffic is at its valley. These results show that \newname can make full use of the idle bandwidth that is not used by online traffic. Overall, the CDF of improvements is shown in Figure~\ref{fig:bdsplus:vs}, which means that \newname can bring at least 18\% improvement in more than 85\% cases.
+To make the results more general, we further conduct a series of experiments during different time periods, in other words, once per 30 minutes. We compare the completion time of \name and \name, and show the results in Figure~\ref{fig:bdsplus:periods}. We can see that the improvements of \name changes with time, specifically, the improvements during midnight is much higher than that during the day, especially at 05:30, when online traffic is at its valley. These results show that \name can make full use of the idle bandwidth that is not used by online traffic. Overall, the CDF of improvements is shown in Figure~\ref{fig:bdsplus:vs}, which means that \name can bring at least 18\% improvement in more than 85\% cases.
 
-\subsubsection{\newname's prediction algorithm.}
+\subsubsection{\name's prediction algorithm.}
 \label{subsubsec:bdsplus:predict}
 
-The improvement of \newname mainly comes from the prediction of online traffic, so in this subsection, we evaluate the accuracy of the prediction algorithm, and then analyze the overhead incurred in achieving such improvements.
+The improvement of \name mainly comes from the prediction of online traffic, so in this subsection, we evaluate the accuracy of the prediction algorithm, and then analyze the overhead incurred in achieving such improvements.
 
-\mypara{Algorithm accuracy} The online traffic is set according to the cluster trace (machine\_usage) from Ali \cite{datatrace}, the real residual bandwidth (the difference between server I/O and online traffic) is shown in black in Figure~\ref{fig:pred:real}, where the predicted value is shown in red. As we can see that the red line is smooth and quite close to the real bandwidth, indicating that \newname can predict online traffic precisely. The exact statistics are shown in Figure~\ref{fig:pred:accurancy}, which indicates that the accuracy of about 99\% predictions is greater than 92\%. Only in 1.6\% cases, \newname shows a little bit aggressiveness by gives a little bit higher predicted value (where the x-axis is below zero). Taken together, \newname can not only increases bandwidth utilization when online traffic is in valley, but also reduces the incidents of interferences caused by bulk-data transfer.
+\mypara{Algorithm accuracy} The online traffic is set according to the cluster trace (machine\_usage) from Ali \cite{datatrace}, the real residual bandwidth (the difference between server I/O and online traffic) is shown in black in Figure~\ref{fig:pred:real}, where the predicted value is shown in red. As we can see that the red line is smooth and quite close to the real bandwidth, indicating that \name can predict online traffic precisely. The exact statistics are shown in Figure~\ref{fig:pred:accurancy}, which indicates that the accuracy of about 99\% predictions is greater than 92\%. Only in 1.6\% cases, \name shows a little bit aggressiveness by gives a little bit higher predicted value (where the x-axis is below zero). Taken together, \name can not only increases bandwidth utilization when online traffic is in valley, but also reduces the incidents of interferences caused by bulk-data transfer.
 
 \mypara{Algorithm overhead}
-Although \newname bring performance improvements by making full use of the residual bandwidth, it introduces some overhead on algorithm running time. So here we evaluate the additional time spent on making predictions on online traffic. Figure~\ref{fig:pred:overhead} shows the running time during a complete bulk data transfer. We can see that \newname takes less than $20ms$ to make predictions in more than 97\% cases. What's more, this overhead does not increase with system scale, because the prediction on each server is independent of each other and thus can be executed simultaneously.
+Although \name bring performance improvements by making full use of the residual bandwidth, it introduces some overhead on algorithm running time. So here we evaluate the additional time spent on making predictions on online traffic. Figure~\ref{fig:pred:overhead} shows the running time during a complete bulk data transfer. We can see that \name takes less than $20ms$ to make predictions in more than 97\% cases. What's more, this overhead does not increase with system scale, because the prediction on each server is independent of each other and thus can be executed simultaneously.
 
-In summary of all the above experiments, both the prototype pilot deployment and the trace-driven simulations of \name show 3-5$\times$ speedup over existing solutions, with good scalability, reliability, and near-optimal scheduling results. While the enhanced version \newname can work harmoniously with time-varying online traffic and further reduce the completion time of inter-DC multicasts, by making dynamic bandwidth separation.
+In summary of all the above experiments, both the prototype pilot deployment and the trace-driven simulations of \name show 3-5$\times$ speedup over existing solutions, with good scalability, reliability, and near-optimal scheduling results. While the enhanced version \name can work harmoniously with time-varying online traffic and further reduce the completion time of inter-DC multicasts, by making dynamic bandwidth separation.
 }
 
 %\begin{itemize}
