@@ -75,7 +75,7 @@ Change Monitor detects any changes of the aggregated bandwidth usage of all
 latency-sensitive flows on each inter-/intra-DC link, and
 dynamically allocates the bandwidth for bulk-data multicast
 transfer accordingly. To protect delay-sensitive flows from being negatively
-affected by bursty bulk-data transfers, \name is designed to be sensitive to network changes by using a sliding k in the traffic prediction algorithm. In other words, it puts more importance to sudden increases or decreases when online traffic oscillates (to be sensitive), while refers to history information when online traffic isn't changing much (to be stable).
+affected by bursty bulk-data transfers, \name is designed to be sensitive to network changes by using a sliding k in the traffic prediction algorithm. In other words, it puts more importance to sudden increases or decreases when online traffic oscillates (to be sensitive), while simultaneously refers to history information when online traffic doesn't change much (to be stable).
 %set an upper bound K for the EWMA algorithm, k is set to be
 %K when there is no change points, and will be reset to 0 once a
 %change point is detected, and then gradually increase to K.
@@ -85,14 +85,14 @@ affected by bursty bulk-data transfers, \name is designed to be sensitive to net
 %capacity on any link, and dynamically decides the sending rate
 %of each data transfer.
 
-\name's dynamic bandwidth separation also takes advantage of the centralized logic of \name. The traditional
+\name's dynamic bandwidth separation also takes advantages of the centralized logic of \name. The traditional
 techniques (e.g.,~\cite{kumar2015bwe}) that gives higher priority to
 online latency-sensitive traffic can still have bandwidth wastage or
 performance interference in the presence of dynamic network
 environments~\cite{wang2017toward}. \name, in contrast, dynamically predicts the
 bandwidth usage of latency-sensitive applications, and calculates the
-residual bandwidth that can be used by inter-DC multicast. Finally, note that \name optimizes
-the application-level overlay, and is thus complementary to
+residual bandwidth that can be allocated to inter-DC multicast. Finally, note that \name optimizes
+the application-level overlay, thus is complementary to
 network-layer techniques that improve the WAN performance and
 fairness~\cite{chen2012design, kavulya2010analysis, mishra2010towards, reiss2012heterogeneity}.
 }

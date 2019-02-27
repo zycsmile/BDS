@@ -6,9 +6,9 @@ inter-DC data transfers has been much improved, prior solutions
 are insufficient to optimize bulk-data multicast, as they fail to
 explore the rich inter-DC overlay paths that exist in geo-distributed DCs,\NEW{ as well as the remaining bandwidth reserved for online traffic under fixed bandwidth separation scheme.
 To take advantage of these opportunities, we present {\em \name},
-%\jc{need to pitch BDS+ as the main contribution. otherwise, just drop BDS+, and keep BDS all alone. } 
-a near-optimal network system for large-scale inter-DC data replication. \name is an application-level multicast overlay network {\em fully centralized} architecture, allowing a central controller to maintain an up-to-date
-global view of data delivery status of intermediate servers, in order to fully utilize the available overlay paths. Furthermore, in each overlay path, it proposes dynamic bandwidth separation to fully utilize the remaining available bandwidth reserved for online traffic, by constantly estimating online traffic and rescheduling the bulk-data transfer accordingly, this enables \name to further speed up the massive data multicast.
+%\jc{need to pitch BDS+ as the main contribution. otherwise, just drop BDS+, and keep BDS all alone. }
+a near-optimal network system for large-scale inter-DC data replication. \name is an application-level multicast overlay network with {\em fully centralized} architecture, allowing a central controller to maintain an up-to-date
+global view of data delivery status of intermediate servers, in order to fully utilize the available overlay paths. Furthermore, in each overlay path, it leverages dynamic bandwidth separation to make use of the remaining available bandwidth reserved for online traffic, by constantly estimating online traffic and rescheduling the bulk-data transfer accordingly, this enables \name to further speed up the massive data multicast.
 %To speed up the computation of the control algorithm, \name decouples
 %its centralized algorithm into two steps---selection of overlay paths and
 %scheduling of data transfers---each can be efficiently optimized in isolation.

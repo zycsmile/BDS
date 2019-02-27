@@ -1,7 +1,7 @@
 \NEW{
 \section{System Overview}
 \label{sec:overview}
-To optimize inter-DC multicasts, while dynamically separated with
+To optimize inter-DC multicasts on overlay network with dynamical separation with
 latency-sensitive traffic, we present {\em \name}, a {\em fully centralized} near-optimal network system with dynamic bandwidth separation for data inter-DC multicast.} Before presenting the details, we first highlight the intuitions behind the design choices, the challenges to make it practical.
 
 
@@ -70,8 +70,11 @@ all overlay servers.
 
 \NEW{
 \item {\em Flexible traffic control:}
-Previous works~\cite{Andreev2013Designing,Repantis2010Scaling,Huang2014A,mukerjee2014enabling} use the static separation scheme where there is a fixed boundary between online and offline traffic, here \name proposes to use dynamic bandwidth separation, so it should know the bandwidth utilization in a global view, in order to dynamically adjust the amount of available bandwidth that can be used for bulk-data transfer. Once any network changes are detected, \name could easily adjust bandwidth for each data transfer by controlling the sending rate at all servers in a centralized fashion (nomatter to reserve more bandwidth when online traffic burst, or to reduce transfer rate when online traffic is in valley).
-(\Section\ref{sec:deployment}).
+\newname can enforce bandwidth allocation by setting limit rates in
+each data transfer, while each server can use Linux
+Traffic Control (tc) to enforce the limit on the teal bandwidth
+usage. This allows \newname to leverage flexible dynamic bandwidth separation. Once any network changes are detected, \name could easily adjust bandwidth for each data transfer by controlling the sending rate at all servers in a centralized fashion (nomatter to reserve more bandwidth when online traffic burst, or to reduce transfer rate when online traffic is in valley). (\Section\ref{sec:deployment}).
+%Previous works~\cite{Andreev2013Designing,Repantis2010Scaling,Huang2014A,mukerjee2014enabling} use the static separation scheme where there is a fixed boundary between online and offline traffic, here \name proposes to use dynamic bandwidth separation, so it should know the bandwidth utilization in a global view, in order to dynamically adjust the amount of available bandwidth that can be used for bulk-data transfer.
 }
 
 \item {\em Lower engineering complexity:}

@@ -2,17 +2,15 @@
 Inter-DC multicast is critical to the performance of
 global-scale online service providers, but
 prior efforts that focus
-on optimizing WAN performance are insufficient.
-This paper presents \name, an application-level multicast overlay network with dynamic bandwidth separation that substantially improves the performance of inter-DC bulk-data multicast, \NEW{and its enhanced version \name, with dynamic bandwidth separation between online latency-sensitive traffic and offline bulk-data transfer.
-While \name demonstrates the feasibility
-and practical benefits of a fully centralized multicast overlay
+on optimizing WAN performance are insufficient.\NEW{
+This paper presents \name, an application-level multicast overlay network with dynamic bandwidth separation that substantially improves the performance of inter-DC bulk-data multicast. \name not only demonstrates the feasibility and practical benefits of a fully centralized multicast overlay
 network that selects overlay paths and schedules data transfers
-in a near-optimal yet efficient manner, \name shows further improvements by dynamically separating online and offline traffic instead of a fixed boundary.
-The key insight underlying \name's dynamic bandwidth separation design is that there is still much available bandwidth for bulk-data transfer by making use of residual bandwidth based on online traffic usage prediction.
+in a near-optimal yet efficient manner, but also shows further improvements by dynamically separating online and offline traffic instead of a fixed boundary.
+%The key insight underlying \name's dynamic bandwidth separation design is that there is still much available bandwidth for bulk-data transfer by making use of residual bandwidth based on online traffic usage prediction.
 %that there are significant benefits achieved by making slightly delayed
 %decisions based on a global view and that this outweighs the cost of
 %centralization. %, such as gathering information to the controller.
-We believe that the insight of multicast overlay network in \name, to speed up the execution of a centralized algorithm, together with the inspiration of dynamic bandwidth prediction in \name,
+We believe that the insight of multicast overlay network in \name, to speed up the execution of a centralized algorithm, together with the inspiration of dynamic bandwidth prediction,
 %informs our design choice
 can be generalized to other control platforms
 %in other settings
