@@ -13,7 +13,7 @@ lessons from real-world incidents to inform the design of \name
 (\Section\ref{subsec:motivation:baseline}). \NEW{We conclude all these observations, which are based on
 a dataset of \company's inter-DC traffic collected in a duration of
 seven days. The dataset comprises of about 1265 multicast transfers
-among 30+ geo-distributed DCs. (\Section\ref{subsec:motivation:observation})}
+among 30+ geo-distributed DCs (\Section\ref{subsec:motivation:observation})}.
 
 
 \subsection{\company's inter-DC multicast workload}
@@ -29,7 +29,7 @@ among 30+ geo-distributed DCs. (\Section\ref{subsec:motivation:observation})}
  \rowcolor[gray]{0.9}
 \textbf{Type of application} & \textbf{\% of multicast traffic} \\
 \hline\hline
-All applications & 91.13\%~\myfootnotemark\\
+All applications & 91.13\%\\
 \hline
 Blog articles & 91.0\% \\% 4648.92 vs 41372.56 in GB
 \hline
@@ -54,11 +54,11 @@ traffic.}
 %\vspace{-0.2cm}
 \label{table:rate}
 \end{table}
-\myfootnotetext{The overall multicast traffic share is estimated using the traffic that goes through one randomly sampled DC, because we do not have access to information of all inter-DC traffic, but this number is consistent with what we observe from other DCs.}
+
 
 \mypara{Share of inter-DC multicast traffic}
 Table~\ref{table:rate} shows inter-DC multicast (replicating data
-from one DC to multiple DCs) as a fraction of all inter-DC traffic.
+from one DC to multiple DCs) as a fraction of all inter-DC traffic \footnote{The overall multicast traffic share is estimated using the traffic that goes through one randomly sampled DC, because we do not have access to information of all inter-DC traffic, but this number is consistent with what we observe from other DCs.}.
 We see that inter-DC multicast dominates \company's overall inter-DC
 traffic (91.13\%), as well as the traffic of individual application
 types (89.2 to 99.1\%). The fact that inter-DC multicast traffic
