@@ -7,15 +7,15 @@ are insufficient to optimize bulk-data multicast, as they fail to
 explore the rich inter-DC overlay paths that exist in geo-distributed DCs,\NEW{ as well as the remaining bandwidth reserved for online traffic under fixed bandwidth separation scheme.
 To take advantage of these opportunities, we present {\em \name},
 %\jc{need to pitch BDS+ as the main contribution. otherwise, just drop BDS+, and keep BDS all alone. }
-a near-optimal network system for large-scale inter-DC data replication. \name is an application-level multicast overlay network with {\em fully centralized} architecture, allowing a central controller to maintain an up-to-date
-global view of data delivery status of intermediate servers, in order to fully utilize the available overlay paths. Furthermore, in each overlay path, it leverages dynamic bandwidth separation to make use of the remaining available bandwidth reserved for online traffic, by constantly estimating online traffic and rescheduling the bulk-data transfer accordingly, this enables \name to further speed up the massive data multicast.
+a near-optimal network system for large-scale inter-DC data replication. \name is an application-level multicast overlay network with a {\em fully centralized} architecture, allowing a central controller to maintain an up-to-date
+global view of data delivery status of intermediate servers, in order to fully utilize the available overlay paths. Furthermore, in each overlay path, it leverages dynamic bandwidth separation to make use of the remaining available bandwidth reserved for online traffic. By constantly estimating online traffic demand and rescheduling bulk-data transfers accordingly, \name can further speed up the massive data multicast.
 %To speed up the computation of the control algorithm, \name decouples
 %its centralized algorithm into two steps---selection of overlay paths and
 %scheduling of data transfers---each can be efficiently optimized in isolation.
 %This enables \name to update the overlay routing decisions for hundreds of TB
 %data over tens of thousands of overlay paths. Further, \name shares
 %bandwidth efficiently between bulk-data multicasts and latency-sensitive online traffic
-A pilot deployment in one of the largest online service providers, together with large-scale real-trace simulations, show that \name can achieve 3-5$\times$ speedup over the provider's existing system and
-several well-known overlay routing baselines with static bandwidth separation. Besides, \name can further reduce the completion time by 1.2 to 1.3 times with dynamic bandwidth separation}.
+Through a pilot deployment in one of the largest online service providers and large-scale real-trace simulations, we show that \name can achieve 3-5$\times$ speedup over the provider's existing system and
+several well-known overlay routing baselines of static bandwidth separation. Moreover, dynamic bandwidth separation can further reduce the completion time of bulk data transfers by 1.2 to 1.3 times}.
 
 \end{abstract}
