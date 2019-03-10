@@ -47,7 +47,7 @@ close to optimal flow completion time
 
 
 \NEW{ADD: 
-\item \newname can: 1. further complete inter-DC multicast XXX$\times$ faster than \name, 2. predict the bandwidth utilization of online traffic with XXX\% accuracy, 3. increase bandwidth utilization when online traffic is in valley, 4. reduces the incidents of interferences caused on bulk-data multicast traffic when online traffic bursts, 5. achieve near real-time scheduling with quite low computation overhead 
+\item \newname can: 1. further complete inter-DC multicast XXX$\times$ faster than \name, 2. predict the bandwidth utilization of online traffic with XXX\% accuracy, 3. increase bandwidth utilization when the online traffic is low, 4. reduce the incidents of interference caused by bulk-data multicast traffic during online traffic bursts, 5. achieve near real-time scheduling with low computational overhead 
 (\Section\ref{subsec:evaluation:improvements}).
 }
 \end{packedenumerate}
@@ -157,10 +157,10 @@ between the link capacity and the historical peak bandwidth of
 latency-sensitive traffic. Naturally, we can minimize the conflicts,
 if \name can keep the bulk-data multicast traffic within the bandwidth
 limit. To test \name's effectiveness at maintaining differentiation between
-bulk-data multicast traffic and latency-sensitive traffic, we set an
+bulk-data multicast traffic and latency-sensitive traffic, we set a
 10GB/s bandwidth limit to bulk data transfers.
 Figure~\ref{fig:quota} shows the actual bandwidth usage of \name on
-one inter-DC link. We can see that in \name the actual bandwidth used
+one inter-DC link. We can see that, in \name, the actual bandwidth used
 by bulk data is always below 10~GB/s.
 
 %\begin{table}[t]
@@ -258,7 +258,7 @@ by bulk data is always below 10~GB/s.
 \subsection{Micro-benchmarks}
 \label{subsec:evaluation:benchmarks}
 
-Next, we use micro-benchmarking to evaluate \name along three metrics:
+Next, we use micro-benchmarking to evaluate \name using three metrics:
 (1) scalability of the centralized control;
 (2) fault tolerance; and
 (3) optimality of \name parameters.
@@ -268,7 +268,7 @@ Next, we use micro-benchmarking to evaluate \name along three metrics:
 
 \mypara{Controller running time}
 As the controller needs to decide the scheduling and routing of each
-data block, the running time of the control logic naturally scales
+data block, the running time of the control logic naturally increases
 with the number of blocks. Figure~\ref{fig:scale:cpu} shows the
 running time as a function of the total number of blocks. We can see
 that the centralized \name controller can update the scheduling and
@@ -363,6 +363,8 @@ We vary the number of blocks from 1 to 4000, over which the LP solver cannot fin
 \NEW{
 \subsection{\newname's dynamic bandwidth separation}
 \label{subsec:evaluation:improvements}
+\mjreed{I have not corrected this as it is still in early draft}
+
 Evaluations between \newname and \name.
 
 1. further complete inter-DC multicast XXX$\times$ faster than \name, 
