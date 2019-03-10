@@ -114,7 +114,7 @@ achieve desirable scalability and responsiveness to network dynamics,
 (1) While it is hard to make centralized decisions in real time, most
 multicast data transfers last for at least tens of seconds, and thus
 can tolerate slightly delayed decisions in exchange for near-optimal
-routing and scheduling based on a global view.
+routing and scheduling based on a global view;
 (2) Centrally coordinated sending rate allocation is amenable to
 minimizing the interference between inter-DC multicast traffic and
 latency-sensitive traffic.
@@ -131,9 +131,9 @@ orders of magnitude faster than solving routing and scheduling jointly
 when considering the workload of a large online service provider (e.g., sending
 $10^5$ data blocks simultaneously along $10^4$ disjoint
 overlay paths).
-
+%
 \NEW{
-\newname address the real-time dynamic bandwidth separation problem by predicting the bandwidth utilization of online traffic and enabling a novel incremental scheduling strategy.
+A further development, \newname, addresses the real-time dynamic bandwidth separation problem by predicting the bandwidth utilization of online traffic and enabling a novel incremental scheduling strategy.
 }
 
 We have implemented a prototype of \name and integrated it in
