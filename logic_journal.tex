@@ -2,7 +2,7 @@
 \label{sec:logic}
 
 The core of \name is a centralized decision-making algorithm that
-periodically updates overlay routing decisions at scale in near
+periodically updates overlay routing decisions at scale and in near
 real-time. \name strikes a favorable tradeoff
 between solution optimality and near real-time updates by
 {\em decoupling} the control logic into two steps
@@ -69,7 +69,7 @@ Table \ref{table:para} summarizes the key notations.
 
 The overlay traffic engineering in \name operates at a
 fine granularity, both spatially and temporally. To exploit the many
-overlay paths between the source and destination DCs, \name split
+overlay paths between the source and destination DCs, \name splits
 each data file into multiple data blocks (e.g., 2MB).
 To cope with changes of network conditions and arrivals of requests,
 \name updates the decisions of overlay traffic engineering every
@@ -165,7 +165,7 @@ integer $N$ for which the above constraints have a feasible solution.
 
 Unfortunately, this formulation is intractable in practice for two
 reasons. First, it is super-linear and mixed-integer, so the
-computational overhead grows exponentially with more potential source
+computational overhead grows exponentially with the increase in potential source
 servers, and data blocks. Second, to find the minimum integer $N$, we
 need to check the feasibility of the problem for different values of
 $N$.
@@ -196,7 +196,7 @@ with standard techniques. Next, we present each step in more details.
 The scheduling step selects the subset of blocks to be transferred in
 each cycle, i.e., $w^{(T_k)}_{b,s}$.
 
-The key to do the scheduling (pick the subset of blocks) is to make sure that the subsequent data transmission can be done in the most efficient manner. Inspired by the ``rarest-first'' strategy in BitTorrent \cite{Cohen2003Incentives} that tries to balance block availability, \name adopts a simple-yet-efficient way of selecting the data blocks: for each cycle, \name simply picks the subset of blocks with the least amount of duplicates. In other words, \name generalizes the rarest-first approach by selecting a set of blocks in each cycle, instead of a copy of a single block.
+The key solving the scheduling (picking the subset of blocks) is to make sure that the subsequent data transmission can be done in the most efficient manner. Inspired by the ``rarest-first'' strategy in BitTorrent \cite{Cohen2003Incentives} that tries to balance block availability, \name adopts a simple-yet-efficient way of selecting the data blocks: for each cycle, \name simply picks the subset of blocks with the least amount of duplicates. In other words, \name generalizes the rarest-first approach by selecting a set of blocks in each cycle, instead of a copy of a single block.
 
 %The scheduling step selects the subset of blocks to be transferred in
 %each cycle, i.e., $w^{(T_k)}_{b,s}$.
