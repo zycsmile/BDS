@@ -11,7 +11,7 @@ application-level multicast overlay network for large-scale inter-DC data replic
 architecture, allowing a central controller to maintain an up-to-date
 global view of data delivery status of intermediate servers, in
 order to fully utilize the available overlay paths. 
-\NEW{To speeds up the computation of the control algorithm, \name decouples the origin algorithm into selection of overlay paths and scheduling of data transfers, each can be optimized efficiently. This enables \name to update overlay routing decisions at the scale of multicasting hundreds of TB data over tens of thousands of overlay paths. Further, to enable \name can be mix-deployed/implemented together with online services in the dynamic network with workload churns, we present an enhanced version called \newname that can realize dynamic bandwidth separation by predicting online traffic and then adjust bandwidth allocation accordingly.
+\NEW{To speeds up the computation of the control algorithm, \name decouples the origin algorithm into selection of overlay paths and scheduling of data transfers, so that each can be optimized efficiently. This enables \name to update overlay routing decisions at high scale, multicasting hundreds of TB data over tens of thousands of overlay paths. Furthermore, so that \name can be deployed  together with online services in a dynamic network with high workload churns, we present an enhanced version called \newname that can realize dynamic bandwidth separation by predicting online traffic and then adjust bandwidth allocation accordingly.
 }
 A pilot deployment in one of the largest online service providers shows that \name can
 achieve 3-5$\times$ speedup over the provider's existing system and
