@@ -116,7 +116,22 @@
 \footnote{#1}
 }
 
-
+\includeonly{%abstract_journal,
+%  intro_journal,
+%  motivation_journal,
+  overview_journal,
+%  logic_journal,dynamic_journal,
+%  system_journal,
+%  impl_journal,
+%  eval_journal,
+%  related_journal,
+%  conclusion_journal,
+%  acknowledgment_journal,
+%  appendix_journal
+}
+\newcommand{\mjreed}[1]{\textcolor{blue}{MJREEDCOMMENT: #1}}
+\newcommand{\myinclude}[1]{\include{#1}}
+%\newcommand{\myinclude}[1]{\input{#1}}
 \begin{document}
 
 %\copyrightyear{2018}
@@ -191,42 +206,42 @@
 
 
 %\input{abstract_kai}
-\input{abstract_journal}
+\myinclude{abstract_journal}
 
 \maketitle
 
 
 %\input{intro_kai}
-\input{intro_journal}
+\myinclude{intro_journal}
 
 %\input{motivation}
 %\input{motivation_junchen}
-\input{motivation_journal}
+\myinclude{motivation_journal}
 
 %\input{overview}
 %\input{overview_junchen}
 %\input{overview_new}
-\input{overview_journal}
+\myinclude{overview_journal}
 
 %\input{logic}
 %\input{logic_new}
 %\input{logic_final_v2}
-\input{logic_journal}
+\myinclude{logic_journal}
 
 
-\input{dynamic_journal}
+\myinclude{dynamic_journal}
 
 %\input{system}
-\input{system_journal}
+\myinclude{system_journal}
 %
 %\input{impl}
-\input{impl_journal}
+\myinclude{impl_journal}
 %
 %\input{eval}
 %\input{eval_new}
-\input{eval_journal}
+\myinclude{eval_journal}
 %
-\input{related_journal}
+\myinclude{related_journal}
 
 %\ifCLASSOPTIONcompsoc
 %  % The Computer Society usually uses the plural form
@@ -244,13 +259,13 @@
 %\section{Discussion}
 
 %\section{Conclusion}
-\input{conclusion_journal}
-\input{acknowledgment_journal}
+\myinclude{conclusion_journal}
+\myinclude{acknowledgment_journal}
 
 \bibliographystyle{acm}
 \bibliography{DTplatbibjournal}
 
 %\input{appendix_final_dep}
-\input{appendix_journal}
+\myinclude{appendix_journal}
 
 \end{document}
