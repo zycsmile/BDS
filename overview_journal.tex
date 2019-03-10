@@ -5,7 +5,7 @@ To optimize inter-DC multicasts, while minimizing interference with
 latency-sensitive traffic, we present {\em \name}, a {\em fully centralized}
 near-optimal application-level overlay network for inter-DC multicast.
 Before presenting \name in detail, we first highlight the intuitions
-behind its design choices, and the challenges to make it practical.
+behind its design choices, and the challenges behind its realisation.
 
 
 \mypara{Centralized control}
@@ -23,8 +23,8 @@ view or orchestration.
 In contrast, \name takes an explicit stance that it is practical to
 fully centralize the control of wide-area overlay networks and
 still achieve near-optimal performance in the setting of inter-DC
-multicasts. The design of \name coincides other recents works of centralizing
-management of large-scale distributed systems, e.g.,~\cite{gog2016firmament}
+multicasts. The design of \name coincides with other recent works that centralize the
+management of large-scale distributed systems, e.g.,~\cite{gog2016firmament}.
 At a high level, \name uses a centralized controller that
 periodically pulls information (e.g., data delivery status) from all
 servers, updates the decisions regarding overlay routing, and pushes
@@ -50,7 +50,7 @@ performance degradation to local adaptation
 
 \item {\em Large decision space:}
 The sheer number of inter-DC overlay paths (which grow exponentially
-with more servers acting as overlay nodes) makes it difficult for
+with the increasing number servers acting as overlay nodes) makes it difficult for
 individual servers to explore all available overlay paths based only
 on local measurements. In contrast, we could significantly improve
 overlay multicast performance by maintaining a global view of data
@@ -83,7 +83,7 @@ sending rate at all servers in a centralized fashion
 
 \NEW{
 \item {\em Dynamic traffic isolation:}
-predict online traffic and adjust the available bandwidth for offline bulk data transfer. Two-fold: make full use of idle bandwidth when online traffic is in valley, avoidance when online traffic bursts.
+There is a need to predict online traffic and adjust the available bandwidth for offline bulk data transfer. This can be broken down into two strategies: make full use of spare capacity when online traffic is in a valley, avoid transfer during bursts of online traffic.
 }
 
 \item {\em Lower engineering complexity:}
@@ -115,6 +115,7 @@ near-optimal solutions by exploring such a large decision space
 \NEW{
 \mypara{The key to realizing dynamic bandwidth separation}
 Online traffic prediction. enable small cycles to make scheduling adjustment.
+\mjreed{I assume this still needs to be finished, I am not quite sure what is meant to go here so I cannot complete it.}
 }
 
 The next section will present how \name addresses this challenge.
