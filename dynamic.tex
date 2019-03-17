@@ -12,7 +12,7 @@
 %\vspace{-0.4cm}
 \end{figure}
 
-\name performs well under fixed network separation, but in the mixed deployment situations where online traffic and offline traffic shares the same server I/O, it results in low link utilizations when online traffic reduces because bulk data transfer will never occupy any bandwidth exceeds the fixed threshold even though online traffic is far below the reserved bandwidth (see \Section\ref{subsec:motivation:baseline}).
+\name performs well under fixed network separation, but in the mixed deployment situations where online traffic and offline traffic shares the same server I/O, it results in low link utilizations when online traffic reduces. This is because bulk data transfer will never occupy any bandwidth exceeding the fixed threshold even though online traffic is far below the reserved bandwidth (see \Section\ref{subsec:motivation:baseline}).
 
 So we further present \name with dynamic bandwidth separation, which adjusts the available bandwidth for bulk data transfer in a real-time manner, by continuously predicting online traffic and automatically adjusting the scheduling decisions, so as to fully utilize network bandwidth accordingly. To be specific, \name automatically adjust the scheduling results under different network conditions: if online traffic encounters its peak, \name shirks its occupied bandwidth to avoid congestions, while online traffic encounters its valley, \name aggressively uses more bandwidth to make full use of the residual bandwidth.
 
@@ -62,9 +62,9 @@ Online Traffic $\downarrow$ & $w^{(T_k)}_{b,s}$ + & $f_{b,p\in \hat{P}}^{(T_k)} 
 \end{table}
 
 \begin{packeditemize}
-\item When the total link utilization exceeds the pre-configured safety threshold (80\% in the example in \Section\ref{subsec:motivation:baseline}), \name shirks the occupied bandwidth for bulk-data transfer in both scheduling and routing steps to avoid congestions: 1. cancel some blocks that were scheduled in the current scheduling cycle $\Delta T$ but not yet transferred, 2. reduce the allocated bandwidth $f_{b,p}^{(T_k)}$ for block $b$ on path $p\in \hat{P}$ in $T_k$.
+\item When the total link utilization exceeds the pre-configured safety threshold (80\% in the example in \Section\ref{subsec:motivation:baseline}), \name shirks the occupied bandwidth for bulk-data transfer in both scheduling and routing steps to avoid congestions: 1. cancel some blocks that were scheduled in the current scheduling cycle $\Delta T$ but not yet transferred; 2. reduce the allocated bandwidth $f_{b,p}^{(T_k)}$ for block $b$ on path $p\in \hat{P}$ in $T_k$.
 
-\item When online traffic usage encounters its valley, making link utilization fall below the safety threshold, \name aggressively occupies more bandwidth in scheduling and routing steps: 1. transfer some additional blocks that were not scheduled in the current scheduling cycle $\Delta T$, 2. increase the allocated bandwidth $f_{b,p}^{(T_k)}$ for block $b$ on path $p\in \hat{P}$ in $T_k$, to make full use of the residual bandwidth detected by the online traffic prediction algorithm.
+\item When online traffic usage encounters its valley, making link utilization fall below the safety threshold, \name aggressively occupies more bandwidth in scheduling and routing steps: 1. transfer some additional blocks that were not scheduled in the current scheduling cycle $\Delta T$; 2. increase the allocated bandwidth $f_{b,p}^{(T_k)}$ for block $b$ on path $p\in \hat{P}$ in $T_k$, to make full use of the residual bandwidth detected by the online traffic prediction algorithm.
 \end{packeditemize}
 
 

@@ -1,14 +1,14 @@
 \subsection{Implementation and deployment}
 \label{sec:deployment}
 
-We have implemented \NEW{\name}, and deployed on 67 servers in 10 of
+We have implemented \NEW{\name}, and deployed it on 67 servers in 10 of
 \company's geo-distributed DCs, with 3621 lines of
-golang code~\cite{golang}. Evaluation in the next section is
+code in the Go language~\cite{golang}. Evaluation in the next section is
 based on this deployment.
 
-The duplications of the controller are implemented on three different
+The controller was duplicated (for reliability) on three different
 geo-located zookeeper servers. The Agent Monitor uses \texttt{HTTP
-POST} to send controll messages between the controller and servers.
+POST} to send control messages between the controller and servers.
 \name uses \texttt{wget} to make each data transfer, and enforce
 bandwidth allocation by setting \texttt{--limit-rate} field in each
 data transfer. The agent running in each server uses Linux Traffic

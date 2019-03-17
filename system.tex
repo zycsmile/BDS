@@ -21,13 +21,13 @@ routing and scheduling decisions in a centralized fashion.
 Figure \ref{fig:implementation} outlines the workflow in each
 three-second cycle.
 \begin{enumerate}
-\item It starts with the {\em Agent}, running local on each server,
+\item It starts with the {\em Agent}, running locally on each server,
 checking the local states, including data block delivery status
 (which blocks have arrived, and which blocks are outstanding),
 server availability, and disk failures, etc.
 \item These statistics are then wrapped in a {\em control message},
 and sent to the centralized {\em \name Controller} via an efficient
-messaging layer called {\em Agent Monitor}.
+messaging layer called an {\em Agent Monitor}.
 \item The \name Controller also receives network-level statistics
 (the bandwidth consumption by latency-sensitive traffic and the
 utilization on each inter-DC link) from a {\em Network Monitor}.
@@ -46,7 +46,7 @@ routing and scheduling decisions.
 \name uses two additional optimizations to make the workflow
 more efficient.
 \begin{itemize}
-\item \emph{Blocks merging}.
+\item \emph{Block merging}.
 To reduce the computational scale and achieve more efficient
 transmissions, \name merges the blocks with the same source and
 destination into one subtask. Its benefits are two-fold: (1) it
@@ -70,7 +70,7 @@ the input of the centralized logic.
 \label{subsec:system:separation}
 
 To guarantee dynamic bandwidth separation between inter-DC
-bulk-data multicasts and delay-sensitive traffic, \name Network
+bulk-data multicasts and delay-sensitive traffic, the \name Network
 Change Monitor detects any changes of the aggregated bandwidth usage of all
 latency-sensitive flows on each inter-/intra-DC link, and
 dynamically allocates the bandwidth for bulk-data multicast
@@ -109,17 +109,17 @@ controller replicas are not available (e.g., a network partition
 between DCs and the controllers), the agents running in servers will
 fallback to the current decentralized overlay protocol as default to
 ensure graceful performance degradation.
-\item \emph{Server failure:} If the agent on server is still able to
+\item \emph{Server failure:} If the agent in a server is still able to
 work, it will report the failure state (e.g., server crash, disk
 failure, etc.) to the agent monitor in the next cycle. Otherwise, the
-servers that selected this server as data source would report the
+servers that selected this server as a data source would report the
 unavailability to the agent monitor. In either case, the controller
 will remove that server from the potential data sources in the next
 cycle.
 \item \emph{Network partition between DCs:}
-If network partition happens between DCs, the DCs located in the same
+If network partitioning happens between DCs, the DCs located in the same
 partition with the controller will work the same as before, while the
-separated DCs will fallback to the decentralized overlay network.
+DCs in the other partition(s) will fallback to the aforementioned, decentralized overlay network.
 \end{packedenumerate}
 
 

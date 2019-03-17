@@ -2,7 +2,7 @@
 \section{System Overview}
 \label{sec:overview}
 To optimize inter-DC multicasts on overlay network with dynamical separation with
-latency-sensitive traffic, we present {\em \name}, a {\em fully centralized} near-optimal network system with dynamic bandwidth separation for data inter-DC multicast.} Before presenting the details, we first highlight the intuitions behind the design choices, the challenges to make it practical.
+latency-sensitive traffic, we present {\em \name}, a {\em fully centralized} near-optimal network system with dynamic bandwidth separation for data inter-DC multicast.} Before presenting the details, we first highlight the intuitions behind the design choices, and the challenges behind its realisation.
 
 
 \mypara{Centralized control}
@@ -20,8 +20,8 @@ view or orchestration.
 In contrast, \name takes an explicit stance that it is practical to
 fully centralize the control of wide-area overlay networks and
 still achieve near-optimal performance in the setting of inter-DC
-multicasts. This design coincides other recents works of centralizing
-management of large-scale distributed systems, e.g.,~\cite{gog2016firmament}
+multicasts. The design of \name coincides with other recent works that centralize the
+management of large-scale distributed systems, e.g.,~\cite{gog2016firmament}.
 At a high level, \name uses a centralized controller that
 periodically pulls information (e.g., data delivery status) from all
 servers, updates the decisions regarding overlay routing, and pushes
@@ -47,7 +47,7 @@ Our centralized design is driven by several empirical observations:
 
 \item {\em Large decision space:}
 The sheer number of inter-DC overlay paths (which grow exponentially
-with more servers acting as overlay nodes) makes it difficult for
+with the increasing number servers acting as overlay nodes) makes it difficult for
 individual servers to explore all available overlay paths based only
 on local measurements. In contrast, we could significantly improve
 overlay multicast performance by maintaining a global view of data
