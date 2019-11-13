@@ -198,6 +198,10 @@ each cycle, i.e., $w^{(T_k)}_{b,s}$.
 
 The key solving the scheduling (picking the subset of blocks) is to make sure that the subsequent data transmission can be done in the most efficient manner. Inspired by the ``rarest-first'' strategy in BitTorrent \cite{Cohen2003Incentives} that tries to balance block availability, \name adopts a simple-yet-efficient way of selecting the data blocks: for each cycle, \name simply picks the subset of blocks with the least amount of duplicates. In other words, \name generalizes the rarest-first approach by selecting a set of blocks in each cycle, instead of a copy of a single block.
 
+\minor{
+In addition, \name also supports setting different priorities for different blocks (i.e., applications) if necessary. For example, we can set higher priority for those blocks from more important (or shorter) applications, making those blocks selected for transmission as early as possible, even if they are not the rarest ones. But in the current version of \name, it treats them equally.
+}
+
 %The scheduling step selects the subset of blocks to be transferred in
 %each cycle, i.e., $w^{(T_k)}_{b,s}$.
 %The key to pick the right subset of blocks is to make sure that the

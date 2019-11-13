@@ -12,11 +12,14 @@
 %\vspace{-0.4cm}
 \end{figure}
 
-\name performs well under fixed network separation, but in the mixed deployment situations where online traffic and offline traffic shares the same server I/O, it results in low link utilizations when online traffic reduces. This is because bulk data transfer will never occupy any bandwidth exceeding the fixed threshold even though online traffic is far below the reserved bandwidth (see \Section\ref{subsec:motivation:baseline}).
+\bdsname performs well under fixed network separation, but in the mixed deployment situations where online traffic and offline traffic shares the same server I/O, it results in low link utilizations when online traffic reduces. This is because bulk data transfer will never occupy any bandwidth exceeding the fixed threshold even though online traffic is far below the reserved bandwidth (see \Section\ref{subsec:motivation:baseline}).
 
 So we further present \name with dynamic bandwidth separation, which adjusts the available bandwidth for bulk data transfer in a real-time manner, by continuously predicting online traffic and automatically adjusting the scheduling decisions, so as to fully utilize network bandwidth accordingly. To be specific, \name automatically adjust the scheduling results under different network conditions: if online traffic encounters its peak, \name shirks its occupied bandwidth to avoid congestions, while online traffic encounters its valley, \name aggressively uses more bandwidth to make full use of the residual bandwidth.
 
 To achieve this, \name leverages a customized online traffic prediction algorithm, which identifies the changes of server bandwidth usage, and triggers re-scheduling to adjust bandwidth allocation to the bulk-data transfer. Figure~\ref{fig:bayes} shows the logical diagram of \name's dynamic bandwidth separation. The Network Change Monitor reads the agent observations ($bw_{in}$ and $bw_{out}$) and executes a customized combination of \textit{k-Sigma} \cite{ThreeSigma} and a change point detection algorithm \cite{adams2007bayesian}. \textit{k-Sigma} is responsible to calculate the mean and standard deviation of agent observation, and the change point detection is responsible for detecting abrupt changes by observing historical data, in order to make the Agent Monitor both stable and sensitive.
+
+\minor{
+To integrate to \bdsname, we make the above online traffic prediction at the beginning of each cycle, and based on the predicted traffic, \bdsname updates the available link status and then calculates bottleneck disjoint paths. As the online traffic is time-varying, the available bandwidth of all paths are therefore varies along with the online traffic, making the bottleneck disjoint path different in each scheduling cycle. This requires \name to be able to work under different scenarios (varying number of bottleneck disjoint paths), which also proves the generalizability of \name.}
 
 \subsection{Design Logic}
 \label{subsec:dynamic:prediction}
@@ -27,13 +30,16 @@ To detect online traffic changes and dynamically adjust configurations, there ar
 %\mypara{Change point detection algorithms}
 To address the above problem, \name combines \textit{k-sigma}  with  a change point detection algorithm \cite{adams2007bayesian}, which can identify abrupt changes of sequential data. Such algorithms offers both online and offline processing methods, while offline methods \cite{smith1975bayesian,stephens1994bayesian,barry1993bayesian,green1995reversible} require the complete data in full time series to generate samples from the posterior distribution over change point locations, online methods \cite{page1955test,desobry2005online,lorden1971procedures} can generate an accurate distribution of the next unseen data with only already observed data.  In \name, we design a customized sliding $k$ algorithm. Specifically, we set an upper bound $\textsc{K}$ for the EWMA algorithm, $k$ is set to be $\textsc{K}$ when there is no change points, and will be reset to $0$ once a change point is detected, and then gradually increase to $\textsc{K}$. We implemented our customized algorithm based on \cite{adams2007bayesian} (with code can be found in \cite{BOCDcode}) into the Network Change Monitor.
 
-\subsection{Integrated to \name}
+\subsection{Integrated to \bdsname}
 \subsubsection{Online traffic prediction algorithm}
 
 
 %\mypara{Traffic Prediction}
 During a scheduling cycle $\Delta T_k$ in \name, Network Change Monitor is continually fed with a series of agent observations of server throughput (bandwidth usage), which is used to predict the available bandwidth in the next scheduling cycle. To get the bandwidth usage, the Network Change Monitor periodically reads the record in process activity monitor on servers. For particular servers, they continuously log processing activities (including server throughput) and send the sampled summed throughput to the Network Change Monitor. In this way, any network changes occurred during the bulk data downloading can be timely detected.
 
+\minor{
+In addition, it should also be noted that \name faces different mixes of delay sensitive traffic and bulk data traffic at every moment. Specifically, online traffic consists of all the real-time traffic from all the online applications (such as online search, shopping transactions, real-time conversations and so on), which is a different mix at every moment, and it is unknown what applications the online traffic come from in the next cycle. At the same time, bulk data consists of the traffic from multiple offline applications (such as blog articles, search index, forum posts, file sharing and so on). Therefore, when \name is running, the scenario it faces in each scheduling cycle is a different mix of online traffic and bulk data transfer traffic.
+}
 %chooses a change point detection algorithm to predict online traffic for two reasons. First, the agent of \name generates a sequence of observations per cycle, which is naturally non-overlapping states that are independent and identically distributed. This aligns well with the way change point detection algorithm works. Second, such algorithms require no prior knowledge, matching our scenario where we re-calculate the bulk multicast overlay routing problem periodically. Therefore,
 
 \subsubsection{Dynamic Bandwidth Separation}
