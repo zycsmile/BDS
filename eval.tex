@@ -99,8 +99,8 @@ mean (and standard deviation) of completion time for each application
 in Figure~\ref{fig:BDSvsAnon:FCT}.
 We see that \name consistently outperforms \alg, and has less
 performance variance. We also see that \name has greater improvement
-in applications with larger data sizes. Finally,
-Figure~\ref{fig:BDSvsAnon:time} shows the timeseries of the mean
+in applications with larger data sizes. \minor{This is because \name adopts "rarest-first" strategy in the scheduling stage, which treats all blocks as the same no matter it belongs to a larger bulk data transmission or a smaller transmission, so there is a strong possibility that blocks from large bulk data transmissions will be scheduled earlier, resulting in greater improvement for those larger bulk data.}
+Finally, Figure~\ref{fig:BDSvsAnon:time} shows the timeseries of the mean
 completion time of \name and \alg in one randomly chosen application,
 and we see that \name consistently outperforms \alg by 4$\times$.
 
