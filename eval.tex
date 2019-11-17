@@ -108,7 +108,9 @@ and we see that \name consistently outperforms \alg by 4$\times$.
 
 Table~\ref{table:versusAkamai} compares \name with two other
 baselines, Bullet and Akamai's overlay network, using trace-driven
-simulation. We show the results in three setups. In the baseline evaluations,
+simulation. 
+\minor{In the simulation, we set the inter-DC bandwidth to the range from $5TB$ to $25TB$, which is scaled down proportionally according to the real network.}
+We show the results in three setups. In the baseline evaluations,
 we send 1TB data from one DC to 11 DCs, each has 100 servers, and
 the upload and download link capacities are set to be 20MBs. In the
 large-scale evaluations, we send 10TB data between the same DCs, each with
