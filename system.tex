@@ -31,8 +31,8 @@ messaging layer called an {\em Agent Monitor}.
 \item The \name Controller also receives network-level statistics
 (the bandwidth consumption by latency-sensitive traffic and the
 utilization on each inter-DC link) from a {\em Network Monitor}.
-\item On receiving the updates from all Agents and the Network
-Monitor, the \name Controller runs the centralized decision-making
+\item On receiving the updates from all Agents and the \minor{Network
+Monitors}, the \name Controller runs the centralized decision-making
 algorithm (\Section\ref{sec:logic}) to work out the new scheduling
 and routing decisions, and sends the difference between the new
 decision and the previous one to the per-server local Agent via
@@ -75,7 +75,7 @@ Change Monitor detects any changes of the aggregated bandwidth usage of all
 latency-sensitive flows on each inter-/intra-DC link, and
 dynamically allocates the bandwidth for bulk-data multicast
 transfer accordingly. To protect delay-sensitive flows from being negatively
-affected by bursty bulk-data transfers, \name is designed to be sensitive to network changes by using a sliding k in the traffic prediction algorithm. In other words, it puts more importance to sudden increases or decreases when online traffic oscillates (to be sensitive), while simultaneously refers to history information when online traffic doesn't change much (to be stable).
+affected by bursty bulk-data transfers, \name is designed to be sensitive to network changes by using a sliding k in the traffic prediction algorithm. In other words, it puts more importance to sudden increases or decreases when online traffic oscillates (to be sensitive), \minor{while simultaneously referring to} history information when online traffic doesn't change much (to be stable).
 %set an upper bound K for the EWMA algorithm, k is set to be
 %K when there is no change points, and will be reset to 0 once a
 %change point is detected, and then gradually increase to K.
@@ -85,7 +85,7 @@ affected by bursty bulk-data transfers, \name is designed to be sensitive to net
 %capacity on any link, and dynamically decides the sending rate
 %of each data transfer.
 
-\name's dynamic bandwidth separation also takes advantages of the centralized logic of \name. The traditional
+\name's dynamic bandwidth separation also takes advantages of the centralized logic of \bdsname. The traditional
 techniques (e.g.,~\cite{kumar2015bwe}) that gives higher priority to
 online latency-sensitive traffic can still have bandwidth wastage or
 performance interference in the presence of dynamic network

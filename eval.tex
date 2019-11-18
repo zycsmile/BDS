@@ -46,7 +46,7 @@ close to optimal flow completion time
 
 
 \NEW{
-\item \name can: (1). further complete inter-DC multicast 1.2 to 1.3 times faster with dynamic bandwidth separation, (2). predict the bandwidth utilization of online traffic with about 95\% accuracy, (3). increase bandwidth utilization when the online traffic is low, while reducing the bulk data transfer when online traffic bursts, (4). achieve near real-time scheduling with relatively low computational overhead (\Section\ref{subsec:evaluation:improvements}).
+\item \name can: \minor{(1)}. further complete inter-DC multicast 1.2 to 1.3 times faster with dynamic bandwidth separation, \minor{(2)}. predict the bandwidth utilization of online traffic with about 95\% accuracy, \minor{(3)}. increase bandwidth utilization when the online traffic is low, while reducing the bulk data transfer when online traffic bursts, \minor{(4)}. achieve near real-time scheduling with relatively low computational overhead (\Section\ref{subsec:evaluation:improvements}).
 }
 \end{packedenumerate}
 \NEW{
@@ -70,11 +70,12 @@ solution \alg for the same hours in several randomly chosen days.
 
 \mypara{Trace-driven simulation}
 Complementary to the pilot deployment on real traffic, we also use
-trace-driven simulation to evaluate \name on a larger scale.
-We simulate the other two overlay multicast techniques using the
+trace-driven simulation to evaluate \name on a larger scale. \minor{ The simulation is not to reproduce the results of the above pilot deployment, but to provide evaluation results in large-scale scenarios, which is complementary to the pilot deployment.}
+Specifically, we simulate the other two overlay multicast techniques using the
 same topology, number of servers, and link capacities as \name, and
 replay inter-DC multicast data requests in the same chronological
 order as in the pilot deployment.
+
 
 \NEW{
 As the existing solutions are all designed under the situation where the available bandwidth is fixed, so in this subsection, we evaluate the basic version of \newname with fixed bandwidth separation, to ensure fairness. The additional improvements by \newname's dynamic bandwidth separation are shown in \Section\ref{subsec:evaluation:improvements}.
@@ -108,7 +109,7 @@ and we see that \name consistently outperforms \alg by 4$\times$.
 
 Table~\ref{table:versusAkamai} compares \name with two other
 baselines, Bullet and Akamai's overlay network, using trace-driven
-simulation. 
+simulation.
 \minor{In the simulation, we set the inter-DC bandwidth to the range from $5TB$ to $25TB$, which is scaled down proportionally according to the real network.}
 We show the results in three setups. In the baseline evaluations,
 we send 1TB data from one DC to 11 DCs, each has 100 servers, and
@@ -388,7 +389,7 @@ We vary the number of blocks from 1 to 4000, over which the LP solver cannot fin
                 \caption{CDF of improvement.}
                 \label{fig:bdsplus:vs}
         \end{subfigure}
-        \tightcaption{[\name vs. \bdsname] Further improvements from \name.}
+        \tightcaption{[\name vs. \bdsname] Further improvements from \bdsname.}
         \label{fig:bdsplus}
 %\vspace{-0.4cm}
 \end{figure*}
@@ -422,18 +423,18 @@ We vary the number of blocks from 1 to 4000, over which the LP solver cannot fin
 \subsection{\name's dynamic bandwidth separation}
 \label{subsec:evaluation:improvements}
 
-As existing solutions reserve fixed amount of bandwidth for online traffic according to the peak value (e.g., $20\%$), while real traces show that online traffic rarely reaches that peak and is always far below that in most cases. Thus, \name leverages dynamic bandwidth separation between online traffic and offline traffic, allowing offline traffic (bulk data transfer) to use more bandwidth when online traffic is below the threshold. \name achieves this by designing an online traffic prediction algorithm, and this section shows the results of improved performance by dynamic bandwidth separation. For easy description, we name the basic version with fixed bandwidth separation \name, while the version with dynamic bandwidth separation \newname.
+As existing solutions reserve fixed amount of bandwidth for online traffic according to the peak value (e.g., $20\%$), while real traces show that \minor{online traffic rarely reaches that peak and is far below that in most cases}. Thus, \name leverages dynamic bandwidth separation between online traffic and offline traffic, allowing offline traffic (bulk data transfer) to use more bandwidth when online traffic is below the threshold. \name achieves this by designing an online traffic prediction algorithm, and this section shows the results of improved performance by dynamic bandwidth separation. For easy description, we name the basic version with fixed bandwidth separation \bdsname, while the version with dynamic bandwidth separation \newname.
 
 In the following experiments, we send 1TB data from one DC to 11 DCs, each has 100 servers, and the upload and download link capacities are set to be 20MBs, same as the previous experiments. The online traffic is set according to the cluster trace (machine\_usage) from Ali \cite{datatrace}.
 
-\subsubsection{Further improvements over \name.}
+\subsubsection{Further improvements over \bdsname.}
 \label{subsubsec:bdsplus:improvements}
 
 \mypara{Completion time}
 We start the bulk data transfer at 23:00 on 27, Jan, 2019. Figure~\ref{fig:bdsplus:server} shows the CDF of the completion time on each destination server. We can see that the average completion time of \name is $150ms$, while that under \bdsname is more than $200ms$.
 
 \mypara{Improvements over \bdsname}
-To make the results more general, we further conduct a series of experiments during different time periods, in other words, once per 30 minutes. We compare the completion time of \bdsname and \name, and show the results in Figure~\ref{fig:bdsplus:periods}. We can see that the improvements of \name changes with time, specifically, the improvements during midnight is much higher than that during the day, especially at 05:30, when online traffic is at its valley. These results show that \name can make full use of the idle bandwidth that is not used by online traffic. Overall, the CDF of improvements is shown in Figure~\ref{fig:bdsplus:vs}, which means that \name can bring at least 18\% improvement in more than 85\% cases.
+To make the results more general, we further conduct a series of experiments during different time periods, in other words, once per 30 minutes. We compare the completion time of \bdsname and \name, and show the results in Figure~\ref{fig:bdsplus:periods}. We can see that the improvements of \name changes with time, specifically, the improvements during midnight is much higher than that during the day, especially at 05:30, when online traffic is at its valley. These results show that \name can make full use of the idle bandwidth that is not used by online traffic. Overall, the CDF of improvements is shown in Figure~\ref{fig:bdsplus:vs}, \minor{which means that \name can bring at least 17.8\% improvement in about 86\% cases.}
 
 \subsubsection{\name's prediction algorithm.}
 \label{subsubsec:bdsplus:predict}
