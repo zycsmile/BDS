@@ -108,5 +108,10 @@ near-optimal solutions by exploring such a large decision space
 Dynamic bandwidth separation raises two requirements, one is to reserve enough bandwidth for latency-sensitive online traffic so as to avoid negative impacts on these services, and the other is to make full use of the residual bandwidth so as to reduce the completion time of bulk data transfer. With the traditional strict safety threshold and decentralized protocols, it could be impossible to make efficient bandwidth usage in the dynamic and mixed deployed network (\Section\ref{subsec:evaluation:improvements}).
 }
 
+\minor{
+\mypara{The potential under different topologies}
+The potential of \name comes from two aspects, one is the dynamic bandwidth separation, and the other is the bottleneck disjoint overlay path. While dynamic bandwidth separation could improve link utilization nomatter in any network topology, the overlay path brings performance improvement under most network topologies, but not all. The premise for this algorithm to work is that there are bottleneck disjoint overlay paths under such network topology. For example, on the topologies such as \textit{ring, star, tiered, full mesh, partial mesh}, \name could work well because there are potential bottleneck disjoint overlay paths under such topologies. However, under the simple point-to-point network topology, \name could not bring performance improvement because there are no alternative paths. Generally speaking, the topology of large-scale inter-DC network is more complex than the point-to-point network topology, so \name could bring performance improvement in most cases.
+}
+
 The following two sections will present how \name works.
 
